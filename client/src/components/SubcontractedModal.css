@@ -1,0 +1,683 @@
+/* ==========================================================================
+   SubcontractedModal — Ultra-Modern & Creative External Asset Modal Styles
+   ========================================================================== */
+
+.subcontract-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(6, 7, 12, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+    animation: subcontractModalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes subcontractModalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes subcontractModalPop {
+    from {
+        transform: scale(0.96) translateY(12px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.subcontract-modal-card {
+    background: linear-gradient(180deg, #181926 0%, #11121b 100%);
+    width: 100%;
+    max-width: 760px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 
+        0 30px 90px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: subcontractModalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Ambient glow backdrop */
+.subcontract-ambient-glow {
+    position: absolute;
+    top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 550px;
+    height: 180px;
+    background: radial-gradient(ellipse at center, rgba(245, 158, 11, 0.2) 0%, rgba(99, 102, 241, 0.1) 50%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Modal Header */
+.subcontract-modal-header {
+    position: relative;
+    z-index: 1;
+    padding: 22px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+    flex-shrink: 0;
+}
+
+.subcontract-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.subcontract-header-icon-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(99, 102, 241, 0.2) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fbbf24;
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.22);
+    flex-shrink: 0;
+    font-size: 24px;
+}
+
+.subcontract-header-title-group h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.subcontract-header-subtext {
+    margin: 4px 0 0 0;
+    font-size: 12.5px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.subcontract-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.subcontract-category-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.subcontract-close-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    cursor: pointer;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subcontract-close-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    transform: rotate(90deg) scale(1.05);
+}
+
+/* Modal Body */
+.subcontract-modal-body {
+    position: relative;
+    z-index: 1;
+    padding: 24px 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.subcontract-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+.subcontract-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.subcontract-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+}
+.subcontract-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 158, 11, 0.4);
+}
+
+/* Section Box */
+.subcontract-section-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: all 0.2s ease;
+}
+
+.subcontract-section-box:hover {
+    border-color: rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.subcontract-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.subcontract-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.subcontract-section-title svg {
+    color: #fbbf24;
+}
+
+.subcontract-section-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Category Grid (5 categories) */
+.subcontract-category-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.subcontract-category-card {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    padding: 10px 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
+}
+
+.subcontract-category-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.subcontract-category-card.active {
+    background: rgba(245, 158, 11, 0.16);
+    border-color: #f59e0b;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
+}
+
+.subcontract-cat-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.subcontract-cat-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #f1f5f9;
+}
+
+/* Fields & Inputs */
+.subcontract-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.subcontract-field-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.6px;
+}
+
+.subcontract-field-label .required-dot {
+    color: #f43f5e;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.subcontract-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.subcontract-input-icon {
+    position: absolute;
+    left: 14px;
+    color: #64748b;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.subcontract-input-wrapper:focus-within .subcontract-input-icon {
+    color: #fbbf24;
+}
+
+.subcontract-trailing-badge {
+    position: absolute;
+    right: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 3px 8px;
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.subcontract-text-input {
+    width: 100%;
+    background: rgba(10, 11, 18, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 14px 12px 42px;
+    color: #f8fafc;
+    font-size: 13.5px;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.subcontract-text-input:focus {
+    background: rgba(15, 16, 26, 0.85);
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+
+.subcontract-text-input::placeholder {
+    color: #475569;
+}
+
+.subcontract-subgrid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* Quick Gear Suggestion Chips */
+.subcontract-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.subcontract-suggestion-chip {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 4px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.subcontract-suggestion-chip:hover {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: #fbbf24;
+    transform: translateY(-1px);
+}
+
+.subcontract-suggestion-chip.active {
+    background: rgba(245, 158, 11, 0.22);
+    border-color: #f59e0b;
+    color: #fde68a;
+    font-weight: 700;
+}
+
+/* Live Valuation Banner */
+.subcontract-valuation-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 14px;
+    margin-top: 4px;
+}
+
+.subcontract-val-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: #cbd5e1;
+}
+
+.subcontract-val-highlight {
+    font-size: 16px;
+    font-weight: 800;
+    color: #fbbf24;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.subcontract-val-sub {
+    font-size: 11.5px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* Live Preview Card */
+.subcontract-preview-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(245, 158, 11, 0.04) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.subcontract-preview-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.subcontract-avatar-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+    flex-shrink: 0;
+}
+
+.subcontract-preview-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+}
+
+.subcontract-preview-sub {
+    font-size: 11.5px;
+    color: #94a3b8;
+    margin: 2px 0 0 0;
+}
+
+/* Footer & Actions */
+.subcontract-modal-footer {
+    position: relative;
+    z-index: 1;
+    padding: 18px 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+    flex-shrink: 0;
+}
+
+.subcontract-footer-summary {
+    font-size: 12.5px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.subcontract-footer-summary .summary-highlight {
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.subcontract-footer-btns {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.subcontract-btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #94a3b8;
+    padding: 11px 20px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.subcontract-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.09);
+    color: #fff;
+}
+
+.subcontract-btn-primary {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border: none;
+    color: #ffffff;
+    padding: 11px 24px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subcontract-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.45);
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+}
+
+/* Responsive Breakpoints & Mobile Optimization */
+@media (max-width: 768px) {
+    .subcontract-modal-overlay {
+        padding: 10px 8px;
+    }
+    .subcontract-modal-card {
+        max-height: 96vh;
+        border-radius: 20px;
+    }
+    .subcontract-modal-header {
+        padding: 14px 16px;
+        gap: 10px;
+    }
+    .subcontract-header-icon-badge {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+    }
+    .subcontract-header-title-group h2 {
+        font-size: 16px;
+    }
+    .subcontract-header-subtext {
+        font-size: 11px;
+    }
+    .subcontract-category-badge-pill {
+        padding: 4px 8px;
+        font-size: 10.5px;
+    }
+    .subcontract-close-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+    }
+    .subcontract-modal-body {
+        padding: 14px 14px;
+        gap: 14px;
+    }
+    .subcontract-section-box {
+        padding: 14px 14px;
+        border-radius: 16px;
+    }
+    .subcontract-category-grid {
+        grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+        gap: 6px;
+    }
+    .subcontract-subgrid-2 {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .subcontract-valuation-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px 14px;
+    }
+    .subcontract-val-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+    .subcontract-val-highlight {
+        width: 100%;
+        justify-content: space-between;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-top: 8px;
+    }
+    .subcontract-preview-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px 14px;
+    }
+    .subcontract-preview-card > div:last-child {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 8px;
+    }
+    .subcontract-preview-box {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        text-align: left;
+    }
+    .subcontract-preview-total {
+        text-align: left;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .subcontract-modal-footer {
+        padding: 14px 16px;
+        flex-direction: column-reverse;
+        gap: 12px;
+    }
+    .subcontract-footer-summary {
+        font-size: 11px;
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+    }
+    .subcontract-footer-btns {
+        width: 100%;
+        gap: 8px;
+    }
+    .subcontract-btn-secondary {
+        flex: 1;
+        text-align: center;
+        padding: 11px 14px;
+    }
+    .subcontract-btn-primary {
+        flex: 2;
+        justify-content: center;
+        padding: 11px 16px;
+    }
+}
+
+@media (max-width: 440px) {
+    .subcontract-header-subtext {
+        display: none;
+    }
+    .subcontract-category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+

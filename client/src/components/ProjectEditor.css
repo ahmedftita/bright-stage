@@ -1,0 +1,1272 @@
+/* ==========================================================================
+   Project Editor - Creative & Professional Responsive Redesign
+   ========================================================================== */
+
+.pe-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 6, 15, 0.85);
+    backdrop-filter: blur(16px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: clamp(6px, 1.5vw, 20px);
+    box-sizing: border-box;
+    animation: peFadeIn 0.25s ease-out;
+    overflow-x: hidden;
+}
+
+@keyframes peFadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.pe-modal {
+    width: 100%;
+    max-width: 1540px;
+    height: min(94vh, 980px);
+    max-height: 100%;
+    background: radial-gradient(ellipse at 15% 10%, rgba(99, 102, 241, 0.12), transparent 45%),
+                radial-gradient(ellipse at 85% 85%, rgba(236, 72, 153, 0.08), transparent 45%),
+                #11121d;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: clamp(16px, 2vw, 24px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Top Header & Stepper
+   -------------------------------------------------------------------------- */
+.pe-header {
+    padding: clamp(14px, 1.8vw, 22px) clamp(16px, 2.2vw, 32px) clamp(12px, 1.5vw, 18px);
+    background: rgba(17, 18, 29, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(12px, 1.6vw, 20px);
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.pe-header-left {
+    display: flex;
+    align-items: center;
+    gap: clamp(10px, 1.2vw, 16px);
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.pe-title-badge {
+    width: clamp(38px, 3.6vw, 46px);
+    height: clamp(38px, 3.6vw, 46px);
+    border-radius: clamp(10px, 1vw, 14px);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.15) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #818cf8;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+    flex-shrink: 0;
+}
+
+.pe-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.pe-title {
+    font-size: clamp(17px, 1.6vw, 20px);
+    font-weight: 800;
+    color: #f8fafc;
+    letter-spacing: -0.4px;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.pe-status-pill {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: clamp(10px, 0.8vw, 11px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+.pe-status-pill.draft {
+    background: rgba(148, 163, 184, 0.12);
+    color: #cbd5e1;
+    border-color: rgba(148, 163, 184, 0.25);
+}
+.pe-status-pill.pickup {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+.pe-status-pill.return {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+.pe-status-pill.done {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.pe-sync-indicator {
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.pe-sync-indicator.syncing {
+    color: #fbbf24;
+}
+.pe-sync-indicator.saved {
+    color: #34d399;
+    opacity: 0.85;
+}
+.pe-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #fbbf24;
+    animation: pePulse 1.2s infinite;
+}
+@keyframes pePulse {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    50% { transform: scale(1.4); opacity: 1; }
+    100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+.pe-subtitle {
+    margin: 3px 0 0 0;
+    font-size: clamp(11px, 0.9vw, 12px);
+    color: #64748b;
+    line-height: 1.35;
+}
+
+/* Header Stepper */
+.pe-stepper {
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 0.8vw, 10px);
+    background: rgba(0, 0, 0, 0.25);
+    padding: 6px clamp(10px, 1.2vw, 16px);
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.pe-step-node {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 3px 6px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.pe-step-node:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.pe-step-circle {
+    width: clamp(20px, 2vw, 24px);
+    height: clamp(20px, 2vw, 24px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(10px, 0.8vw, 11px);
+    font-weight: 800;
+    background: #1e2238;
+    color: #64748b;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+.pe-step-node.completed .pe-step-circle {
+    background: #6366f1;
+    color: white;
+    border-color: #818cf8;
+}
+.pe-step-node.active .pe-step-circle {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    border-color: #ffffff;
+    box-shadow: 0 0 14px rgba(99, 102, 241, 0.7);
+    transform: scale(1.06);
+}
+
+.pe-step-label {
+    font-size: clamp(10.5px, 0.85vw, 11.5px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #64748b;
+}
+.pe-step-node.active .pe-step-label {
+    color: #f8fafc;
+    font-weight: 700;
+}
+.pe-step-node.completed .pe-step-label {
+    color: #a5b4fc;
+}
+
+.pe-step-line {
+    width: clamp(12px, 1.6vw, 24px);
+    height: 2px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+.pe-step-line.completed {
+    background: #6366f1;
+}
+
+.pe-close-btn {
+    width: clamp(34px, 3vw, 38px);
+    height: clamp(34px, 3vw, 38px);
+    border-radius: clamp(9px, 0.9vw, 12px);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.pe-close-btn:hover {
+    background: rgba(244, 63, 94, 0.15);
+    border-color: rgba(244, 63, 94, 0.4);
+    color: #fb7185;
+    transform: scale(1.05);
+}
+
+/* --------------------------------------------------------------------------
+   Systematic Navigation Tabs
+   -------------------------------------------------------------------------- */
+.pe-tabs-bar {
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 0.8vw, 8px);
+    padding: 8px clamp(12px, 2.2vw, 32px);
+    background: rgba(12, 13, 20, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+    width: 100%;
+}
+.pe-tabs-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.pe-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(6px, 0.7vw, 9px);
+    padding: clamp(8px, 0.8vw, 10px) clamp(12px, 1.2vw, 18px);
+    border-radius: 12px;
+    font-size: clamp(12px, 0.9vw, 13px);
+    font-weight: 600;
+    color: #94a3b8;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pe-tab-btn:hover {
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.pe-tab-btn.active {
+    color: #f8fafc;
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.35);
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
+}
+
+.pe-tab-icon {
+    font-size: 15px;
+    opacity: 0.8;
+}
+.pe-tab-btn.active .pe-tab-icon {
+    opacity: 1;
+    color: #818cf8;
+}
+
+.pe-tab-badge {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.25);
+    color: #c7d2fe;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+.pe-tab-badge.amber {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* --------------------------------------------------------------------------
+   Body Split Layout
+   -------------------------------------------------------------------------- */
+.pe-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    background: #0d0e17;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 0;
+}
+
+.pe-main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: clamp(20px, 2.2vw, 32px) clamp(16px, 2.4vw, 36px) 60px;
+    box-sizing: border-box;
+    min-width: 0;
+}
+.pe-main-content::-webkit-scrollbar {
+    width: 6px;
+}
+.pe-main-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Form Container */
+.pe-form-container {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 1.8vw, 24px);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Section Cards (Creative & Structured)
+   -------------------------------------------------------------------------- */
+.pe-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: clamp(14px, 1.5vw, 20px);
+    padding: clamp(18px, 2vw, 26px) clamp(16px, 2vw, 28px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+    width: 100%;
+}
+.pe-card:hover {
+    border-color: rgba(99, 102, 241, 0.2);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.3);
+}
+
+.pe-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: clamp(14px, 1.5vw, 22px);
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pe-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 1vw, 12px);
+    min-width: 0;
+}
+
+.pe-card-icon-wrap {
+    width: clamp(32px, 3vw, 36px);
+    height: clamp(32px, 3vw, 36px);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+.pe-card-icon-wrap.indigo {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+}
+.pe-card-icon-wrap.blue {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+.pe-card-icon-wrap.emerald {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.pe-card-icon-wrap.amber {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.pe-card-icon-wrap.violet {
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.pe-card-title {
+    font-size: clamp(14px, 1.1vw, 15px);
+    font-weight: 700;
+    color: #f8fafc;
+    letter-spacing: -0.2px;
+    margin: 0;
+}
+.pe-card-desc {
+    font-size: clamp(11px, 0.85vw, 11.5px);
+    color: #64748b;
+    margin: 2px 0 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   Input Fields & Grid Layouts
+   -------------------------------------------------------------------------- */
+.pe-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(12px, 1.4vw, 18px);
+    width: 100%;
+    box-sizing: border-box;
+}
+.pe-col-span-2 {
+    grid-column: span 2;
+}
+
+.pe-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.pe-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-left: 2px;
+}
+.pe-label-required {
+    color: #f43f5e;
+    font-weight: 700;
+}
+
+.pe-input {
+    width: 100%;
+    padding: clamp(9px, 1vw, 11px) 14px;
+    background: #141521;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #f8fafc;
+    font-size: clamp(12.5px, 0.95vw, 13.5px);
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
+}
+.pe-input::placeholder {
+    color: #475569;
+}
+.pe-input:focus {
+    border-color: #6366f1;
+    background: #171827;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+.pe-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+select.pe-input {
+    cursor: pointer;
+    background-color: #141521;
+    color: #f8fafc;
+}
+select.pe-input option {
+    background-color: #1a1b26;
+    color: #f8fafc;
+    padding: 10px;
+}
+
+/* Duration highlight pill */
+.pe-duration-chip {
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Team & Technician Assignment Cards
+   -------------------------------------------------------------------------- */
+.pe-users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pe-user-card {
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+.pe-user-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-1px);
+}
+.pe-user-card.selected {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
+    border-color: #6366f1;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
+}
+.pe-user-card.busy {
+    border-color: rgba(239, 68, 68, 0.3);
+    opacity: 0.75;
+}
+
+.pe-user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #1e2238;
+    color: #a5b4fc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+.pe-user-card.selected .pe-user-avatar {
+    background: #6366f1;
+    color: white;
+}
+
+.pe-user-info {
+    flex: 1;
+    overflow: hidden;
+}
+.pe-user-name {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #f8fafc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pe-user-role {
+    font-size: 10.5px;
+    color: #64748b;
+}
+.pe-user-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.pe-user-status-dot.available {
+    background: #10b981;
+    box-shadow: 0 0 6px #10b981;
+}
+.pe-user-status-dot.busy {
+    background: #ef4444;
+    box-shadow: 0 0 6px #ef4444;
+}
+
+/* --------------------------------------------------------------------------
+   Equipment Store
+   -------------------------------------------------------------------------- */
+.pe-equip-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.pe-search-wrap {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+}
+.pe-search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    pointer-events: none;
+}
+.pe-search-input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    background: #141521;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #f8fafc;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+}
+.pe-search-input:focus {
+    border-color: #6366f1;
+}
+
+.pe-source-toggle {
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: #141521;
+    flex-shrink: 0;
+}
+.pe-source-btn {
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.pe-source-btn.internal {
+    color: #94a3b8;
+    background: transparent;
+}
+.pe-source-btn.internal.active {
+    background: #3b82f6;
+    color: white;
+}
+.pe-source-btn.subcontracted {
+    color: #94a3b8;
+    background: transparent;
+}
+.pe-source-btn.subcontracted.active {
+    background: #f59e0b;
+    color: #0f172a;
+}
+
+.pe-equip-list {
+    max-height: 440px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    padding-right: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.pe-equip-list::-webkit-scrollbar {
+    width: 6px;
+}
+.pe-equip-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.pe-equip-card {
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+.pe-equip-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.pe-equip-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #f8fafc;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.pe-equip-stock {
+    font-size: 11px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.pe-equip-stock.low {
+    color: #f59e0b;
+}
+
+.pe-add-btn {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.pe-add-btn:hover {
+    background: #4f46e5;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Step Navigation Buttons (Bottom of Tab)
+   -------------------------------------------------------------------------- */
+.pe-tab-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 10px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.pe-btn-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.pe-btn-nav:hover {
+    background: rgba(255, 255, 255, 0.09);
+    color: #fff;
+}
+.pe-btn-nav.primary {
+    background: #6366f1;
+    color: #fff;
+    border-color: #818cf8;
+}
+.pe-btn-nav.primary:hover {
+    background: #4f46e5;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Right Sidebar: Live Summary & Selection Cart
+   -------------------------------------------------------------------------- */
+.pe-sidebar {
+    width: clamp(320px, 26vw, 380px);
+    background: #0d0f19;
+    border-left: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.pe-sidebar-content {
+    flex: 1;
+    padding: clamp(16px, 1.8vw, 24px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 1.6vw, 20px);
+    box-sizing: border-box;
+}
+.pe-sidebar-content::-webkit-scrollbar {
+    width: 5px;
+}
+.pe-sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Live Project Card */
+.pe-snapshot-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 16px;
+    padding: 16px;
+}
+.pe-snapshot-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.pe-snapshot-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 6px;
+    color: #94a3b8;
+    gap: 8px;
+}
+.pe-snapshot-row strong {
+    color: #e2e8f0;
+    text-align: right;
+    word-break: break-word;
+}
+
+/* Selection list */
+.pe-cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.pe-cart-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #818cf8;
+    margin: 0;
+}
+
+.pe-cart-empty {
+    padding: 36px 16px;
+    text-align: center;
+    color: #64748b;
+    font-size: 12.5px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+}
+
+.pe-cart-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pe-cart-item {
+    background: #141724;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: all 0.2s;
+}
+.pe-cart-item:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.pe-cart-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+.pe-cart-item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f8fafc;
+    word-break: break-word;
+}
+.pe-cart-del-btn {
+    background: transparent;
+    border: none;
+    color: #f43f5e;
+    cursor: pointer;
+    padding: 2px;
+    opacity: 0.7;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.pe-cart-del-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.pe-cart-item-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pe-qty-control {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 2px;
+}
+.pe-qty-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+.pe-qty-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.pe-qty-val {
+    width: 32px;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Bottom Actions Panel
+   -------------------------------------------------------------------------- */
+.pe-sidebar-actions {
+    padding: clamp(14px, 1.8vw, 20px) clamp(16px, 2vw, 24px) clamp(16px, 2vw, 24px);
+    background: #090a12;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-sizing: border-box;
+}
+
+.pe-btn-advance {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #fff;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+.pe-btn-advance.pickup {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+}
+.pe-btn-advance.pickup:hover {
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
+    transform: translateY(-1px);
+}
+.pe-btn-advance.return {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    box-shadow: 0 4px 18px rgba(244, 63, 94, 0.35);
+}
+.pe-btn-advance.done {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    box-shadow: 0 4px 18px rgba(59, 130, 246, 0.35);
+}
+
+.pe-btn-save {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 18px rgba(99, 102, 241, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+.pe-btn-save:hover {
+    background: linear-gradient(135deg, #7175f8 0%, #5950ee 100%);
+    box-shadow: 0 8px 26px rgba(99, 102, 241, 0.6);
+    transform: translateY(-1px);
+}
+.pe-btn-save:active {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   Responsive Adaptations & Mobile Breakpoints
+   ========================================================================== */
+
+/* Breakpoint 1: Medium Desktop & Tablets Landscape (<= 1180px) */
+@media (max-width: 1180px) {
+    .pe-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        row-gap: 12px;
+        padding: 16px 20px;
+    }
+    .pe-header-left {
+        grid-column: 1;
+    }
+    .pe-close-btn {
+        grid-column: 2;
+        justify-self: end;
+    }
+    .pe-stepper {
+        grid-column: 1 / -1;
+        justify-content: center;
+        width: 100%;
+        max-width: 520px;
+        margin: 0 auto;
+    }
+}
+
+/* Breakpoint 2: Tablet & Small Laptop (<= 1080px) - Stack Sidebar Below Form with Sticky Actions */
+@media (max-width: 1080px) {
+    .pe-body {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    .pe-main-content {
+        overflow-y: visible;
+        padding: 20px 18px 24px;
+        flex: none;
+    }
+    .pe-sidebar {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        flex-shrink: 0;
+    }
+    .pe-sidebar-content {
+        overflow-y: visible;
+        padding: 20px 18px;
+    }
+    .pe-sidebar-actions {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(9, 10, 18, 0.96);
+        backdrop-filter: blur(14px);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 12px clamp(12px, 2vw, 20px);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.6);
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    .pe-btn-advance,
+    .pe-btn-save {
+        flex: 1;
+        margin: 0;
+        padding: 12px 14px;
+        font-size: 13px;
+    }
+}
+
+/* Breakpoint 3: Mobile Portrait & Small Tablets (<= 680px) */
+@media (max-width: 680px) {
+    .pe-form-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    .pe-col-span-2 {
+        grid-column: span 1;
+    }
+    .pe-card {
+        padding: 16px 14px;
+        border-radius: 16px;
+    }
+    .pe-card-header {
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+    }
+    .pe-equip-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .pe-source-toggle {
+        width: 100%;
+        display: flex;
+    }
+    .pe-source-btn {
+        flex: 1;
+        justify-content: center;
+        height: 38px;
+    }
+    .pe-equip-list {
+        grid-template-columns: 1fr;
+        max-height: 360px;
+    }
+    .pe-users-grid {
+        grid-template-columns: 1fr;
+    }
+    .pe-stepper {
+        padding: 4px 10px;
+        gap: 6px;
+        max-width: 100%;
+    }
+    .pe-step-node {
+        padding: 2px 4px;
+        gap: 4px;
+    }
+    .pe-step-circle {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+    .pe-step-label {
+        font-size: 10px;
+    }
+    .pe-step-line {
+        width: 12px;
+    }
+}
+
+/* Breakpoint 4: Mobile Fullscreen Experience (<= 540px) */
+@media (max-width: 540px) {
+    .pe-overlay {
+        padding: 0;
+    }
+    .pe-modal {
+        width: 100vw;
+        height: 100dvh;
+        max-height: 100dvh;
+        border-radius: 0;
+        border: none;
+    }
+    .pe-header {
+        padding: 10px 14px;
+        row-gap: 8px;
+    }
+    .pe-title-badge {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+    }
+    .pe-title {
+        font-size: 16px;
+    }
+    .pe-subtitle {
+        font-size: 10.5px;
+    }
+    .pe-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+    }
+    .pe-step-label {
+        display: none; /* Icon-only circular steps (1)---(2)---(3)---(4) for tiny screens */
+    }
+    .pe-step-line {
+        width: 20px;
+    }
+    .pe-tabs-bar {
+        padding: 6px 10px;
+        gap: 5px;
+    }
+    .pe-tab-btn {
+        padding: 7px 10px;
+        font-size: 11.5px;
+        gap: 5px;
+    }
+    .pe-main-content {
+        padding: 14px 12px 20px;
+    }
+    .pe-sidebar-content {
+        padding: 14px 12px;
+    }
+    .pe-sidebar-actions {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 14px;
+    }
+    .pe-btn-advance,
+    .pe-btn-save {
+        padding: 11px;
+    }
+}

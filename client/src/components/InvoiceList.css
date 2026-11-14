@@ -1,0 +1,899 @@
+/* ==========================================================================
+   InvoiceList — Executive Glassmorphism Styles for Invoicing & Settlement
+   ========================================================================== */
+
+.il-container {
+    padding: 32px 40px 90px 40px;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+    color: #e2e8f0;
+    font-family: "Google Sans", sans-serif;
+    box-sizing: border-box;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Page Header */
+.il-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    flex-shrink: 0;
+}
+
+.il-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.il-header-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(202, 138, 4, 0.25) 0%, rgba(161, 98, 7, 0.2) 100%);
+    border: 1px solid rgba(202, 138, 4, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fbbf24;
+    box-shadow: 0 8px 24px rgba(202, 138, 4, 0.22);
+    flex-shrink: 0;
+}
+
+.il-header-titles h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.4px;
+}
+
+.il-header-subtext {
+    margin: 4px 0 0 0;
+    font-size: 13.5px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.il-header-actions {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.il-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.il-search-icon {
+    position: absolute;
+    left: 16px;
+    color: #94a3b8;
+    pointer-events: none;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+}
+
+.il-search-input {
+    width: 280px;
+    padding: 12px 16px 12px 44px;
+    background: rgba(18, 19, 28, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 14px;
+    color: #ffffff;
+    outline: none;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.il-search-input:focus {
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 3px rgba(202, 138, 4, 0.2);
+    background: rgba(22, 24, 36, 0.95);
+}
+
+.il-create-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #ca8a04 0%, #a16207 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 13.5px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(202, 138, 4, 0.32);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.il-create-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 28px rgba(202, 138, 4, 0.45);
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+}
+
+/* Metric Strip (KPIs) */
+.il-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    flex-shrink: 0;
+}
+
+.il-metric-card {
+    background: linear-gradient(180deg, rgba(26, 27, 40, 0.75) 0%, rgba(18, 19, 28, 0.88) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease;
+}
+
+.il-metric-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.il-metric-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.il-metric-icon-wrap.gold {
+    background: rgba(202, 138, 4, 0.16);
+    color: #fbbf24;
+    border: 1px solid rgba(202, 138, 4, 0.3);
+}
+
+.il-metric-icon-wrap.green {
+    background: rgba(16, 185, 129, 0.16);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.il-metric-icon-wrap.red {
+    background: rgba(239, 68, 68, 0.16);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.il-metric-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.il-metric-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.il-metric-val.green {
+    color: #34d399;
+}
+
+.il-metric-val.red {
+    color: #f87171;
+}
+
+.il-metric-label {
+    font-size: 11px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Filter Pills */
+.il-filter-bar {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 4px 0 8px 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
+    min-height: 48px;
+    align-items: center;
+}
+
+.il-filter-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.il-filter-pill {
+    padding: 8px 18px;
+    height: 38px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(26, 27, 40, 0.85);
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-family: inherit;
+    user-select: none;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.il-filter-pill:hover {
+    color: #ffffff;
+    background: rgba(38, 40, 58, 0.95);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.il-filter-pill.active {
+    border: 1px solid rgba(251, 191, 36, 0.55);
+    background: linear-gradient(135deg, rgba(202, 138, 4, 0.32), rgba(161, 98, 7, 0.38));
+    color: #ffffff;
+    box-shadow: 0 4px 16px rgba(202, 138, 4, 0.28);
+}
+
+/* Table Container (Desktop) */
+.il-table-container {
+    background: linear-gradient(180deg, rgba(26, 27, 40, 0.75) 0%, rgba(18, 19, 28, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+}
+
+.il-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.il-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    min-width: 820px;
+}
+
+.il-table th {
+    background: rgba(255, 255, 255, 0.025);
+    padding: 16px 22px;
+    color: #64748b;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 800;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.il-table td {
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    vertical-align: middle;
+}
+
+.il-table tr:last-child td {
+    border-bottom: none;
+}
+
+.il-table tr:hover td {
+    background: rgba(255, 255, 255, 0.018);
+}
+
+/* Invoice Number Pill */
+.il-ref-badge {
+    font-family: monospace;
+    font-weight: 800;
+    font-size: 13px;
+    color: #fbbf24;
+    background: rgba(202, 138, 4, 0.12);
+    padding: 4px 9px;
+    border-radius: 7px;
+    width: fit-content;
+    border: 1px solid rgba(202, 138, 4, 0.3);
+    letter-spacing: 0.3px;
+}
+
+/* Client Cell */
+.il-client-name {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.il-client-fiscal {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Status Badges */
+.il-status-badge {
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.il-status-badge.paid {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.il-status-badge.overdue {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.il-status-badge.sent {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.il-status-badge.draft {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* Action Buttons */
+.il-action-btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.il-action-btn.pay {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+.il-action-btn.pay:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: #10b981;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.il-action-btn.pdf {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #ffffff;
+}
+
+.il-action-btn.pdf:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+}
+
+/* Empty State */
+.il-empty-state {
+    padding: 70px 20px;
+    text-align: center;
+    color: #64748b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.il-empty-state strong {
+    color: #cbd5e1;
+    font-size: 14.5px;
+}
+
+/* ==========================================================================
+   Mobile Cards System (<= 768px)
+   ========================================================================== */
+
+.il-desktop-only {
+    display: block;
+}
+
+.il-mobile-only {
+    display: none;
+}
+
+.il-mobile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.il-card {
+    background: linear-gradient(180deg, rgba(26, 27, 40, 0.85) 0%, rgba(18, 19, 28, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.il-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.il-card-top-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.il-card-date {
+    font-size: 12px;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.il-card-client-box {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.il-card-client-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.il-card-client-sub {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+/* Card Financials Strip */
+.il-card-fin-strip {
+    background: rgba(10, 11, 18, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.il-card-fin-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.il-card-fin-col span {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.il-card-fin-col strong {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: monospace;
+}
+
+.il-card-fin-col strong.positive {
+    color: #34d399;
+}
+
+.il-card-fin-col strong.danger {
+    color: #f87171;
+}
+
+/* Card Actions */
+.il-card-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 4px;
+}
+
+.il-card-actions .il-action-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px;
+    font-size: 12.5px;
+}
+
+/* ==========================================================================
+   Modals Responsive Styles (Payment & Brand Select)
+   ========================================================================== */
+
+.il-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(8, 10, 18, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 16px;
+    box-sizing: border-box;
+    animation: ilModalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes ilModalFadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.il-modal-card {
+    background: linear-gradient(180deg, #181926 0%, #12131f 100%);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.il-modal-header {
+    padding: 22px 26px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.il-modal-body {
+    padding: 22px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+/* Tablet & Medium Screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .il-container {
+        padding: 24px 20px 90px 20px;
+        gap: 20px;
+    }
+
+    /* Executive Header in 1 Row on 1024px */
+    .il-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding-bottom: 18px;
+    }
+
+    .il-header-left {
+        gap: 12px;
+    }
+
+    .il-header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+    }
+
+    .il-header-titles h1 {
+        font-size: 21px;
+    }
+
+    .il-header-subtext {
+        font-size: 12px;
+    }
+
+    .il-header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .il-search-wrapper {
+        width: auto;
+    }
+
+    .il-search-input {
+        width: 210px;
+        padding: 10px 14px 10px 38px;
+        font-size: 12.5px;
+    }
+
+    .il-create-btn {
+        padding: 10px 18px;
+        font-size: 13px;
+        border-radius: 12px;
+    }
+
+    /* Keep all 3 metrics in ONE sleek row on 1024px (no empty voids) */
+    .il-metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .il-metric-card {
+        padding: 14px 16px;
+        gap: 12px;
+        border-radius: 16px;
+    }
+
+    .il-metric-icon-wrap {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+    }
+
+    .il-metric-val {
+        font-size: 17px;
+    }
+
+    .il-metric-label {
+        font-size: 10px;
+    }
+
+    /* Filter bar on 1024px */
+    .il-filter-bar {
+        padding: 2px 0 8px 0;
+        gap: 8px;
+    }
+
+    .il-filter-pill {
+        padding: 7px 14px;
+        font-size: 12.5px;
+        height: 36px;
+    }
+
+    /* Table cell padding for 1024px */
+    .il-table th,
+    .il-table td {
+        padding: 12px 14px;
+        font-size: 12.5px;
+    }
+
+    .il-table th {
+        font-size: 10.5px;
+    }
+
+    .il-ref-badge {
+        font-size: 12px;
+        padding: 3px 7px;
+    }
+
+    .il-client-name {
+        font-size: 13px;
+    }
+
+    .il-action-btn {
+        padding: 6px 10px;
+        font-size: 11.5px;
+        gap: 4px;
+    }
+}
+
+/* Intermediate Tablet (max-width: 860px) */
+@media (max-width: 860px) {
+    .il-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+
+    .il-header-actions {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+    }
+
+    .il-search-wrapper {
+        flex: 1;
+    }
+
+    .il-search-input {
+        width: 100%;
+    }
+
+    .il-create-btn {
+        white-space: nowrap;
+    }
+
+    /* 2 columns, but 3rd card stretches full width to avoid awkward gaps */
+    .il-metrics-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .il-metric-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    .il-desktop-only {
+        display: none !important;
+    }
+    .il-mobile-only {
+        display: flex;
+    }
+
+    .il-container {
+        padding: 16px 12px 36px 12px;
+        gap: 18px;
+    }
+
+    /* Header */
+    .il-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding-bottom: 16px;
+    }
+    .il-header-left {
+        gap: 12px;
+    }
+    .il-header-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+    }
+    .il-header-titles h1 {
+        font-size: 20px;
+    }
+    .il-header-subtext {
+        font-size: 12.5px;
+    }
+
+    /* Header Actions */
+    .il-header-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+    .il-search-wrapper {
+        width: 100%;
+    }
+    .il-search-input {
+        width: 100%;
+        padding: 11px 14px 11px 40px;
+        font-size: 13px;
+    }
+    .il-create-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    /* Metric Strip */
+    .il-metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .il-metric-card {
+        padding: 14px 16px;
+        border-radius: 16px;
+        gap: 14px;
+    }
+    .il-metric-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+    }
+    .il-metric-val {
+        font-size: 18px;
+    }
+    .il-metric-label {
+        font-size: 10.5px;
+    }
+
+    /* Modal Responsive */
+    .il-modal-card {
+        border-radius: 20px;
+    }
+    .il-modal-header {
+        padding: 16px 18px;
+    }
+    .il-modal-body {
+        padding: 18px;
+    }
+}
+
+/* Extra Small Screens (max-width: 480px) */
+@media (max-width: 480px) {
+    .il-container {
+        padding: 12px 8px 30px 8px;
+        gap: 14px;
+    }
+    .il-header-titles h1 {
+        font-size: 18px;
+    }
+    .il-card {
+        padding: 14px 12px;
+        border-radius: 16px;
+    }
+    .il-card-fin-strip {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+    .il-card-fin-col {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .il-card-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .il-card-actions .il-action-btn {
+        width: 100%;
+    }
+}

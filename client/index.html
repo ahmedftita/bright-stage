@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bright Stage</title>
+  <script>
+    (function () {
+      // 🛡️ حماية متقدمة لمنع خطأ المتصفح reportAllChanges / startTime
+      const fallbackEntry = {
+        startTime: 0,
+        duration: 0,
+        value: 0,
+        name: '',
+        entryType: 'interaction',
+        processingStart: 0,
+        processingEnd: 0,
+        interactionId: 0,
+        hadRecentInput: false
+      };
+
+      const wrapList = function (arr) {
+        if (!arr || !Array.isArray(arr)) return arr;
+        return new Proxy(arr, {
+          get(target, prop, receiver) {
+            if (prop === '0' && target.length === 0) {
+              return fallbackEntry;
+            }
+            return Reflect.get(target, prop, receiver);
+          }
+        });
+      };
+
+      try {
+        // 1. تأمين PerformanceObserverEntryList
+        if (typeof PerformanceObserverEntryList !== 'undefined' && PerformanceObserverEntryList.prototype) {
+          const proto = PerformanceObserverEntryList.prototype;
+          ['getEntries', 'getEntriesByType', 'getEntriesByName'].forEach(fn => {
+            if (proto[fn]) {
+              const orig = proto[fn];
+              proto[fn] = function (...args) {
+                return wrapList(orig.apply(this, args));
+              };
+            }
+          });
+        }
+
+        // 2. تأمين PerformanceObserver
+        if (typeof PerformanceObserver !== 'undefined' && PerformanceObserver.prototype) {
+          const origTake = PerformanceObserver.prototype.takeRecords;
+          if (origTake) {
+            PerformanceObserver.prototype.takeRecords = function (...args) {
+              return wrapList(origTake.apply(this, args));
+            };
+          }
+
+          const OrigPO = window.PerformanceObserver;
+          if (OrigPO) {
+            window.PerformanceObserver = function (callback) {
+              const safeCallback = function (entryList, observer) {
+                try {
+                  return callback(entryList, observer);
+                } catch (e) {
+                  if (e && e.message && e.message.includes('startTime')) {
+                    return; // امتصاص الخطأ بصمت لمنع ظهوره
+                  }
+                  throw e;
+                }
+              };
+              return new OrigPO(safeCallback);
+            };
+            window.PerformanceObserver.prototype = OrigPO.prototype;
+            window.PerformanceObserver.supportedEntryTypes = OrigPO.supportedEntryTypes;
+          }
+        }
+
+        // 3. تأمين performance.getEntries*
+        if (typeof performance !== 'undefined') {
+          ['getEntries', 'getEntriesByType', 'getEntriesByName'].forEach(fn => {
+            if (typeof performance[fn] === 'function') {
+              const orig = performance[fn].bind(performance);
+              performance[fn] = function (...args) {
+                return wrapList(orig(...args));
+              };
+            }
+          });
+        }
+      } catch (err) {
+        // تجاهل أي خطأ أثناء التهيئة
+      }
+
+      // إزالة أي Service Worker قديم متبقي من مشاريع أخرى على نفس البورت 5173
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          for (var i = 0; i < registrations.length; i++) {
+            registrations[i].unregister();
+          }
+        });
+      }
+
+      // 4. معالج أخطاء عام
+      window.addEventListener('error', function (event) {
+        if (event && event.message && (event.message.includes('startTime') || event.message.includes('reportAllChanges'))) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return true;
+        }
+      }, true);
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>

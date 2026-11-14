@@ -1,0 +1,550 @@
+/* ==========================================================================
+   DriverModal — Ultra-Modern Logistics Driver & Operator Modal Styles
+   ========================================================================== */
+
+.driver-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(6, 7, 12, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+    animation: driverModalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes driverModalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes driverModalPop {
+    from {
+        transform: scale(0.96) translateY(12px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+.driver-modal-card {
+    background: linear-gradient(180deg, #181926 0%, #12131c 100%);
+    width: 100%;
+    max-width: 650px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 
+        0 30px 90px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: driverModalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Ambient glow backdrop */
+.driver-ambient-glow {
+    position: absolute;
+    top: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 170px;
+    background: radial-gradient(ellipse at center, rgba(16, 185, 129, 0.2) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 80%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Modal Header */
+.driver-modal-header {
+    position: relative;
+    z-index: 1;
+    padding: 22px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%);
+    flex-shrink: 0;
+}
+
+.driver-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.driver-header-icon-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(6, 182, 212, 0.2) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+    flex-shrink: 0;
+}
+
+.driver-header-title-group h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.driver-header-subtext {
+    margin: 4px 0 0 0;
+    font-size: 12.5px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.driver-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.driver-status-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.driver-close-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    cursor: pointer;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.driver-close-btn:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    transform: rotate(90deg) scale(1.05);
+}
+
+/* Modal Body */
+.driver-modal-body {
+    position: relative;
+    z-index: 1;
+    padding: 24px 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.driver-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+.driver-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.driver-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+}
+.driver-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(16, 185, 129, 0.4);
+}
+
+/* Section Box */
+.driver-section-box {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: all 0.2s ease;
+}
+
+.driver-section-box:hover {
+    border-color: rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.driver-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.driver-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.driver-section-title svg {
+    color: #34d399;
+}
+
+.driver-section-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Operational Status Pills */
+.driver-status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.driver-status-card-btn {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 12px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.driver-status-card-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.driver-status-card-btn.active.status-active {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: #10b981;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+}
+
+.driver-status-card-btn.active.status-inactive {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: #f59e0b;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
+}
+
+.status-dot-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-dot-green {
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+}
+
+.status-dot-amber {
+    background: #f59e0b;
+    box-shadow: 0 0 10px #f59e0b;
+}
+
+/* Fields & Inputs */
+.driver-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.driver-field-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.6px;
+}
+
+.driver-field-label .required-dot {
+    color: #f43f5e;
+    font-size: 13px;
+    line-height: 1;
+}
+
+.driver-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.driver-input-icon {
+    position: absolute;
+    left: 14px;
+    color: #64748b;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.driver-input-wrapper:focus-within .driver-input-icon {
+    color: #34d399;
+}
+
+.driver-trailing-badge {
+    position: absolute;
+    right: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 3px 8px;
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.driver-text-input {
+    width: 100%;
+    background: rgba(10, 11, 18, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 14px 12px 42px;
+    color: #f8fafc;
+    font-size: 13.5px;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.driver-text-input:focus {
+    background: rgba(15, 16, 26, 0.85);
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+}
+
+.driver-text-input::placeholder {
+    color: #475569;
+}
+
+.driver-subgrid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* Category Permis Chips */
+.driver-license-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.driver-license-chip {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 4px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.driver-license-chip:hover {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: #34d399;
+    transform: translateY(-1px);
+}
+
+.driver-license-chip.active {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    color: #a7f3d0;
+    font-weight: 700;
+}
+
+/* Live Driver Preview Card */
+.driver-preview-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(16, 185, 129, 0.03) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.preview-card-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.driver-avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 800;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+.preview-driver-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+}
+
+.preview-driver-sub {
+    font-size: 11.5px;
+    color: #94a3b8;
+    margin: 2px 0 0 0;
+}
+
+/* Footer & Actions */
+.driver-modal-footer {
+    position: relative;
+    z-index: 1;
+    padding: 18px 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+    flex-shrink: 0;
+}
+
+.driver-footer-summary {
+    font-size: 12.5px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.driver-footer-summary .summary-highlight {
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.driver-footer-btns {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.driver-btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: #94a3b8;
+    padding: 11px 20px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.driver-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.09);
+    color: #fff;
+}
+
+.driver-btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    color: #ffffff;
+    padding: 11px 24px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.driver-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.45);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .driver-subgrid-2,
+    .driver-status-grid {
+        grid-template-columns: 1fr;
+    }
+    .driver-modal-header,
+    .driver-modal-body,
+    .driver-modal-footer {
+        padding: 16px 20px;
+    }
+    .driver-modal-footer {
+        flex-direction: column-reverse;
+        gap: 12px;
+    }
+    .driver-footer-btns {
+        width: 100%;
+    }
+    .driver-footer-btns button {
+        flex: 1;
+    }
+}

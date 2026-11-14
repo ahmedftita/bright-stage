@@ -1,0 +1,1475 @@
+[
+  {
+    "name": "ARIANA",
+    "nameAr": "أريانة",
+    "value": "ARIANA",
+    "delegations": [
+      {
+        "name": "ARIANA VILLE",
+        "nameAr": "أريانة المدينة",
+        "value": "ARIANA VILLE"
+      },
+      {
+        "name": "SIDI THABET",
+        "nameAr": "سيدي ثابت",
+        "value": "SIDI THABET"
+      },
+      {
+        "name": "LA SOUKRA",
+        "nameAr": "سكرة",
+        "value": "LA SOUKRA"
+      },
+      {
+        "name": "KALAAT LANDLOUS",
+        "nameAr": "قلعة الأندلس",
+        "value": "KALAAT LANDLOUS"
+      },
+      {
+        "name": "RAOUED",
+        "nameAr": "رواد",
+        "value": "RAOUED"
+      },
+      {
+        "name": "MNIHLA",
+        "nameAr": "منيهلة",
+        "value": "MNIHLA"
+      },
+      {
+        "name": "ETTADHAMEN",
+        "nameAr": "التضامن",
+        "value": "ETTADHAMEN"
+      }
+    ]
+  },
+  {
+    "name": "BEJA",
+    "nameAr": "باجة",
+    "value": "BEJA",
+    "delegations": [
+      {
+        "name": "TESTOUR",
+        "nameAr": "تستور",
+        "value": "TESTOUR"
+      },
+      {
+        "name": "TEBOURSOUK",
+        "nameAr": "طبرسق",
+        "value": "TEBOURSOUK"
+      },
+      {
+        "name": "BEJA NORD",
+        "nameAr": "باجة الشمالية",
+        "value": "BEJA NORD"
+      },
+      {
+        "name": "MEJEZ EL BAB",
+        "nameAr": "مجاز الباب",
+        "value": "MEJEZ EL BAB"
+      },
+      {
+        "name": "NEFZA",
+        "nameAr": "نفزة",
+        "value": "NEFZA"
+      },
+      {
+        "name": "BEJA SUD",
+        "nameAr": "باجة الجنوبية",
+        "value": "BEJA SUD"
+      },
+      {
+        "name": "THIBAR",
+        "nameAr": "تيبار",
+        "value": "THIBAR"
+      },
+      {
+        "name": "AMDOUN",
+        "nameAr": "عمدون",
+        "value": "AMDOUN"
+      },
+      {
+        "name": "GOUBELLAT",
+        "nameAr": "قبلاط",
+        "value": "GOUBELLAT"
+      }
+    ]
+  },
+  {
+    "name": "BEN AROUS",
+    "nameAr": "بن عروس",
+    "value": "BEN_AROUS",
+    "delegations": [
+      {
+        "name": "FOUCHANA",
+        "nameAr": "فوشانة",
+        "value": "FOUCHANA"
+      },
+      {
+        "name": "HAMMAM LIF",
+        "nameAr": "حمام الأنف",
+        "value": "HAMMAM LIF"
+      },
+      {
+        "name": "EL MOUROUJ",
+        "nameAr": "المروج",
+        "value": "EL MOUROUJ"
+      },
+      {
+        "name": "BOU MHEL EL BASSATINE",
+        "nameAr": "بومهل البساتين",
+        "value": "BOU MHEL EL BASSATINE"
+      },
+      {
+        "name": "RADES",
+        "nameAr": "رادس",
+        "value": "RADES"
+      },
+      {
+        "name": "MOHAMADIA",
+        "nameAr": "المحمدية",
+        "value": "MOHAMADIA"
+      },
+      {
+        "name": "MEGRINE",
+        "nameAr": "مقرين",
+        "value": "MEGRINE"
+      },
+      {
+        "name": "NOUVELLE MEDINA",
+        "nameAr": "المدينة الجديدة",
+        "value": "NOUVELLE MEDINA"
+      },
+      {
+        "name": "HAMMAM CHATT",
+        "nameAr": "حمام الشط",
+        "value": "HAMMAM CHATT"
+      },
+      {
+        "name": "MORNAG",
+        "nameAr": "مرناق",
+        "value": "MORNAG"
+      },
+      {
+        "name": "EZZAHRA",
+        "nameAr": "الزهراء",
+        "value": "EZZAHRA"
+      },
+      {
+        "name": "BEN AROUS",
+        "nameAr": "بن عروس",
+        "value": "BEN AROUS"
+      }
+    ]
+  },
+  {
+    "name": "BIZERTE",
+    "nameAr": "بنزرت",
+    "value": "BIZERTE",
+    "delegations": [
+      {
+        "name": "MENZEL JEMIL",
+        "nameAr": "منزل جميل",
+        "value": "MENZEL JEMIL"
+      },
+      {
+        "name": "BIZERTE SUD",
+        "nameAr": "بنزرت الجنوبية",
+        "value": "BIZERTE SUD"
+      },
+      {
+        "name": "SEJNANE",
+        "nameAr": "سجنان",
+        "value": "SEJNANE"
+      },
+      {
+        "name": "GHAR EL MELH",
+        "nameAr": "غار الملح",
+        "value": "GHAR EL MELH"
+      },
+      {
+        "name": "MENZEL BOURGUIBA",
+        "nameAr": "منزل بورقيبة",
+        "value": "MENZEL BOURGUIBA"
+      },
+      {
+        "name": "RAS JEBEL",
+        "nameAr": "رأس الجبل",
+        "value": "RAS JEBEL"
+      },
+      {
+        "name": "GHEZALA",
+        "nameAr": "غزالة",
+        "value": "GHEZALA"
+      },
+      {
+        "name": "JOUMINE",
+        "nameAr": "جومين",
+        "value": "JOUMINE"
+      },
+      {
+        "name": "UTIQUE",
+        "nameAr": "أوتيك",
+        "value": "UTIQUE"
+      },
+      {
+        "name": "BIZERTE NORD",
+        "nameAr": "بنزرت الشمالية",
+        "value": "BIZERTE NORD"
+      },
+      {
+        "name": "EL ALIA",
+        "nameAr": "العالية",
+        "value": "EL ALIA"
+      },
+      {
+        "name": "MATEUR",
+        "nameAr": "ماطر",
+        "value": "MATEUR"
+      },
+      {
+        "name": "JARZOUNA",
+        "nameAr": "جرزونة",
+        "value": "JARZOUNA"
+      },
+      {
+        "name": "TINJA",
+        "nameAr": "تينجة",
+        "value": "TINJA"
+      }
+    ]
+  },
+  {
+    "name": "GABES",
+    "nameAr": "قابس",
+    "value": "GABES",
+    "delegations": [
+      {
+        "name": "GABES SUD",
+        "nameAr": "قابس الجنوبية",
+        "value": "GABES SUD"
+      },
+      {
+        "name": "MATMATA",
+        "nameAr": "مطماطة",
+        "value": "MATMATA"
+      },
+      {
+        "name": "MARETH",
+        "nameAr": "مارث",
+        "value": "MARETH"
+      },
+      {
+        "name": "EL HAMMA",
+        "nameAr": "الحامة",
+        "value": "EL HAMMA"
+      },
+      {
+        "name": "NOUVELLE MATMATA",
+        "nameAr": "مطماطة الجديدة",
+        "value": "NOUVELLE MATMATA"
+      },
+      {
+        "name": "GABES MEDINA",
+        "nameAr": "قابس المدينة",
+        "value": "GABES MEDINA"
+      },
+      {
+        "name": "GABES OUEST",
+        "nameAr": "قابس الغربية",
+        "value": "GABES OUEST"
+      },
+      {
+        "name": "EL METOUIA",
+        "nameAr": "المطوية",
+        "value": "EL METOUIA"
+      },
+      {
+        "name": "GHANNOUCHE",
+        "nameAr": "غنوش",
+        "value": "GHANNOUCHE"
+      },
+      {
+        "name": "MENZEL HABIB",
+        "nameAr": "منزل الحبيب",
+        "value": "MENZEL HABIB"
+      }
+    ]
+  },
+  {
+    "name": "GAFSA",
+    "nameAr": "قفصة",
+    "value": "GAFSA",
+    "delegations": [
+      {
+        "name": "BELKHIR",
+        "nameAr": "بالخير",
+        "value": "BELKHIR"
+      },
+      {
+        "name": "GAFSA NORD",
+        "nameAr": "قفصة الشمالية",
+        "value": "GAFSA NORD"
+      },
+      {
+        "name": "SNED",
+        "nameAr": "السند",
+        "value": "SNED"
+      },
+      {
+        "name": "REDEYEF",
+        "nameAr": "الرديف",
+        "value": "REDEYEF"
+      },
+      {
+        "name": "GAFSA SUD",
+        "nameAr": "قفصة الجنوبية",
+        "value": "GAFSA SUD"
+      },
+      {
+        "name": "EL GUETTAR",
+        "nameAr": "القطار",
+        "value": "EL GUETTAR"
+      },
+      {
+        "name": "EL KSAR",
+        "nameAr": "القصر",
+        "value": "EL KSAR"
+      },
+      {
+        "name": "MOULARES",
+        "nameAr": "أم العرائس",
+        "value": "MOULARES"
+      },
+      {
+        "name": "EL MDHILLA",
+        "nameAr": "المظيلة",
+        "value": "EL MDHILLA"
+      },
+      {
+        "name": "METLAOUI",
+        "nameAr": "المتلوي",
+        "value": "METLAOUI"
+      },
+      {
+        "name": "SIDI AICH",
+        "nameAr": "سيدي عيش",
+        "value": "SIDI AICH"
+      }
+    ]
+  },
+  {
+    "name": "JENDOUBA",
+    "nameAr": "جندوبة",
+    "value": "JENDOUBA",
+    "delegations": [
+      {
+        "name": "BALTA BOU AOUENE",
+        "nameAr": "بلطة بوعوان",
+        "value": "BALTA BOU AOUENE"
+      },
+      {
+        "name": "FERNANA",
+        "nameAr": "فرنانة",
+        "value": "FERNANA"
+      },
+      {
+        "name": "JENDOUBA NORD",
+        "nameAr": "جندوبة الشمالية",
+        "value": "JENDOUBA NORD"
+      },
+      {
+        "name": "AIN DRAHAM",
+        "nameAr": "عين دراهم",
+        "value": "AIN DRAHAM"
+      },
+      {
+        "name": "TABARKA",
+        "nameAr": "طبرقة",
+        "value": "TABARKA"
+      },
+      {
+        "name": "JENDOUBA",
+        "nameAr": "جندوبة",
+        "value": "JENDOUBA"
+      },
+      {
+        "name": "BOU SALEM",
+        "nameAr": "بوسالم",
+        "value": "BOU SALEM"
+      },
+      {
+        "name": "OUED MLIZ",
+        "nameAr": "وادي مليز",
+        "value": "OUED MLIZ"
+      },
+      {
+        "name": "GHARDIMAOU",
+        "nameAr": "غار الدماء",
+        "value": "GHARDIMAOU"
+      }
+    ]
+  },
+  {
+    "name": "KAIROUAN",
+    "nameAr": "القيروان",
+    "value": "KAIROUAN",
+    "delegations": [
+      {
+        "name": "CHEBIKA",
+        "nameAr": "الشبيكة",
+        "value": "CHEBIKA"
+      },
+      {
+        "name": "EL ALA",
+        "nameAr": "العلا",
+        "value": "EL ALA"
+      },
+      {
+        "name": "OUESLATIA",
+        "nameAr": "الوسلاتية",
+        "value": "OUESLATIA"
+      },
+      {
+        "name": "HAJEB EL AYOUN",
+        "nameAr": "حاجب العيون",
+        "value": "HAJEB EL AYOUN"
+      },
+      {
+        "name": "SBIKHA",
+        "nameAr": "السبيخة",
+        "value": "SBIKHA"
+      },
+      {
+        "name": "BOU HAJLA",
+        "nameAr": "بوحجلة",
+        "value": "BOU HAJLA"
+      },
+      {
+        "name": "KAIROUAN NORD",
+        "nameAr": "القيروان الشمالية",
+        "value": "KAIROUAN NORD"
+      },
+      {
+        "name": "HAFFOUZ",
+        "nameAr": "حفوز",
+        "value": "HAFFOUZ"
+      },
+      {
+        "name": "KAIROUAN SUD",
+        "nameAr": "القيروان الجنوبية",
+        "value": "KAIROUAN SUD"
+      },
+      {
+        "name": "NASRALLAH",
+        "nameAr": "نصر الله",
+        "value": "NASRALLAH"
+      },
+      {
+        "name": "CHERARDA",
+        "nameAr": "الشراردة",
+        "value": "CHERARDA"
+      }
+    ]
+  },
+  {
+    "name": "KASSERINE",
+    "nameAr": "القصرين",
+    "value": "KASSERINE",
+    "delegations": [
+      {
+        "name": "SBEITLA",
+        "nameAr": "سبيطلة",
+        "value": "SBEITLA"
+      },
+      {
+        "name": "FOUSSANA",
+        "nameAr": "فوسانة",
+        "value": "FOUSSANA"
+      },
+      {
+        "name": "KASSERINE NORD",
+        "nameAr": "القصرين الشمالية",
+        "value": "KASSERINE NORD"
+      },
+      {
+        "name": "HAIDRA",
+        "nameAr": "حيدرة",
+        "value": "HAIDRA"
+      },
+      {
+        "name": "THALA",
+        "nameAr": "تالة",
+        "value": "THALA"
+      },
+      {
+        "name": "SBIBA",
+        "nameAr": "سبيبة",
+        "value": "SBIBA"
+      },
+      {
+        "name": "FERIANA",
+        "nameAr": "فريانة",
+        "value": "FERIANA"
+      },
+      {
+        "name": "MEJEL BEL ABBES",
+        "nameAr": "ماجل بلعباس",
+        "value": "MEJEL BEL ABBES"
+      },
+      {
+        "name": "KASSERINE SUD",
+        "nameAr": "القصرين الجنوبية",
+        "value": "KASSERINE SUD"
+      },
+      {
+        "name": "EL AYOUN",
+        "nameAr": "العيون",
+        "value": "EL AYOUN"
+      },
+      {
+        "name": "EZZOUHOUR",
+        "nameAr": "الزهور",
+        "value": "EZZOUHOUR  (KASSERINE)"
+      },
+      {
+        "name": "JEDILIANE",
+        "nameAr": "جدليان",
+        "value": "JEDILIANE"
+      },
+      {
+        "name": "HASSI EL FRID",
+        "nameAr": "حاسي الفريد",
+        "value": "HASSI EL FRID"
+      }
+    ]
+  },
+  {
+    "name": "KEBILI",
+    "nameAr": "قبلي",
+    "value": "KEBILI",
+    "delegations": [
+      {
+        "name": "SOUK EL AHAD",
+        "nameAr": "سوق الأحد",
+        "value": "SOUK EL AHAD"
+      },
+      {
+        "name": "KEBILI SUD",
+        "nameAr": "قبلي الجنوبية",
+        "value": "KEBILI SUD"
+      },
+      {
+        "name": "KEBILI NORD",
+        "nameAr": "قبلي الشمالية",
+        "value": "KEBILI NORD"
+      },
+      {
+        "name": "DOUZ",
+        "nameAr": "دوز",
+        "value": "DOUZ"
+      },
+      {
+        "name": "EL FAOUAR",
+        "nameAr": "الفوار",
+        "value": "EL FAOUAR"
+      }
+    ]
+  },
+  {
+    "name": "KEF",
+    "nameAr": "الكاف",
+    "value": "KEF",
+    "delegations": [
+      {
+        "name": "TAJEROUINE",
+        "nameAr": "تاجروين",
+        "value": "TAJEROUINE"
+      },
+      {
+        "name": "DAHMANI",
+        "nameAr": "الدهماني",
+        "value": "DAHMANI"
+      },
+      {
+        "name": "LE KEF EST",
+        "nameAr": "الكاف الشرقية",
+        "value": "LE KEF EST"
+      },
+      {
+        "name": "SAKIET SIDI YOUSSEF",
+        "nameAr": "ساقية سيدي يوسف",
+        "value": "SAKIET SIDI YOUSSEF"
+      },
+      {
+        "name": "LE SERS",
+        "nameAr": "السرس",
+        "value": "LE SERS"
+      },
+      {
+        "name": "NEBEUR",
+        "nameAr": "نبر",
+        "value": "NEBEUR"
+      },
+      {
+        "name": "TOUIREF",
+        "nameAr": "الطويرف",
+        "value": "TOUIREF"
+      },
+      {
+        "name": "EL KSOUR",
+        "nameAr": "القصور",
+        "value": "EL KSOUR"
+      },
+      {
+        "name": "KALAA EL KHASBA",
+        "nameAr": "القلعة الخصباء",
+        "value": "KALAA EL KHASBA"
+      },
+      {
+        "name": "KALAAT SINANE",
+        "nameAr": "قلعة سنان",
+        "value": "KALAAT SINANE"
+      },
+      {
+        "name": "JERISSA",
+        "nameAr": "الجريصة",
+        "value": "JERISSA"
+      },
+      {
+        "name": "LE KEF OUEST",
+        "nameAr": "الكاف الغربية",
+        "value": "LE KEF OUEST"
+      }
+    ]
+  },
+  {
+    "name": "MAHDIA",
+    "nameAr": "المهدية",
+    "value": "MAHDIA",
+    "delegations": [
+      {
+        "name": "MAHDIA",
+        "nameAr": "المهدية",
+        "value": "MAHDIA"
+      },
+      {
+        "name": "CHORBANE",
+        "nameAr": "شربان",
+        "value": "CHORBANE"
+      },
+      {
+        "name": "EL JEM",
+        "nameAr": "الجم",
+        "value": "EL JEM"
+      },
+      {
+        "name": "LA CHEBBA",
+        "nameAr": "الشابة",
+        "value": "LA CHEBBA"
+      },
+      {
+        "name": "BOU MERDES",
+        "nameAr": "بومرداس",
+        "value": "BOU MERDES"
+      },
+      {
+        "name": "KSOUR ESSAF",
+        "nameAr": "قصور الساف",
+        "value": "KSOUR ESSAF"
+      },
+      {
+        "name": "SIDI ALOUENE",
+        "nameAr": "سيدي علوان",
+        "value": "SIDI ALOUENE"
+      },
+      {
+        "name": "HBIRA",
+        "nameAr": "هبيرة",
+        "value": "HBIRA"
+      },
+      {
+        "name": "MELLOULECH",
+        "nameAr": "ملولش",
+        "value": "MELLOULECH"
+      },
+      {
+        "name": "SOUASSI",
+        "nameAr": "السواسي",
+        "value": "SOUASSI"
+      },
+      {
+        "name": "OULED CHAMAKH",
+        "nameAr": "أولاد الشامخ",
+        "value": "OULED CHAMAKH"
+      }
+    ]
+  },
+  {
+    "name": "MANNOUBA",
+    "nameAr": "منوبة",
+    "value": "MANNOUBA",
+    "delegations": [
+      {
+        "name": "TEBOURBA",
+        "nameAr": "طبربة",
+        "value": "TEBOURBA"
+      },
+      {
+        "name": "JEDAIDA",
+        "nameAr": "الجديدة",
+        "value": "JEDAIDA"
+      },
+      {
+        "name": "MORNAGUIA",
+        "nameAr": "المرناقية",
+        "value": "MORNAGUIA"
+      },
+      {
+        "name": "BORJ EL AMRI",
+        "nameAr": "برج العامري",
+        "value": "BORJ EL AMRI"
+      },
+      {
+        "name": "EL BATTAN",
+        "nameAr": "البطان",
+        "value": "EL BATTAN"
+      },
+      {
+        "name": "OUED ELLIL",
+        "nameAr": "وادي الليل",
+        "value": "OUED ELLIL"
+      },
+      {
+        "name": "DOUAR HICHER",
+        "nameAr": "دوار هيشر",
+        "value": "DOUAR HICHER"
+      },
+      {
+        "name": "MANNOUBA",
+        "nameAr": "منوبة",
+        "value": "MANNOUBA"
+      }
+    ]
+  },
+  {
+    "name": "MEDENINE",
+    "nameAr": "مدنين",
+    "value": "MEDENINE",
+    "delegations": [
+      {
+        "name": "HOUMET ESSOUK",
+        "nameAr": "حومة السوق",
+        "value": "HOUMET ESSOUK"
+      },
+      {
+        "name": "BENI KHEDACHE",
+        "nameAr": "بني خداش",
+        "value": "BENI KHEDACHE"
+      },
+      {
+        "name": "AJIM",
+        "nameAr": "أجيم",
+        "value": "AJIM"
+      },
+      {
+        "name": "BEN GUERDANE",
+        "nameAr": "بن قردان",
+        "value": "BEN GUERDANE"
+      },
+      {
+        "name": "ZARZIS",
+        "nameAr": "جرجيس",
+        "value": "ZARZIS"
+      },
+      {
+        "name": "MEDENINE NORD",
+        "nameAr": "مدنين الشمالية",
+        "value": "MEDENINE NORD"
+      },
+      {
+        "name": "MIDOUN",
+        "nameAr": "ميدون",
+        "value": "MIDOUN"
+      },
+      {
+        "name": "SIDI MAKHLOUF",
+        "nameAr": "سيدي مخلوف",
+        "value": "SIDI MAKHLOUF"
+      },
+      {
+        "name": "MEDENINE SUD",
+        "nameAr": "مدنين الجنوبية",
+        "value": "MEDENINE SUD"
+      }
+    ]
+  },
+  {
+    "name": "MONASTIR",
+    "nameAr": "المنستير",
+    "value": "MONASTIR",
+    "delegations": [
+      {
+        "name": "MONASTIR",
+        "nameAr": "المنستير",
+        "value": "MONASTIR"
+      },
+      {
+        "name": "SAHLINE",
+        "nameAr": "الساحلين",
+        "value": "SAHLINE"
+      },
+      {
+        "name": "KSIBET EL MEDIOUNI",
+        "nameAr": "قصيبة المديوني",
+        "value": "KSIBET EL MEDIOUNI"
+      },
+      {
+        "name": "JEMMAL",
+        "nameAr": "جمال",
+        "value": "JEMMAL"
+      },
+      {
+        "name": "BENI HASSEN",
+        "nameAr": "بني حسان",
+        "value": "BENI HASSEN"
+      },
+      {
+        "name": "SAYADA LAMTA BOU HAJAR",
+        "nameAr": "صيادة لمطة بوحجر",
+        "value": "SAYADA LAMTA BOU HAJAR"
+      },
+      {
+        "name": "TEBOULBA",
+        "nameAr": "طبلبة",
+        "value": "TEBOULBA"
+      },
+      {
+        "name": "KSAR HELAL",
+        "nameAr": "قصر هلال",
+        "value": "KSAR HELAL"
+      },
+      {
+        "name": "BEMBLA",
+        "nameAr": "بمبلة",
+        "value": "BEMBLA"
+      },
+      {
+        "name": "MOKNINE",
+        "nameAr": "المنستير",
+        "value": "MOKNINE"
+      },
+      {
+        "name": "ZERAMDINE",
+        "nameAr": "زرمدين",
+        "value": "ZERAMDINE"
+      },
+      {
+        "name": "OUERDANINE",
+        "nameAr": "الوردانين",
+        "value": "OUERDANINE"
+      },
+      {
+        "name": "BEKALTA",
+        "nameAr": "البقالطة",
+        "value": "BEKALTA"
+      }
+    ]
+  },
+  {
+    "name": "NABEUL",
+    "nameAr": "نابل",
+    "value": "NABEUL",
+    "delegations": [
+      {
+        "name": "BENI KHIAR",
+        "nameAr": "بني خيار",
+        "value": "BENI KHIAR"
+      },
+      {
+        "name": "TAKELSA",
+        "nameAr": "تاكلسة",
+        "value": "TAKELSA"
+      },
+      {
+        "name": "EL MIDA",
+        "nameAr": "الميدة",
+        "value": "EL MIDA"
+      },
+      {
+        "name": "MENZEL BOUZELFA",
+        "nameAr": "منزل بوزلفة",
+        "value": "MENZEL BOUZELFA"
+      },
+      {
+        "name": "KELIBIA",
+        "nameAr": "قليبية",
+        "value": "KELIBIA"
+      },
+      {
+        "name": "HAMMAMET",
+        "nameAr": "الحمامات",
+        "value": "HAMMAMET"
+      },
+      {
+        "name": "BOU ARGOUB",
+        "nameAr": "بوعرقوب",
+        "value": "BOU ARGOUB"
+      },
+      {
+        "name": "KORBA",
+        "nameAr": "قربة",
+        "value": "KORBA"
+      },
+      {
+        "name": "MENZEL TEMIME",
+        "nameAr": "منزل تميم",
+        "value": "MENZEL TEMIME"
+      },
+      {
+        "name": "NABEUL",
+        "nameAr": "نابل",
+        "value": "NABEUL"
+      },
+      {
+        "name": "EL HAOUARIA",
+        "nameAr": "الهوارية",
+        "value": "EL HAOUARIA"
+      },
+      {
+        "name": "HAMMAM EL GHEZAZ",
+        "nameAr": "حمام الأغزاز",
+        "value": "HAMMAM EL GHEZAZ"
+      },
+      {
+        "name": "SOLIMAN",
+        "nameAr": "سليمان",
+        "value": "SOLIMAN"
+      },
+      {
+        "name": "GROMBALIA",
+        "nameAr": "قرمبالية",
+        "value": "GROMBALIA"
+      },
+      {
+        "name": "DAR CHAABANE ELFEHRI",
+        "nameAr": "دار شعبان الفهري",
+        "value": "DAR CHAABANE ELFEHRI"
+      },
+      {
+        "name": "BENI KHALLED",
+        "nameAr": "بني خلاد",
+        "value": "BENI KHALLED"
+      }
+    ]
+  },
+  {
+    "name": "SFAX",
+    "nameAr": "صفاقس",
+    "value": "SFAX",
+    "delegations": [
+      {
+        "name": "AGAREB",
+        "nameAr": "عقارب",
+        "value": "AGAREB"
+      },
+      {
+        "name": "EL HENCHA",
+        "nameAr": "الحنشة",
+        "value": "EL HENCHA"
+      },
+      {
+        "name": "SFAX EST",
+        "nameAr": "صفاقس الشرقية",
+        "value": "SFAX EST"
+      },
+      {
+        "name": "SFAX SUD",
+        "nameAr": "صفاقس الجنوبية",
+        "value": "SFAX SUD"
+      },
+      {
+        "name": "MAHRAS",
+        "nameAr": "المحرس",
+        "value": "MAHRAS"
+      },
+      {
+        "name": "SFAX VILLE",
+        "nameAr": "صفاقس المدينة",
+        "value": "SFAX VILLE"
+      },
+      {
+        "name": "EL AMRA",
+        "nameAr": "العمرة",
+        "value": "EL AMRA"
+      },
+      {
+        "name": "BIR ALI BEN KHELIFA",
+        "nameAr": "بئر علي بن خليفة",
+        "value": "BIR ALI BEN KHELIFA"
+      },
+      {
+        "name": "KERKENAH",
+        "nameAr": "قرقنة",
+        "value": "KERKENAH"
+      },
+      {
+        "name": "SAKIET EDDAIER",
+        "nameAr": "ساقية الدائر",
+        "value": "SAKIET EDDAIER"
+      },
+      {
+        "name": "JEBENIANA",
+        "nameAr": "جبنيانة",
+        "value": "JEBENIANA"
+      },
+      {
+        "name": "SAKIET EZZIT",
+        "nameAr": "ساقية الزيت",
+        "value": "SAKIET EZZIT"
+      },
+      {
+        "name": "MENZEL CHAKER",
+        "nameAr": "منزل شاكر",
+        "value": "MENZEL CHAKER"
+      },
+      {
+        "name": "ESSKHIRA",
+        "nameAr": "الصخيرة",
+        "value": "ESSKHIRA"
+      },
+      {
+        "name": "GHRAIBA",
+        "nameAr": "الغريبة",
+        "value": "GHRAIBA"
+      }
+    ]
+  },
+  {
+    "name": "SIDI BOUZID",
+    "nameAr": "سيدي بوزيد",
+    "value": "SIDI_BOUZID",
+    "delegations": [
+      {
+        "name": "MENZEL BOUZAIENE",
+        "nameAr": "منزل بوزيان",
+        "value": "MENZEL BOUZAIENE"
+      },
+      {
+        "name": "SIDI BOUZID OUEST",
+        "nameAr": "سيدي بوزيد الغربية",
+        "value": "SIDI BOUZID OUEST"
+      },
+      {
+        "name": "BEN OUN",
+        "nameAr": "بن عون",
+        "value": "BEN OUN"
+      },
+      {
+        "name": "SIDI BOUZID EST",
+        "nameAr": "سيدي بوزيد الشرقية",
+        "value": "SIDI BOUZID EST"
+      },
+      {
+        "name": "OULED HAFFOUZ",
+        "nameAr": "أولاد حفوز",
+        "value": "OULED HAFFOUZ"
+      },
+      {
+        "name": "REGUEB",
+        "nameAr": "الرقاب",
+        "value": "REGUEB"
+      },
+      {
+        "name": "MAKNASSY",
+        "nameAr": "المكناسي",
+        "value": "MAKNASSY"
+      },
+      {
+        "name": "JILMA",
+        "nameAr": "جلمة",
+        "value": "JILMA"
+      },
+      {
+        "name": "SOUK JEDID",
+        "nameAr": "السوق الجديد",
+        "value": "SOUK JEDID"
+      },
+      {
+        "name": "MEZZOUNA",
+        "nameAr": "المزونة",
+        "value": "MEZZOUNA"
+      },
+      {
+        "name": "BIR EL HAFFEY",
+        "nameAr": "بئر الحفي",
+        "value": "BIR EL HAFFEY"
+      },
+      {
+        "name": "CEBBALA",
+        "nameAr": "السبالة",
+        "value": "CEBBALA"
+      }
+    ]
+  },
+  {
+    "name": "SILIANA",
+    "nameAr": "سليانة",
+    "value": "SILIANA",
+    "delegations": [
+      {
+        "name": "MAKTHAR",
+        "nameAr": "مكثر",
+        "value": "MAKTHAR"
+      },
+      {
+        "name": "BOU ARADA",
+        "nameAr": "بوعرادة",
+        "value": "BOU ARADA"
+      },
+      {
+        "name": "SIDI BOU ROUIS",
+        "nameAr": "سيدي بورويس",
+        "value": "SIDI BOU ROUIS"
+      },
+      {
+        "name": "KESRA",
+        "nameAr": "كسرى",
+        "value": "KESRA"
+      },
+      {
+        "name": "BARGOU",
+        "nameAr": "برقو",
+        "value": "BARGOU"
+      },
+      {
+        "name": "EL AROUSSA",
+        "nameAr": "العروسة",
+        "value": "EL AROUSSA"
+      },
+      {
+        "name": "LE KRIB",
+        "nameAr": "الكريب",
+        "value": "LE KRIB"
+      },
+      {
+        "name": "SILIANA NORD",
+        "nameAr": "سليانة الشمالية",
+        "value": "SILIANA NORD"
+      },
+      {
+        "name": "SILIANA SUD",
+        "nameAr": "سليانة الجنوبية",
+        "value": "SILIANA SUD"
+      },
+      {
+        "name": "ROHIA",
+        "nameAr": "الروحية",
+        "value": "ROHIA"
+      },
+      {
+        "name": "GAAFOUR",
+        "nameAr": "قعفور",
+        "value": "GAAFOUR"
+      }
+    ]
+  },
+  {
+    "name": "SOUSSE",
+    "nameAr": "سوسة",
+    "value": "SOUSSE",
+    "delegations": [
+      {
+        "name": "SIDI EL HENI",
+        "nameAr": "سيدي الهاني",
+        "value": "SIDI EL HENI"
+      },
+      {
+        "name": "SOUSSE JAOUHARA",
+        "nameAr": "سوسة جوهرة",
+        "value": "SOUSSE JAOUHARA"
+      },
+      {
+        "name": "BOU FICHA",
+        "nameAr": "بوفيشة",
+        "value": "BOU FICHA"
+      },
+      {
+        "name": "SOUSSE VILLE",
+        "nameAr": "سوسة المدينة",
+        "value": "SOUSSE VILLE"
+      },
+      {
+        "name": "ENFIDHA",
+        "nameAr": "النفيضة",
+        "value": "ENFIDHA"
+      },
+      {
+        "name": "KALAA EL KEBIRA",
+        "nameAr": "القلعة الكبرى",
+        "value": "KALAA EL KEBIRA"
+      },
+      {
+        "name": "HAMMAM SOUSSE",
+        "nameAr": "حمام سوسة",
+        "value": "HAMMAM SOUSSE"
+      },
+      {
+        "name": "HERGLA",
+        "nameAr": "هرقلة",
+        "value": "HERGLA"
+      },
+      {
+        "name": "MSAKEN",
+        "nameAr": "مساكن",
+        "value": "MSAKEN"
+      },
+      {
+        "name": "SOUSSE RIADH",
+        "nameAr": "سوسة الرياض",
+        "value": "SOUSSE RIADH"
+      },
+      {
+        "name": "KONDAR",
+        "nameAr": "كندار",
+        "value": "KONDAR"
+      },
+      {
+        "name": "SIDI BOU ALI",
+        "nameAr": "سيدي بوعلي",
+        "value": "SIDI BOU ALI"
+      },
+      {
+        "name": "KALAA ESSGHIRA",
+        "nameAr": "القلعة الصغرى",
+        "value": "KALAA ESSGHIRA"
+      },
+      {
+        "name": "AKOUDA",
+        "nameAr": "أكودة",
+        "value": "AKOUDA"
+      }
+    ]
+  },
+  {
+    "name": "TATAOUINE",
+    "nameAr": "تطاوين",
+    "value": "TATAOUINE",
+    "delegations": [
+      {
+        "name": "TATAOUINE SUD",
+        "nameAr": "تطاوين الجنوبية",
+        "value": "TATAOUINE SUD"
+      },
+      {
+        "name": "SMAR",
+        "nameAr": "الصمار",
+        "value": "SMAR"
+      },
+      {
+        "name": "BIR LAHMAR",
+        "nameAr": "بئر الأحمر",
+        "value": "BIR LAHMAR"
+      },
+      {
+        "name": "GHOMRASSEN",
+        "nameAr": "غمراسن",
+        "value": "GHOMRASSEN"
+      },
+      {
+        "name": "TATAOUINE NORD",
+        "nameAr": "تطاوين الشمالية",
+        "value": "TATAOUINE NORD"
+      },
+      {
+        "name": "REMADA",
+        "nameAr": "رمادة",
+        "value": "REMADA"
+      },
+      {
+        "name": "DHEHIBA",
+        "nameAr": "الذهيبة",
+        "value": "DHEHIBA"
+      }
+    ]
+  },
+  {
+    "name": "TOZEUR",
+    "nameAr": "توزر",
+    "value": "TOZEUR",
+    "delegations": [
+      {
+        "name": "DEGUECHE",
+        "nameAr": "دقاش",
+        "value": "DEGUECHE"
+      },
+      {
+        "name": "TOZEUR",
+        "nameAr": "توزر",
+        "value": "TOZEUR"
+      },
+      {
+        "name": "TAMEGHZA",
+        "nameAr": "تمغزة",
+        "value": "TAMEGHZA"
+      },
+      {
+        "name": "HEZOUA",
+        "nameAr": "حزوة",
+        "value": "HEZOUA"
+      },
+      {
+        "name": "NEFTA",
+        "nameAr": "نفطة",
+        "value": "NEFTA"
+      }
+    ]
+  },
+  {
+    "name": "TUNIS",
+    "nameAr": "تونس",
+    "value": "TUNIS",
+    "delegations": [
+      {
+        "name": "JEBEL JELLOUD",
+        "nameAr": "جبل الجلود",
+        "value": "JEBEL JELLOUD"
+      },
+      {
+        "name": "CARTHAGE",
+        "nameAr": "قرطاج",
+        "value": "CARTHAGE"
+      },
+      {
+        "name": "LA MARSA",
+        "nameAr": "المرسى",
+        "value": "LA MARSA"
+      },
+      {
+        "name": "BAB BHAR",
+        "nameAr": "باب بحر",
+        "value": "BAB BHAR"
+      },
+      {
+        "name": "LA GOULETTE",
+        "nameAr": "حلق الوادي",
+        "value": "LA GOULETTE"
+      },
+      {
+        "name": "LE BARDO",
+        "nameAr": "باردو",
+        "value": "LE BARDO"
+      },
+      {
+        "name": "LA MEDINA",
+        "nameAr": "المدينة",
+        "value": "LA MEDINA"
+      },
+      {
+        "name": "EL MENZAH",
+        "nameAr": "المنزه",
+        "value": "EL MENZAH"
+      },
+      {
+        "name": "EL OMRANE SUPERIEUR",
+        "nameAr": "العمران الأعلى",
+        "value": "EL OMRANE SUPERIEUR"
+      },
+      {
+        "name": "CITE EL KHADRA",
+        "nameAr": "حي الخضراء",
+        "value": "CITE EL KHADRA"
+      },
+      {
+        "name": "EL HRAIRIA",
+        "nameAr": "الحرايرية",
+        "value": "EL HRAIRIA"
+      },
+      {
+        "name": "EL KABBARIA",
+        "nameAr": "الكبارية",
+        "value": "EL KABBARIA"
+      },
+      {
+        "name": "BAB SOUIKA",
+        "nameAr": "باب سويقة",
+        "value": "BAB SOUIKA"
+      },
+      {
+        "name": "EL OMRANE",
+        "nameAr": "العمران",
+        "value": "EL OMRANE"
+      },
+      {
+        "name": "EZZOUHOUR",
+        "nameAr": "الزهور",
+        "value": "EZZOUHOUR  (TUNIS)"
+      },
+      {
+        "name": "SIDI EL BECHIR",
+        "nameAr": "سيدي البشير",
+        "value": "SIDI EL BECHIR"
+      },
+      {
+        "name": "SIDI HASSINE",
+        "nameAr": "سيدي حسين",
+        "value": "SIDI HASSINE"
+      },
+      {
+        "name": "EL KRAM",
+        "nameAr": "الكرم",
+        "value": "EL KRAM"
+      },
+      {
+        "name": "ESSIJOUMI",
+        "nameAr": "السيجومي",
+        "value": "ESSIJOUMI"
+      },
+      {
+        "name": "ETTAHRIR",
+        "nameAr": "التحرير",
+        "value": "ETTAHRIR"
+      },
+      {
+        "name": "EL OUERDIA",
+        "nameAr": "الوردية",
+        "value": "EL OUERDIA"
+      }
+    ]
+  },
+  {
+    "name": "ZAGHOUAN",
+    "nameAr": "زغوان",
+    "value": "ZAGHOUAN",
+    "delegations": [
+      {
+        "name": "ZAGHOUAN",
+        "nameAr": "زغوان",
+        "value": "ZAGHOUAN"
+      },
+      {
+        "name": "ENNADHOUR",
+        "nameAr": "الناظور",
+        "value": "ENNADHOUR"
+      },
+      {
+        "name": "EL FAHS",
+        "nameAr": "الفحص",
+        "value": "EL FAHS"
+      },
+      {
+        "name": "BIR MCHERGA",
+        "nameAr": "بئر مشارقة",
+        "value": "BIR MCHERGA"
+      },
+      {
+        "name": "HAMMAM ZRIBA",
+        "nameAr": "حمام الزريبة",
+        "value": "HAMMAM ZRIBA"
+      },
+      {
+        "name": "SAOUEF",
+        "nameAr": "صواف",
+        "value": "SAOUEF"
+      }
+    ]
+  }
+]

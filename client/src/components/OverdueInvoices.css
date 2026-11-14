@@ -1,0 +1,595 @@
+/* ==========================================================================
+   OverdueInvoices — Executive Glassmorphism · Red Alert Palette
+   Responsive: Mobile (< 640px), Tablet (640–1024px), Desktop (> 1024px)
+   ========================================================================== */
+
+/* ── Container ── */
+.oi-container {
+    padding: 32px 40px 90px 40px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    color: #e2e8f0;
+    font-family: "Google Sans", sans-serif;
+    box-sizing: border-box;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* ── Loading State ── */
+.oi-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 80px 20px;
+    color: #f87171;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.oi-loading-icon {
+    animation: oi-spin 1.5s linear infinite;
+    color: #ef4444;
+}
+
+@keyframes oi-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ── Page Header ── */
+.oi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(239, 68, 68, 0.15);
+    flex-shrink: 0;
+}
+
+.oi-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.oi-header-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(185, 28, 28, 0.18) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #f87171;
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.22);
+    flex-shrink: 0;
+}
+
+.oi-header-titles h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.4px;
+}
+
+.oi-header-subtext {
+    margin: 4px 0 0 0;
+    font-size: 13.5px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* ── KPI Banner ── */
+.oi-kpi-banner {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.oi-kpi-card {
+    flex: 1;
+    min-width: 160px;
+    background: linear-gradient(160deg, rgba(26, 27, 40, 0.85) 0%, rgba(18, 19, 28, 0.92) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.oi-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
+}
+
+.oi-kpi-card.danger {
+    border-color: rgba(239, 68, 68, 0.25);
+    background: linear-gradient(160deg, rgba(239, 68, 68, 0.1) 0%, rgba(26, 27, 40, 0.85) 100%);
+}
+
+.oi-kpi-card.warning {
+    border-color: rgba(249, 115, 22, 0.25);
+    background: linear-gradient(160deg, rgba(249, 115, 22, 0.1) 0%, rgba(26, 27, 40, 0.85) 100%);
+}
+
+.oi-kpi-card.info {
+    border-color: rgba(251, 191, 36, 0.2);
+    background: linear-gradient(160deg, rgba(251, 191, 36, 0.08) 0%, rgba(26, 27, 40, 0.85) 100%);
+}
+
+.oi-kpi-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.oi-kpi-icon.danger-icon {
+    background: rgba(239, 68, 68, 0.18);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.oi-kpi-icon.warning-icon {
+    background: rgba(249, 115, 22, 0.18);
+    color: #fb923c;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.oi-kpi-icon.info-icon {
+    background: rgba(251, 191, 36, 0.18);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.oi-kpi-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.oi-kpi-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.oi-kpi-value.danger-val { color: #f87171; }
+.oi-kpi-value.warning-val { color: #fb923c; }
+.oi-kpi-value.info-val { color: #fbbf24; }
+
+.oi-kpi-label {
+    font-size: 10.5px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 700;
+}
+
+/* ── Empty State ── */
+.oi-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 80px 20px;
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, rgba(18, 19, 28, 0.6) 100%);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    border-radius: 24px;
+    text-align: center;
+}
+
+.oi-empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 24px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+}
+
+.oi-empty h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+}
+
+.oi-empty p {
+    color: #64748b;
+    margin: 0;
+    font-size: 14px;
+    max-width: 320px;
+}
+
+/* ── Invoice Cards List ── */
+.oi-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ── Invoice Card ── */
+.oi-card {
+    background: linear-gradient(180deg, rgba(26, 27, 40, 0.82) 0%, rgba(18, 19, 28, 0.92) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 22px;
+    padding: 22px 24px;
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto;
+    gap: 16px 24px;
+    align-items: center;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+    position: relative;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.oi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Severity borders */
+.oi-card.severity-yellow { border-left-color: #fbbf24; }
+.oi-card.severity-orange { border-left-color: #f97316; }
+.oi-card.severity-red    { border-left-color: #ef4444; }
+
+/* ── Card Sections ── */
+.oi-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.oi-card-number {
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: monospace;
+    letter-spacing: 0.3px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 8px;
+    color: #fca5a5;
+    width: fit-content;
+}
+
+.oi-card-client {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.oi-card-issued {
+    font-size: 11px;
+    color: #475569;
+    margin-top: 2px;
+}
+
+/* Due Date column */
+.oi-card-due {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    text-align: center;
+}
+
+.oi-col-label {
+    font-size: 10px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 800;
+}
+
+.oi-card-due-date {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e2e8f0;
+    white-space: nowrap;
+}
+
+.oi-days-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.oi-days-badge.yellow {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.oi-days-badge.orange {
+    background: rgba(249, 115, 22, 0.15);
+    color: #f97316;
+    border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.oi-days-badge.red {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Amount Due column */
+.oi-card-amount {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.oi-amount-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #f87171;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+}
+
+.oi-paid-note {
+    font-size: 11px;
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+/* Reminders column */
+.oi-card-reminders {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    text-align: center;
+}
+
+.oi-reminder-count {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.oi-reminder-last {
+    font-size: 10px;
+    color: #475569;
+    white-space: nowrap;
+}
+
+/* Actions column */
+.oi-card-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.oi-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: "Google Sans", sans-serif;
+    white-space: nowrap;
+}
+
+.oi-btn-reminder {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.3));
+    color: #93c5fd;
+    border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.oi-btn-reminder:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(37, 99, 235, 0.48));
+    border-color: rgba(59, 130, 246, 0.65);
+    color: #bfdbfe;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.28);
+}
+
+.oi-btn-payment {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.3));
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.oi-btn-payment:hover {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.42), rgba(5, 150, 105, 0.5));
+    border-color: rgba(16, 185, 129, 0.65);
+    color: #a7f3d0;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.28);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .oi-container {
+        padding: 24px 20px 80px 20px;
+        gap: 22px;
+    }
+
+    .oi-header {
+        gap: 14px;
+    }
+
+    .oi-header-titles h1 {
+        font-size: 22px;
+    }
+
+    .oi-header-subtext {
+        font-size: 12px;
+    }
+
+    .oi-card {
+        grid-template-columns: 1fr auto auto;
+        grid-template-rows: auto auto;
+    }
+
+    .oi-card-info { grid-column: 1; grid-row: 1; }
+    .oi-card-amount { grid-column: 2; grid-row: 1; }
+    .oi-card-due { grid-column: 3; grid-row: 1; align-items: flex-end; text-align: right; }
+    .oi-card-reminders { grid-column: 1; grid-row: 2; align-items: flex-start; text-align: left; flex-direction: row; gap: 10px; }
+    .oi-card-actions { grid-column: 2 / -1; grid-row: 2; justify-content: flex-end; }
+
+    .oi-kpi-card {
+        padding: 16px 18px;
+        gap: 12px;
+    }
+
+    .oi-kpi-value {
+        font-size: 18px;
+    }
+}
+
+/* Mobile (max-width: 640px) */
+@media (max-width: 640px) {
+    .oi-container {
+        padding: 16px 12px 70px 12px;
+        gap: 16px;
+    }
+
+    .oi-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding-bottom: 18px;
+    }
+
+    .oi-header-left {
+        gap: 12px;
+    }
+
+    .oi-header-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+    }
+
+    .oi-header-titles h1 {
+        font-size: 20px;
+    }
+
+    .oi-header-subtext {
+        font-size: 12px;
+    }
+
+    /* KPI cards stack vertically on mobile, 2 per row */
+    .oi-kpi-banner {
+        gap: 10px;
+    }
+
+    .oi-kpi-card {
+        min-width: calc(50% - 5px);
+        padding: 14px 14px;
+        gap: 10px;
+        border-radius: 16px;
+    }
+
+    .oi-kpi-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+    }
+
+    .oi-kpi-value {
+        font-size: 15px;
+    }
+
+    .oi-kpi-label {
+        font-size: 9.5px;
+    }
+
+    /* Invoice cards go full column on mobile */
+    .oi-card {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        gap: 14px;
+        padding: 18px 16px;
+        border-radius: 18px;
+    }
+
+    .oi-card-info { grid-column: 1; grid-row: 1; }
+    .oi-card-due  { grid-column: 1; grid-row: 2; align-items: flex-start; text-align: left; flex-direction: row; gap: 12px; align-items: center; }
+    .oi-card-amount { grid-column: 1; grid-row: 3; align-items: flex-start; text-align: left; }
+    .oi-card-reminders { grid-column: 1; grid-row: 4; flex-direction: row; align-items: center; gap: 12px; text-align: left; }
+    .oi-card-actions { grid-column: 1; grid-row: 5; flex-direction: column; gap: 8px; }
+
+    .oi-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 11px 16px;
+        font-size: 13.5px;
+    }
+
+    .oi-amount-value {
+        font-size: 20px;
+    }
+
+    .oi-reminder-count {
+        font-size: 18px;
+    }
+}
+
+/* Extra Small (max-width: 420px) */
+@media (max-width: 420px) {
+    .oi-kpi-card {
+        min-width: 100%;
+    }
+
+    .oi-container {
+        padding: 12px 10px 60px 10px;
+    }
+}

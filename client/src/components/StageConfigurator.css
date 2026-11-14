@@ -1,0 +1,476 @@
+/* ==========================================================================
+   StageConfigurator — Modern & Simple Stage Calculator Styles
+   ========================================================================== */
+
+.stage-calc-container {
+    padding: 24px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+    min-height: calc(100vh - 80px);
+}
+
+/* Page Header */
+.stage-calc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-bottom: 8px;
+}
+
+.stage-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stage-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.15) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #818cf8;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+    flex-shrink: 0;
+}
+
+.stage-header-title-group h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stage-header-subtext {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.stage-standard-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    color: #a5b4fc;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Two-column Main Grid */
+.stage-main-grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 380px) 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Shared Card Styling */
+.stage-card {
+    background: linear-gradient(180deg, rgba(22, 23, 36, 0.95) 0%, rgba(15, 16, 25, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.stage-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Card Header with Accent Bar */
+.stage-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.stage-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+}
+
+.stage-accent-bar {
+    width: 4px;
+    height: 18px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #6366f1 0%, #a855f7 100%);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    flex-shrink: 0;
+}
+
+.stage-summary-pill {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+/* Input Fields & Stepper */
+.stage-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stage-field-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.6px;
+}
+
+.stage-field-conversion {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #818cf8;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.stage-stepper-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(10, 11, 18, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.stage-stepper-wrapper:focus-within {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.stage-step-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: none;
+    color: #94a3b8;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.stage-step-btn:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.18);
+    color: #ffffff;
+}
+
+.stage-step-btn:active:not(:disabled) {
+    background: rgba(99, 102, 241, 0.3);
+    transform: scale(0.94);
+}
+
+.stage-step-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.stage-number-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    padding: 10px;
+    outline: none;
+    -moz-appearance: textfield;
+}
+
+.stage-number-input::-webkit-outer-spin-button,
+.stage-number-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Calculate Button */
+.stage-calc-btn {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 4px;
+}
+
+.stage-calc-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(99, 102, 241, 0.45);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+.stage-calc-btn:active {
+    transform: translateY(0);
+}
+
+/* Empty State */
+.stage-empty-state {
+    padding: 60px 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #64748b;
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.stage-empty-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.stage-empty-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin: 0;
+}
+
+.stage-empty-hint {
+    font-size: 12.5px;
+    color: #64748b;
+    margin: 0;
+    max-width: 320px;
+}
+
+/* Visual Stage Grid */
+.stage-visual-box {
+    background: rgba(10, 12, 20, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.stage-visual-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.stage-grid-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+}
+
+.stage-deck-grid {
+    display: grid;
+    gap: 3px;
+    background: rgba(99, 102, 241, 0.12);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.stage-deck-tile {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.15s ease;
+}
+
+.stage-deck-tile:hover {
+    background: rgba(99, 102, 241, 0.35);
+    border-color: #818cf8;
+}
+
+/* Results Items List */
+.stage-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.stage-result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    transition: all 0.2s ease;
+}
+
+.stage-result-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(2px);
+}
+
+.stage-result-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.stage-result-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #818cf8;
+    flex-shrink: 0;
+}
+
+.stage-result-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.stage-result-desc {
+    font-size: 11.5px;
+    color: #94a3b8;
+    margin-top: 2px;
+}
+
+.stage-result-qty-badge {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    padding: 6px 14px;
+    border-radius: 10px;
+}
+
+.stage-result-qty-number {
+    font-size: 18px;
+    font-weight: 800;
+    color: #a5b4fc;
+    letter-spacing: -0.5px;
+}
+
+.stage-result-qty-unit {
+    font-size: 11px;
+    font-weight: 600;
+    color: #818cf8;
+}
+
+/* Add To List Button */
+.stage-add-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 8px;
+}
+
+.stage-add-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(16, 185, 129, 0.45);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.stage-add-btn:active {
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+    .stage-main-grid {
+        grid-template-columns: 1fr;
+    }
+    .stage-calc-container {
+        padding: 16px;
+    }
+}
