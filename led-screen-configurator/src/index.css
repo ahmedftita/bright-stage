@@ -1148,6 +1148,115 @@ button {
   border: 1px solid transparent;
 }
 
+/* ==========================================================================
+   Responsive Adaptations for Tablets & Mobile
+   ========================================================================== */
+@media (max-width: 980px) {
+  .led-workspace {
+    grid-template-columns: 1fr;
+  }
+  .led-controls-panel {
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .hud-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .led-navbar {
+    padding: 10px 14px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .navbar-sub {
+    display: none;
+  }
+  .brand-tag {
+    display: none;
+  }
+  .navbar-right {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-start;
+  }
+  .nav-btn {
+    padding: 7px 11px;
+    font-size: 11.5px;
+    border-radius: 8px;
+  }
+  .presets-bar {
+    padding: 8px 14px;
+  }
+  .presets-scroll-list {
+    flex-wrap: nowrap;
+  }
+  .preset-chip {
+    flex-shrink: 0;
+  }
+  .viewport-top-bar {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .viewport-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .viewport-canvas-container {
+    min-height: 280px;
+    padding: 16px 8px;
+  }
+  .hud-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .modal-dialog-box {
+    width: 96% !important;
+    max-height: 94vh !important;
+  }
+  .modal-footer {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+  }
+  .modal-footer-left,
+  .modal-footer-right {
+    width: 100% !important;
+    display: flex !important;
+  }
+  .modal-footer-left .action-btn,
+  .modal-footer-right .action-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stepper-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .stepper-control {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .stepper-btn {
+    width: 40px;
+    height: 40px;
+  }
+  .stepper-input {
+    width: 60px;
+    font-size: 16px;
+  }
+  .cabinets-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Print Overrides */
 @media print {
   body {

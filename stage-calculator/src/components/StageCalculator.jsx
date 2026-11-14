@@ -195,7 +195,8 @@ export default function StageCalculator() {
             title="Consulter et charger les modèles de scènes enregistrés"
           >
             <FolderOpen size={16} />
-            <span>Modèles ({savedModelsCount})</span>
+            <span className="btn-label-desktop">Modèles ({savedModelsCount})</span>
+            <span className="btn-label-mobile">({savedModelsCount})</span>
           </button>
 
           {/* Button: Enregistrer ce modèle */}
@@ -207,7 +208,8 @@ export default function StageCalculator() {
             style={{ borderColor: 'rgba(245, 158, 11, 0.4)', color: '#fbbf24' }}
           >
             <Save size={16} />
-            <span>Enregistrer modèle</span>
+            <span className="btn-label-desktop">Enregistrer modèle</span>
+            <span className="btn-label-mobile">Sauver</span>
           </button>
 
           {/* Button: Tableau des Métrages */}
@@ -217,7 +219,8 @@ export default function StageCalculator() {
             onClick={() => setActiveTab(activeTab === 'precalc-table' ? 'calc' : 'precalc-table')}
           >
             <Table size={16} />
-            <span>{activeTab === 'precalc-table' ? 'Calculateur' : 'Tableau (10)'}</span>
+            <span className="btn-label-desktop">{activeTab === 'precalc-table' ? 'Calculateur' : 'Tableau (10)'}</span>
+            <span className="btn-label-mobile">{activeTab === 'precalc-table' ? 'Calcul' : 'Tableau'}</span>
           </button>
 
           {/* Button: Copie Rapide */}
@@ -227,7 +230,8 @@ export default function StageCalculator() {
             onClick={handleQuickCopy}
           >
             {copiedQuick ? <Check size={16} /> : <Copy size={16} />}
-            <span>{copiedQuick ? 'Copié !' : 'Copie'}</span>
+            <span className="btn-label-desktop">{copiedQuick ? 'Copié !' : 'Copie'}</span>
+            <span className="btn-label-mobile">{copiedQuick ? 'OK' : 'Copier'}</span>
           </button>
 
           {/* Button: Fiche Technique / Export PDF */}
@@ -237,7 +241,8 @@ export default function StageCalculator() {
             onClick={() => setModalOpen(true)}
           >
             <Printer size={16} />
-            <span>Fiche Technique & Export</span>
+            <span className="btn-label-desktop">Fiche Technique & Export</span>
+            <span className="btn-label-mobile">Fiche PDF</span>
           </button>
 
           {/* User Account Badge */}
