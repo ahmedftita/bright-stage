@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Box, Cylinder, Cone, Html } from '@react-three/drei';
+import { Box, Cylinder, Cone, Sphere, Html } from '@react-three/drei';
 
 /**
  * Full Stage 3D Studio Visualizer
@@ -119,34 +119,139 @@ const MovingFixture = ({
   );
 };
 
-// LED Strobe / Beam Matrix Panel (5x5 / JDC1 style)
-const LedMatrixPanel = ({ position, rotation = [0, 0, 0] }) => {
+// 36LED Strobe Beam 220W (LeLeght / Swingable 180° Wallwasher & Strobe Moving Head)
+const StrobeBeam36Fixture = ({ position, rotation = [0, 0, 0], showBeam = true, tilt = 0.15 }) => {
+  // 36 Warm White / Amber Beam Lenses in 4 rows x 9 columns
+  const lenses = useMemo(() => {
+    const list = [];
+    const cols = 9;
+    const rows = 4;
+    const startX = -0.14;
+    const stepX = 0.28 / (cols - 1);
+    const startY = 0.052;
+    const stepY = 0.104 / (rows - 1);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const lx = startX + c * stepX;
+        const ly = startY - r * stepY;
+        list.push(
+          <group key={`sb-lens-${r}-${c}`} position={[lx, ly, 0.043]}>
+            {/* Convex lens collar */}
+            <Cylinder args={[0.012, 0.013, 0.005, 8]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshStandardMaterial color="#334155" metalness={0.8} />
+            </Cylinder>
+            {/* Convex warm amber/gold LED bead */}
+            <Sphere args={[0.010, 8, 8]} position={[0, 0, 0.003]}>
+              <meshStandardMaterial
+                color="#fef08a"
+                emissive="#f59e0b"
+                emissiveIntensity={3.2}
+                roughness={0.1}
+              />
+            </Sphere>
+          </group>
+        );
+      }
+    }
+    return list;
+  }, []);
+
   return (
     <group position={position} rotation={rotation}>
-      {/* Outer Chassis */}
-      <Box args={[0.38, 0.38, 0.08]}>
-        <meshStandardMaterial color="#0f172a" metalness={0.8} roughness={0.3} />
+      {/* 1. Base / Motorized Chassis */}
+      <Box args={[0.44, 0.07, 0.13]} position={[0, -0.09, 0]}>
+        <meshStandardMaterial color="#0f172a" roughness={0.4} metalness={0.8} />
       </Box>
-      {/* Front Face Frame */}
-      <Box args={[0.34, 0.34, 0.01]} position={[0, 0, 0.041]}>
-        <meshStandardMaterial color="#020617" />
+
+      {/* Digital Display Screen 8.8.8.8. */}
+      <Box args={[0.065, 0.022, 0.005]} position={[0, -0.088, 0.066]}>
+        <meshStandardMaterial color="#ef4444" emissive="#ef4444" emissiveIntensity={3.5} />
       </Box>
-      {/* Central High-Intensity White Strobe Tube */}
-      <Box args={[0.30, 0.04, 0.015]} position={[0, 0, 0.046]}>
-        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={4.0} />
+      {/* 4 Menu Buttons */}
+      <Box args={[0.035, 0.006, 0.004]} position={[0, -0.106, 0.066]}>
+        <meshStandardMaterial color="#94a3b8" />
       </Box>
-      {/* Upper RGB LED Matrix section */}
-      <Box args={[0.30, 0.11, 0.012]} position={[0, 0.085, 0.044]}>
-        <meshStandardMaterial color="#38bdf8" emissive="#38bdf8" emissiveIntensity={2.2} />
+      {/* "36LED STROBE BEAM" White Silkscreen text bar */}
+      <Box args={[0.13, 0.012, 0.003]} position={[0.12, -0.09, 0.066]}>
+        <meshStandardMaterial color="#cbd5e1" emissive="#f8fafc" emissiveIntensity={0.6} />
       </Box>
-      {/* Lower RGB LED Matrix section */}
-      <Box args={[0.30, 0.11, 0.012]} position={[0, -0.085, 0.044]}>
-        <meshStandardMaterial color="#a855f7" emissive="#a855f7" emissiveIntensity={2.2} />
+
+      {/* 2. Side Yokes / Upright Arms */}
+      {/* Left Arm */}
+      <Box args={[0.045, 0.16, 0.11]} position={[-0.20, -0.01, 0]}>
+        <meshStandardMaterial color="#0b0f19" roughness={0.3} metalness={0.8} />
       </Box>
-      {/* Volumetric Strobe Glow */}
-      <Cone args={[0.35, 1.0, 12, 1, true]} position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.16} depthWrite={false} />
-      </Cone>
+      {/* Left Tilt Hub */}
+      <Cylinder args={[0.028, 0.028, 0.015, 12]} position={[-0.178, 0.02, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <meshStandardMaterial color="#475569" metalness={0.9} />
+      </Cylinder>
+
+      {/* Right Arm */}
+      <Box args={[0.045, 0.16, 0.11]} position={[0.20, -0.01, 0]}>
+        <meshStandardMaterial color="#0b0f19" roughness={0.3} metalness={0.8} />
+      </Box>
+      {/* Right Tilt Hub */}
+      <Cylinder args={[0.028, 0.028, 0.015, 12]} position={[0.178, 0.02, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <meshStandardMaterial color="#475569" metalness={0.9} />
+      </Cylinder>
+
+      {/* Back Clamp mount */}
+      <Cylinder args={[0.018, 0.018, 0.05, 8]} position={[0, -0.09, -0.07]} rotation={[Math.PI / 2, 0, 0]}>
+        <meshStandardMaterial color="#475569" metalness={0.9} />
+      </Cylinder>
+
+      {/* 3. Tilting Rectangular Head (Pivot at Y=0.02) */}
+      <group position={[0, 0.02, 0]} rotation={[tilt, 0, 0]}>
+        {/* Head outer chassis */}
+        <Box args={[0.35, 0.16, 0.08]}>
+          <meshStandardMaterial color="#0f172a" roughness={0.4} metalness={0.8} />
+        </Box>
+        {/* Rear heat sink fins */}
+        <Box args={[0.33, 0.14, 0.015]} position={[0, 0, -0.045]}>
+          <meshStandardMaterial color="#1e293b" metalness={0.9} roughness={0.2} />
+        </Box>
+
+        {/* Front Face Panel frame */}
+        <Box args={[0.33, 0.145, 0.005]} position={[0, 0, 0.04]}>
+          <meshStandardMaterial color="#020617" />
+        </Box>
+
+        {/* 648 RGB SMD LED matrix backlight background (3 colored zones) */}
+        {/* Zone 1: Green/Cyan */}
+        <Box args={[0.10, 0.135, 0.006]} position={[-0.105, 0, 0.041]}>
+          <meshStandardMaterial color="#10b981" emissive="#10b981" emissiveIntensity={1.8} />
+        </Box>
+        {/* Zone 2: Amber/Gold / Warm Center */}
+        <Box args={[0.10, 0.135, 0.006]} position={[0, 0, 0.041]}>
+          <meshStandardMaterial color="#f59e0b" emissive="#f59e0b" emissiveIntensity={2.0} />
+        </Box>
+        {/* Zone 3: Blue/Purple/Magenta */}
+        <Box args={[0.10, 0.135, 0.006]} position={[0.105, 0, 0.041]}>
+          <meshStandardMaterial color="#a855f7" emissive="#a855f7" emissiveIntensity={1.8} />
+        </Box>
+
+        {/* 36 Warm White / Amber Beam Lenses */}
+        {lenses}
+
+        {/* 4. Volumetric Light Beams (when active) */}
+        {showBeam && (
+          <group position={[0, 0, 0.05]}>
+            {/* Wide wash & strobe glow */}
+            <Cone args={[0.45, 2.5, 16, 1, true]} position={[0, 0, 1.25]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#fef08a" transparent opacity={0.18} depthWrite={false} />
+            </Cone>
+            {/* Intense Warm Center Beams */}
+            <Cone args={[0.22, 3.2, 12, 1, true]} position={[0, 0, 1.6]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#ffffff" transparent opacity={0.28} depthWrite={false} />
+            </Cone>
+            {/* Lateral RGB Strobe Wash Cone */}
+            <Cone args={[0.55, 2.0, 12, 1, true]} position={[0, 0, 1.0]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#38bdf8" transparent opacity={0.12} depthWrite={false} />
+            </Cone>
+          </group>
+        )}
+      </group>
     </group>
   );
 };
@@ -466,20 +571,25 @@ export default function FullStage3D({
 
     for (let i = 0; i < countPerSide; i++) {
       const y = countPerSide > 1 ? (botY + i * stepY) : screenY;
+      const tiltAngle = countPerSide > 1 ? ((i - (countPerSide - 1) / 2) * -0.05) : 0;
       // Left matrix
       items.push(
-        <LedMatrixPanel
+        <StrobeBeam36Fixture
           key={`mat-left-${i}`}
           position={[xLeft, y, z]}
           rotation={[0, 0.18, 0]}
+          showBeam={showBeams}
+          tilt={tiltAngle}
         />
       );
       // Right matrix
       items.push(
-        <LedMatrixPanel
+        <StrobeBeam36Fixture
           key={`mat-right-${i}`}
           position={[xRight, y, z]}
           rotation={[0, -0.18, 0]}
+          showBeam={showBeams}
+          tilt={tiltAngle}
         />
       );
     }
@@ -704,7 +814,7 @@ export default function FullStage3D({
           {isScreenEnabled && isLightingEnabled && lighting.sideMatricesCount > 0 && (
             <DimensionLabel
               position={[screenW / 2 + 0.9, screenY, screenZ]}
-              label={`${lighting.totalSideMatrices}x Matrices LED Strobe (5G + 5D)`}
+              label={`${lighting.totalSideMatrices}x 36LED Strobe Beam 220W (5G + 5D)`}
             />
           )}
         </>

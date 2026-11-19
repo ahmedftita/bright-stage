@@ -386,7 +386,7 @@ export default function FullStageStudio() {
                 className="preset-pill highlight"
                 style={{ borderColor: '#38bdf8', color: '#38bdf8', fontWeight: 'bold', gridColumn: 'span 2' }}
                 onClick={() => applyConceptionPreset({
-                  eventName: 'Scénographie Pro : Écran 4×2.5m + Matrices + 3 Totems Beam 280W',
+                  eventName: 'Scénographie Pro : Écran 4×2.5m + 10x 36LED Strobe Beam + 3 Totems Beam 280W',
                   siteName: 'Scène Festival & Live Show',
                   stage: { enabled: true, lengthModules: 6, widthModules: 4, heightId: 'h75', hasStairs: true, stairsCount: 1, stairsSide: 'right' },
                   structure: { enabled: true, structureType: 'grid', towerType: 'PT34', gridTypeL: 'HT44', length: 9, width: 7, height: 6, totemsCount: 3, totemHeightM: 2.5 },
@@ -399,7 +399,7 @@ export default function FullStageStudio() {
                   }
                 })}
               >
-                ★ Setup Complet Écran 4×2.5m + Totems + Matrices
+                ★ Setup Complet 4×2.5m + 36LED Strobe + Totems
               </button>
 
               <button
@@ -1332,7 +1332,7 @@ export default function FullStageStudio() {
                     {/* Matrices LED Latérales */}
                     <div className="stepper-row" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
                       <div className="stepper-meta">
-                        <span className="stepper-title" style={{ color: '#38bdf8' }}>Matrices LED Strobe (Flancs Écran)</span>
+                        <span className="stepper-title" style={{ color: '#38bdf8' }}>36LED Strobe Beam 220W (Flancs Écran)</span>
                         <span className="stepper-sub">
                           {lightingState.sideMatricesCount ?? 0} à gauche + {lightingState.sideMatricesCount ?? 0} à droite ({((lightingState.sideMatricesCount ?? 0) * 2)} au total)
                         </span>
@@ -1355,6 +1355,12 @@ export default function FullStageStudio() {
                         </button>
                       </div>
                     </div>
+
+                    {(lightingState.sideMatricesCount ?? 0) > 0 && (
+                      <div style={{ marginTop: '8px', fontSize: '11px', color: '#94a3b8', background: 'rgba(56,189,248,0.08)', padding: '7px 10px', borderRadius: '6px', border: '1px solid rgba(56,189,248,0.2)' }}>
+                        ⚡ <strong>36LED Strobe Beam 220W (LeLeght) :</strong> 36 LED Beams blanc chaud + 648 LED RGB Strobe • Tilt motorisé 180° • 220W • 16 canaux DMX.
+                      </div>
+                    )}
                   </div>
 
                   {/* Show Beams in 3D & Color picker */}

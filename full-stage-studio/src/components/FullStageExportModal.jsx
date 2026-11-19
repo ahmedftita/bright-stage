@@ -133,7 +133,7 @@ export default function FullStageExportModal({
             {screen.enabled !== false && lighting.enabled !== false && lighting.sideMatricesCount > 0 && (
               <div className="strip-item">
                 <span className="strip-label">MATRICES LATÉRALES</span>
-                <span className="strip-value" style={{ color: '#9333ea' }}>{lighting.totalSideMatrices}x Matrices Strobe/Beam (5G + 5D)</span>
+                <span className="strip-value" style={{ color: '#9333ea' }}>{lighting.totalSideMatrices}x 36LED Strobe Beam 220W (5G + 5D)</span>
               </div>
             )}
           </div>

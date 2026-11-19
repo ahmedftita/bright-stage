@@ -65,7 +65,14 @@ export const LED_PITCHES = {
 export const LIGHTING_SPECS = {
   beam: { name: 'Moving Head Beam 7R (300W)', weightKg: 16, watts: 300, dmx: 16, type: 'beam' },
   beam280: { name: 'Moving Head Beam 280W (Robe Pointe / Sharpy)', weightKg: 15, watts: 280, dmx: 20, type: 'beam' },
-  matrixStrobe: { name: 'Matrice LED Strobe / Beam (5×5 Matrix / JDC1)', weightKg: 9, watts: 350, dmx: 24, type: 'matrix' },
+  matrixStrobe: {
+    name: '36LED Strobe Beam 220W (Matrice Motorisée Tilt 180°)',
+    model: 'LeLeght 36LED Strobe Beam (220W RGBW)',
+    weightKg: 6.8,
+    watts: 220,
+    dmx: 16,
+    type: 'matrix'
+  },
   spot: { name: 'Moving Head Spot Profile LED (350W)', weightKg: 22, watts: 350, dmx: 22, type: 'spot' },
   wash: { name: 'Moving Head Wash LED RGBW 19×15W', weightKg: 12, watts: 300, dmx: 18, type: 'wash' },
   ledBar: { name: 'Barre LED Pixel / Sunstrip (1m)', weightKg: 6, watts: 120, dmx: 10, type: 'bar' },
@@ -551,11 +558,11 @@ export const calculateFullConception = (state) => {
       {
         id: 'light_matrix_strobe',
         category: '4. Éclairage & Asservis',
-        name: `${LIGHTING_SPECS.matrixStrobe.name} (Flanc Écran LED)`,
-        spec: `${sideMatricesCount} à gauche + ${sideMatricesCount} à droite • Strobe blanc 1000W + matrice LED RGB Pixel`,
+        name: `${LIGHTING_SPECS.matrixStrobe.name} (Flancs Écran LED)`,
+        spec: `${sideMatricesCount} à gauche + ${sideMatricesCount} à droite • 36 LED Beams blanc chaud + 648 LED RGB Strobe • 220W DMX-512 (Swingable 180°)`,
         quantity: totalSideMatrices,
         unitWeightKg: LIGHTING_SPECS.matrixStrobe.weightKg,
-        totalWeightKg: totalSideMatrices * LIGHTING_SPECS.matrixStrobe.weightKg
+        totalWeightKg: Math.round(totalSideMatrices * LIGHTING_SPECS.matrixStrobe.weightKg)
       },
       {
         id: 'matrix_clamp',
