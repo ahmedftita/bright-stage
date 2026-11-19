@@ -58,6 +58,9 @@ export default function SaveConceptionModal({
           height: structure.dimensions.height,
           aluWeight: structure.aluWeight,
           numTowers: structure.numTowers,
+          totemsCount: structure.totems?.count || 0,
+          totemHeightM: structure.totems?.heightM || 2.5,
+          totems: structure.totems,
           totals: structure.totals
         },
         screenConfig: {
@@ -78,6 +81,9 @@ export default function SaveConceptionModal({
           ledBarsCount: lighting.counts.ledBars,
           blindersCount: lighting.counts.blinders,
           hazerCount: lighting.counts.hazers,
+          sideMatricesCount: lighting.sideMatricesCount || 0,
+          totalSideMatrices: lighting.totalSideMatrices || 0,
+          totemBeamsCount: lighting.totemBeamsCount || 0,
           showBeams: lighting.showBeams,
           beamColor: lighting.beamColor,
           totalLightingWeightKg: lighting.totalLightingWeightKg,

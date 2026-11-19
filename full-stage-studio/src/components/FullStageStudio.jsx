@@ -111,16 +111,18 @@ export default function FullStageStudio() {
     towerType: 'PT34',
     gridTypeL: 'HT44',
     gridTypeW: 'PT34',
-    length: 10,
-    width: 8,
-    height: 6
+    length: 9,
+    width: 7,
+    height: 6,
+    totemsCount: 3,
+    totemHeightM: 2.5
   });
 
   const [screenState, setScreenState] = useState({
     pitch: 'P3.9',
     mountType: 'suspended_truss',
-    cabinetsW: 12,
-    cabinetsH: 6
+    cabinetsW: 8, // 4.0m de largeur (8 dalles de 0.5m)
+    cabinetsH: 5  // 2.5m de hauteur (5 dalles de 0.5m)
   });
 
   const [lightingState, setLightingState] = useState({
@@ -130,6 +132,7 @@ export default function FullStageStudio() {
     ledBarsCount: 6,
     blindersCount: 4,
     hazerCount: 2,
+    sideMatricesCount: 5, // 5 matrices à gauche + 5 à droite = 10 matrices !
     showBeams: true,
     beamColor: '#38bdf8'
   });
@@ -209,7 +212,9 @@ export default function FullStageStudio() {
         gridTypeW: item.structureConfig.gridTypeW || 'PT34',
         length: item.structureConfig.length || 10,
         width: item.structureConfig.width || 8,
-        height: item.structureConfig.height || 6
+        height: item.structureConfig.height || 6,
+        totemsCount: item.structureConfig.totemsCount ?? (item.structureConfig.totems?.count ?? 0),
+        totemHeightM: item.structureConfig.totemHeightM ?? (item.structureConfig.totems?.heightM ?? 2.5)
       });
     }
 
@@ -217,8 +222,8 @@ export default function FullStageStudio() {
       setScreenState({
         pitch: item.screenConfig.pitch || 'P3.9',
         mountType: item.screenConfig.mountType || 'suspended_truss',
-        cabinetsW: item.screenConfig.cabinetsW || 12,
-        cabinetsH: item.screenConfig.cabinetsH || 6
+        cabinetsW: item.screenConfig.cabinetsW || 8,
+        cabinetsH: item.screenConfig.cabinetsH || 5
       });
     }
 
@@ -230,6 +235,7 @@ export default function FullStageStudio() {
         ledBarsCount: item.lightingConfig.ledBarsCount ?? 6,
         blindersCount: item.lightingConfig.blindersCount ?? 4,
         hazerCount: item.lightingConfig.hazerCount ?? 2,
+        sideMatricesCount: item.lightingConfig.sideMatricesCount ?? 0,
         showBeams: item.lightingConfig.showBeams !== false,
         beamColor: item.lightingConfig.beamColor || '#38bdf8'
       });
@@ -350,6 +356,26 @@ export default function FullStageStudio() {
               <span className="section-title">Modèles Scéniques Clés en Main</span>
             </div>
             <div className="presets-pill-grid">
+              <button
+                type="button"
+                className="preset-pill highlight"
+                style={{ borderColor: '#38bdf8', color: '#38bdf8', fontWeight: 'bold', gridColumn: 'span 2' }}
+                onClick={() => applyConceptionPreset({
+                  eventName: 'Scénographie Pro : Écran 4×2.5m + Matrices + 3 Totems Beam 280W',
+                  siteName: 'Scène Festival & Live Show',
+                  stage: { lengthModules: 6, widthModules: 4, heightId: 'h75', hasStairs: true, stairsCount: 1, stairsSide: 'right' },
+                  structure: { structureType: 'grid', towerType: 'PT34', gridTypeL: 'HT44', length: 9, width: 7, height: 6, totemsCount: 3, totemHeightM: 2.5 },
+                  screen: { pitch: 'P3.9', mountType: 'suspended_truss', cabinetsW: 8, cabinetsH: 5 }, // 4.0m × 2.5m !
+                  lighting: {
+                    beamsCount: 8, spotsCount: 6, washesCount: 8, ledBarsCount: 6, blindersCount: 4, hazerCount: 2,
+                    sideMatricesCount: 5, // 5 à gauche + 5 à droite = 10 matrices !
+                    showBeams: true, beamColor: '#38bdf8'
+                  }
+                })}
+              >
+                ★ Setup Écran 4×2.5m + Totems + Matrices
+              </button>
+
               <button
                 type="button"
                 className="preset-pill"
@@ -669,6 +695,72 @@ export default function FullStageStudio() {
                   </select>
                 </div>
               </div>
+
+              {/* Totems Scéniques de Fond de Scène */}
+              <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '14px' }}>
+                <span className="section-title" style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+                  <Wrench size={13} className="text-cyan" />
+                  <span>Totems Truss Verticaux (Fond de Scène)</span>
+                </span>
+
+                <div className="dimensions-box">
+                  <div className="stepper-row">
+                    <div className="stepper-meta">
+                      <span className="stepper-title">Nombre de Totems</span>
+                      <span className="stepper-sub">Totems verticaux sur embases acier</span>
+                    </div>
+                    <div className="stepper-controls">
+                      <button
+                        type="button"
+                        className="stepper-btn"
+                        onClick={() => setStructureState(prev => ({ ...prev, totemsCount: Math.max(0, (prev.totemsCount ?? 0) - 1) }))}
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className="stepper-input">{structureState.totemsCount ?? 0}</span>
+                      <button
+                        type="button"
+                        className="stepper-btn"
+                        onClick={() => setStructureState(prev => ({ ...prev, totemsCount: Math.min(8, (prev.totemsCount ?? 0) + 1) }))}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {(structureState.totemsCount ?? 0) > 0 && (
+                    <div className="stepper-row">
+                      <div className="stepper-meta">
+                        <span className="stepper-title">Hauteur Totem (m)</span>
+                        <span className="stepper-sub">Élévation fond de scène</span>
+                      </div>
+                      <div className="stepper-controls">
+                        <button
+                          type="button"
+                          className="stepper-btn"
+                          onClick={() => setStructureState(prev => ({ ...prev, totemHeightM: Math.max(1, ((prev.totemHeightM ?? 2.5) - 0.5)) }))}
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="stepper-input">{structureState.totemHeightM ?? 2.5}m</span>
+                        <button
+                          type="button"
+                          className="stepper-btn"
+                          onClick={() => setStructureState(prev => ({ ...prev, totemHeightM: Math.min(5, ((prev.totemHeightM ?? 2.5) + 0.5)) }))}
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {(structureState.totemsCount ?? 0) > 0 && (
+                  <div style={{ marginTop: '8px', fontSize: '11px', color: '#94a3b8', background: 'rgba(56,189,248,0.08)', padding: '7px 10px', borderRadius: '6px', border: '1px solid rgba(56,189,248,0.2)' }}>
+                    💡 <strong>Tête de Totem :</strong> Chaque totem est équipé d'une <strong>Moving Head Beam 280W (Robe Pointe)</strong> orientée vers le haut, d'une platine supérieure et d'une embase acier lestée 28 kg.
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -706,6 +798,46 @@ export default function FullStageStudio() {
                     <option value="ground_stack">Posé au sol (Ground Stack)</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Formats Rapides Écran */}
+              <div style={{ display: 'flex', gap: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="preset-pill"
+                  style={{
+                    flex: 1, minWidth: '95px', fontSize: '11px', textAlign: 'center',
+                    borderColor: screenState.cabinetsW === 8 && screenState.cabinetsH === 5 ? '#38bdf8' : undefined,
+                    color: screenState.cabinetsW === 8 && screenState.cabinetsH === 5 ? '#38bdf8' : undefined
+                  }}
+                  onClick={() => setScreenState(prev => ({ ...prev, cabinetsW: 8, cabinetsH: 5 }))}
+                >
+                  4.0m × 2.5m (8×5)
+                </button>
+                <button
+                  type="button"
+                  className="preset-pill"
+                  style={{
+                    flex: 1, minWidth: '95px', fontSize: '11px', textAlign: 'center',
+                    borderColor: screenState.cabinetsW === 10 && screenState.cabinetsH === 6 ? '#38bdf8' : undefined,
+                    color: screenState.cabinetsW === 10 && screenState.cabinetsH === 6 ? '#38bdf8' : undefined
+                  }}
+                  onClick={() => setScreenState(prev => ({ ...prev, cabinetsW: 10, cabinetsH: 6 }))}
+                >
+                  5.0m × 3.0m (10×6)
+                </button>
+                <button
+                  type="button"
+                  className="preset-pill"
+                  style={{
+                    flex: 1, minWidth: '95px', fontSize: '11px', textAlign: 'center',
+                    borderColor: screenState.cabinetsW === 12 && screenState.cabinetsH === 7 ? '#38bdf8' : undefined,
+                    color: screenState.cabinetsW === 12 && screenState.cabinetsH === 7 ? '#38bdf8' : undefined
+                  }}
+                  onClick={() => setScreenState(prev => ({ ...prev, cabinetsW: 12, cabinetsH: 7 }))}
+                >
+                  6.0m × 3.5m (12×7)
+                </button>
               </div>
 
               <div className="dimensions-box">
@@ -850,6 +982,33 @@ export default function FullStageStudio() {
                     </button>
                     <span className="stepper-input">{lightingState.blindersCount}</span>
                     <button type="button" className="stepper-btn" onClick={() => adjustLightingFixture('blindersCount', 2)}>
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Matrices LED Latérales */}
+                <div className="stepper-row" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
+                  <div className="stepper-meta">
+                    <span className="stepper-title" style={{ color: '#38bdf8' }}>Matrices LED Strobe (Flancs Écran)</span>
+                    <span className="stepper-sub">
+                      {lightingState.sideMatricesCount ?? 0} à gauche + {lightingState.sideMatricesCount ?? 0} à droite ({((lightingState.sideMatricesCount ?? 0) * 2)} au total)
+                    </span>
+                  </div>
+                  <div className="stepper-controls">
+                    <button
+                      type="button"
+                      className="stepper-btn"
+                      onClick={() => setLightingState(prev => ({ ...prev, sideMatricesCount: Math.max(0, (prev.sideMatricesCount ?? 0) - 1) }))}
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="stepper-input">{lightingState.sideMatricesCount ?? 0}/côté</span>
+                    <button
+                      type="button"
+                      className="stepper-btn"
+                      onClick={() => setLightingState(prev => ({ ...prev, sideMatricesCount: Math.min(10, (prev.sideMatricesCount ?? 0) + 1) }))}
+                    >
                       <Plus size={14} />
                     </button>
                   </div>

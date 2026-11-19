@@ -64,6 +64,8 @@ export const LED_PITCHES = {
 
 export const LIGHTING_SPECS = {
   beam: { name: 'Moving Head Beam 7R (300W)', weightKg: 16, watts: 300, dmx: 16, type: 'beam' },
+  beam280: { name: 'Moving Head Beam 280W (Robe Pointe / Sharpy)', weightKg: 15, watts: 280, dmx: 20, type: 'beam' },
+  matrixStrobe: { name: 'Matrice LED Strobe / Beam (5×5 Matrix / JDC1)', weightKg: 9, watts: 350, dmx: 24, type: 'matrix' },
   spot: { name: 'Moving Head Spot Profile LED (350W)', weightKg: 22, watts: 350, dmx: 22, type: 'spot' },
   wash: { name: 'Moving Head Wash LED RGBW 19×15W', weightKg: 12, watts: 300, dmx: 18, type: 'wash' },
   ledBar: { name: 'Barre LED Pixel / Sunstrip (1m)', weightKg: 6, watts: 120, dmx: 10, type: 'bar' },
@@ -146,6 +148,16 @@ export const calculateFullConception = (state) => {
   const numBeamsL = isGoalpost ? 1 : 2;
   const numBeamsW = isGoalpost ? 0 : 2;
 
+  // Totems Scéniques Verticaux (fond de scène / upstage)
+  const totemsCount = Math.max(0, parseInt(structure.totemsCount ?? 0));
+  const totemHeightM = Math.max(1, parseFloat(structure.totemHeightM ?? 2.5));
+  const totemSegs = totemsCount > 0 ? calcSegments(totemHeightM) : { s3: 0, s2: 0, s1: 0, s05: 0 };
+  const linearMetersTotems = totemsCount * totemHeightM;
+  const totemsAluWeight = Math.round(linearMetersTotems * towSpec.weightPerMeter);
+  const totemsBasesWeight = totemsCount * 28; // Embases acier 600x600 28kg
+  const totemsTopPlatesWeight = totemsCount * 4.5;
+  const totemsWeightKg = totemsAluWeight + totemsBasesWeight + totemsTopPlatesWeight;
+
   const segsL = calcSegments(structL);
   const segsW = isGoalpost ? { s3: 0, s2: 0, s1: 0, s05: 0 } : calcSegments(structW);
   const segsH = calcSegments(structH);
@@ -153,14 +165,15 @@ export const calculateFullConception = (state) => {
   const numOutriggers = isGoalpost ? 4 : 0;
 
   const trussTotals = {
-    s3: (segsL.s3 * numBeamsL) + (segsW.s3 * numBeamsW) + (segsH.s3 * numTowers) + (outriggerSegs.s3 * numOutriggers),
-    s2: (segsL.s2 * numBeamsL) + (segsW.s2 * numBeamsW) + (segsH.s2 * numTowers) + (outriggerSegs.s2 * numOutriggers),
-    s1: (segsL.s1 * numBeamsL) + (segsW.s1 * numBeamsW) + (segsH.s1 * numTowers) + (outriggerSegs.s1 * numOutriggers),
-    s05: (segsL.s05 * numBeamsL) + (segsW.s05 * numBeamsW) + (segsH.s05 * numTowers) + (outriggerSegs.s05 * numOutriggers),
+    s3: (segsL.s3 * numBeamsL) + (segsW.s3 * numBeamsW) + (segsH.s3 * numTowers) + (outriggerSegs.s3 * numOutriggers) + (totemSegs.s3 * totemsCount),
+    s2: (segsL.s2 * numBeamsL) + (segsW.s2 * numBeamsW) + (segsH.s2 * numTowers) + (outriggerSegs.s2 * numOutriggers) + (totemSegs.s2 * totemsCount),
+    s1: (segsL.s1 * numBeamsL) + (segsW.s1 * numBeamsW) + (segsH.s1 * numTowers) + (outriggerSegs.s1 * numOutriggers) + (totemSegs.s1 * totemsCount),
+    s05: (segsL.s05 * numBeamsL) + (segsW.s05 * numBeamsW) + (segsH.s05 * numTowers) + (outriggerSegs.s05 * numOutriggers) + (totemSegs.s05 * totemsCount),
     corners: isGoalpost ? 2 : 4,
-    bases: numTowers,
+    bases: numTowers + totemsCount,
     hinges: numTowers * 4,
-    motors: numTowers
+    motors: numTowers,
+    totems: totemsCount
   };
 
   const linearMetersL = structL * numBeamsL;
@@ -202,7 +215,14 @@ export const calculateFullConception = (state) => {
   const showBeams = lighting.showBeams !== false;
   const beamColor = lighting.beamColor || '#38bdf8';
 
-  const totalFixtures = beamsCount + spotsCount + washesCount + ledBarsCount + blindersCount + hazerCount;
+  // Matrices LED Latérales (flanquées à gauche et à droite de l'écran LED)
+  const sideMatricesCount = Math.max(0, parseInt(lighting.sideMatricesCount ?? 0));
+  const totalSideMatrices = sideMatricesCount * 2;
+
+  // Lyres Beam 280W montées sur les têtes de totem
+  const totemBeamsCount = totemsCount;
+
+  const totalFixtures = beamsCount + spotsCount + washesCount + ledBarsCount + blindersCount + hazerCount + totalSideMatrices + totemBeamsCount;
 
   const totalLightingWeightKg = Math.round(
     (beamsCount * LIGHTING_SPECS.beam.weightKg) +
@@ -210,9 +230,22 @@ export const calculateFullConception = (state) => {
     (washesCount * LIGHTING_SPECS.wash.weightKg) +
     (ledBarsCount * LIGHTING_SPECS.ledBar.weightKg) +
     (blindersCount * LIGHTING_SPECS.blinder.weightKg) +
-    (hazerCount * LIGHTING_SPECS.hazer.weightKg)
+    (hazerCount * LIGHTING_SPECS.hazer.weightKg) +
+    (totalSideMatrices * LIGHTING_SPECS.matrixStrobe.weightKg) +
+    (totemBeamsCount * LIGHTING_SPECS.beam280.weightKg)
   );
   const lightingWeightKg = totalLightingWeightKg;
+
+  // Poids suspendu au pont supérieur (les totems reposent au sol)
+  const suspendedLightingWeightKg = Math.round(
+    (beamsCount * LIGHTING_SPECS.beam.weightKg) +
+    (spotsCount * LIGHTING_SPECS.spot.weightKg) +
+    (washesCount * LIGHTING_SPECS.wash.weightKg) +
+    (ledBarsCount * LIGHTING_SPECS.ledBar.weightKg) +
+    (blindersCount * LIGHTING_SPECS.blinder.weightKg) +
+    (hazerCount * LIGHTING_SPECS.hazer.weightKg) +
+    (totalSideMatrices * LIGHTING_SPECS.matrixStrobe.weightKg)
+  );
 
   const lightingPowerWatts = (
     (beamsCount * LIGHTING_SPECS.beam.watts) +
@@ -220,7 +253,9 @@ export const calculateFullConception = (state) => {
     (washesCount * LIGHTING_SPECS.wash.watts) +
     (ledBarsCount * LIGHTING_SPECS.ledBar.watts) +
     (blindersCount * LIGHTING_SPECS.blinder.watts) +
-    (hazerCount * LIGHTING_SPECS.hazer.watts)
+    (hazerCount * LIGHTING_SPECS.hazer.watts) +
+    (totalSideMatrices * LIGHTING_SPECS.matrixStrobe.watts) +
+    (totemBeamsCount * LIGHTING_SPECS.beam280.watts)
   );
   const totalLightingPowerKw = parseFloat((lightingPowerWatts / 1000).toFixed(1));
   const lightingPowerKw = totalLightingPowerKw;
@@ -231,7 +266,9 @@ export const calculateFullConception = (state) => {
     (washesCount * LIGHTING_SPECS.wash.dmx) +
     (ledBarsCount * LIGHTING_SPECS.ledBar.dmx) +
     (blindersCount * LIGHTING_SPECS.blinder.dmx) +
-    (hazerCount * LIGHTING_SPECS.hazer.dmx)
+    (hazerCount * LIGHTING_SPECS.hazer.dmx) +
+    (totalSideMatrices * LIGHTING_SPECS.matrixStrobe.dmx) +
+    (totemBeamsCount * LIGHTING_SPECS.beam280.dmx)
   );
   const dmxUniverses = Math.ceil(totalDmxChannels / 512) || 1;
 
@@ -243,7 +280,7 @@ export const calculateFullConception = (state) => {
   const totalSuspendedLoadKg = Math.round(
     aluWeight +
     (isScreenSuspended ? screenWeightKg : 0) +
-    lightingWeightKg +
+    suspendedLightingWeightKg +
     cablesAndMotorsWeight
   );
 
@@ -368,6 +405,35 @@ export const calculateFullConception = (state) => {
       unitWeightKg: 45.0,
       totalWeightKg: trussTotals.motors * 45.0
     },
+    ...(totemsCount > 0 ? [
+      {
+        id: 'totem_structure',
+        category: '2. Structure & Ponts Truss',
+        name: `Totem Truss Vertical H=${totemHeightM}m (${towSpec.name})`,
+        spec: `Structure verticale aluminium sur platine lourde avec adaptateur sommet`,
+        quantity: totemsCount,
+        unitWeightKg: Math.round(totemHeightM * towSpec.weightPerMeter * 10) / 10,
+        totalWeightKg: Math.round(totemsCount * totemHeightM * towSpec.weightPerMeter)
+      },
+      {
+        id: 'totem_base',
+        category: '2. Structure & Ponts Truss',
+        name: 'Embase Lourde Acier Totem (600×600 mm - 28 kg)',
+        spec: 'Plaque acier lestée noire avec manchons coniques CCS de centrage',
+        quantity: totemsCount,
+        unitWeightKg: 28.0,
+        totalWeightKg: totemsCount * 28.0
+      },
+      {
+        id: 'totem_top_plate',
+        category: '2. Structure & Ponts Truss',
+        name: 'Platine Supérieure Totem pour Lyre Asservie',
+        spec: 'Plateau aluminium 350×350 mm avec verrouillage goupille',
+        quantity: totemsCount,
+        unitWeightKg: 4.5,
+        totalWeightKg: totemsCount * 4.5
+      }
+    ] : []),
 
     // ÉCRAN LED
     {
@@ -453,6 +519,35 @@ export const calculateFullConception = (state) => {
       unitWeightKg: LIGHTING_SPECS.hazer.weightKg,
       totalWeightKg: hazerCount * LIGHTING_SPECS.hazer.weightKg
     }] : []),
+    ...(totemBeamsCount > 0 ? [{
+      id: 'light_totem_beam280',
+      category: '4. Éclairage & Asservis',
+      name: `${LIGHTING_SPECS.beam280.name} (Tête de Totem)`,
+      spec: 'Lyre Beam 280W 7R/10R haute intensité • Faisceau volumétrique aérien',
+      quantity: totemBeamsCount,
+      unitWeightKg: LIGHTING_SPECS.beam280.weightKg,
+      totalWeightKg: totemBeamsCount * LIGHTING_SPECS.beam280.weightKg
+    }] : []),
+    ...(totalSideMatrices > 0 ? [
+      {
+        id: 'light_matrix_strobe',
+        category: '4. Éclairage & Asservis',
+        name: `${LIGHTING_SPECS.matrixStrobe.name} (Flanc Écran LED)`,
+        spec: `${sideMatricesCount} à gauche + ${sideMatricesCount} à droite • Strobe blanc 1000W + matrice LED RGB Pixel`,
+        quantity: totalSideMatrices,
+        unitWeightKg: LIGHTING_SPECS.matrixStrobe.weightKg,
+        totalWeightKg: totalSideMatrices * LIGHTING_SPECS.matrixStrobe.weightKg
+      },
+      {
+        id: 'matrix_clamp',
+        category: '4. Éclairage & Asservis',
+        name: 'Clamps & Élingues de sécurité Matrices LED',
+        spec: 'Colliers Trigger 50 mm alu + élingues acier 50 kg BGV-C1',
+        quantity: totalSideMatrices,
+        unitWeightKg: 0.8,
+        totalWeightKg: Math.round(totalSideMatrices * 0.8)
+      }
+    ] : []),
 
     // DISTRIBUTION & RÉGIE
     {
@@ -500,6 +595,11 @@ export const calculateFullConception = (state) => {
       series: { towerType, gridTypeL, gridTypeW },
       specs: { towSpec, gridSpecL, gridSpecW },
       totals: trussTotals,
+      totems: {
+        count: totemsCount,
+        heightM: totemHeightM,
+        fixture: 'beam280'
+      },
       aluWeight,
       numTowers
     },
@@ -521,8 +621,13 @@ export const calculateFullConception = (state) => {
         ledBars: ledBarsCount,
         blinders: blindersCount,
         hazers: hazerCount,
+        sideMatrices: totalSideMatrices,
+        totemBeams: totemBeamsCount,
         total: totalFixtures
       },
+      sideMatricesCount,
+      totalSideMatrices,
+      totemBeamsCount,
       totalLightingWeightKg,
       totalLightingPowerKw,
       totalDmxChannels,

@@ -20,15 +20,19 @@ import {
   CheckCircle,
   AlertTriangle,
   ChevronDown,
+  User,
+  LogOut,
   Moon,
   Package,
-  Eye
+  Eye,
+  RotateCcw
 } from 'lucide-react';
 
 import FullStage3D from './FullStage3D';
 import SaveConceptionModal from './SaveConceptionModal';
 import SavedConceptionsModal from './SavedConceptionsModal';
 import FullStageExportModal from './FullStageExportModal';
+import LoginModal from './LoginModal';
 
 import {
   STAGE_HEIGHTS,
@@ -36,7 +40,7 @@ import {
   LED_PITCHES,
   calculateFullConception
 } from '../utils/conceptionLogic';
-import './FullStageStudio.css';
+import { authService } from '../services/authService';
 
 // Scene capture helper
 const SceneCapture = ({ captureRef }) => {
@@ -63,17 +67,21 @@ const SceneCapture = ({ captureRef }) => {
 };
 
 export default function FullStageStudio() {
+  // Auth
+  const [currentUser, setCurrentUser] = useState(authService.getCurrentUser());
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(!authService.isAuthenticated());
+
   // Event Context
   const [eventName, setEventName] = useState('Festival International de Carthage 2026 — Scène Complète');
   const [siteName, setSiteName] = useState('Amphithéâtre Romain de Carthage');
   const [activeConceptionId, setActiveConceptionId] = useState(null);
 
-  // Active Tab: 'stage' | 'structure' | 'screen' | 'lighting'
+  // Active Tab: 'stage' | 'structure' | 'screen' | 'lighting' | 'bom'
   const [activeTab, setActiveTab] = useState('stage');
 
   // Studio Atmosphere
   const [nightMode, setNightMode] = useState(true);
-  const [viewMode, setViewMode] = useState('3D');
+  const [viewMode, setViewMode] = useState('3D'); // '3D' or '2D'
 
   // Modals
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -85,7 +93,9 @@ export default function FullStageStudio() {
   const [capture3DUrl, setCapture3DUrl] = useState(null);
   const [capturePlanUrl, setCapturePlanUrl] = useState(null);
 
-  // CONFIGURATION STATE
+  // ==========================================
+  // MASTER STUDIO CONFIGURATION STATE
+  // ==========================================
   const [stageState, setStageState] = useState({
     lengthModules: 6,
     widthModules: 4,
@@ -101,16 +111,18 @@ export default function FullStageStudio() {
     towerType: 'PT34',
     gridTypeL: 'HT44',
     gridTypeW: 'PT34',
-    length: 10,
-    width: 8,
-    height: 6
+    length: 9,
+    width: 7,
+    height: 6,
+    totemsCount: 3,
+    totemHeightM: 2.5
   });
 
   const [screenState, setScreenState] = useState({
     pitch: 'P3.9',
     mountType: 'suspended_truss',
-    cabinetsW: 12,
-    cabinetsH: 6
+    cabinetsW: 8, // 4.0m de largeur (8 dalles de 0.5m)
+    cabinetsH: 5  // 2.5m de hauteur (5 dalles de 0.5m)
   });
 
   const [lightingState, setLightingState] = useState({
@@ -120,10 +132,12 @@ export default function FullStageStudio() {
     ledBarsCount: 6,
     blindersCount: 4,
     hazerCount: 2,
+    sideMatricesCount: 5, // 5 matrices à gauche + 5 à droite = 10 matrices !
     showBeams: true,
     beamColor: '#38bdf8'
   });
 
+  // Calculate full unified conception
   const conception = useMemo(() => {
     return calculateFullConception({
       stage: stageState,
@@ -133,6 +147,7 @@ export default function FullStageStudio() {
     });
   }, [stageState, structureState, screenState, lightingState]);
 
+  // Handle Steppers
   const adjustStageModules = (field, delta) => {
     setStageState(prev => ({
       ...prev,
@@ -161,6 +176,7 @@ export default function FullStageStudio() {
     }));
   };
 
+  // Presets Application
   const applyConceptionPreset = (preset) => {
     if (preset.eventName) setEventName(preset.eventName);
     if (preset.siteName) setSiteName(preset.siteName);
@@ -170,6 +186,7 @@ export default function FullStageStudio() {
     if (preset.lighting) setLightingState(prev => ({ ...prev, ...preset.lighting }));
   };
 
+  // Load Saved Conception
   const handleLoadConception = (item) => {
     setActiveConceptionId(item._id);
     setEventName(item.eventName || 'Conception Scénique');
@@ -195,7 +212,9 @@ export default function FullStageStudio() {
         gridTypeW: item.structureConfig.gridTypeW || 'PT34',
         length: item.structureConfig.length || 10,
         width: item.structureConfig.width || 8,
-        height: item.structureConfig.height || 6
+        height: item.structureConfig.height || 6,
+        totemsCount: item.structureConfig.totemsCount ?? (item.structureConfig.totems?.count ?? 0),
+        totemHeightM: item.structureConfig.totemHeightM ?? (item.structureConfig.totems?.heightM ?? 2.5)
       });
     }
 
@@ -203,8 +222,8 @@ export default function FullStageStudio() {
       setScreenState({
         pitch: item.screenConfig.pitch || 'P3.9',
         mountType: item.screenConfig.mountType || 'suspended_truss',
-        cabinetsW: item.screenConfig.cabinetsW || 12,
-        cabinetsH: item.screenConfig.cabinetsH || 6
+        cabinetsW: item.screenConfig.cabinetsW || 8,
+        cabinetsH: item.screenConfig.cabinetsH || 5
       });
     }
 
@@ -216,12 +235,14 @@ export default function FullStageStudio() {
         ledBarsCount: item.lightingConfig.ledBarsCount ?? 6,
         blindersCount: item.lightingConfig.blindersCount ?? 4,
         hazerCount: item.lightingConfig.hazerCount ?? 2,
+        sideMatricesCount: item.lightingConfig.sideMatricesCount ?? 0,
         showBeams: item.lightingConfig.showBeams !== false,
         beamColor: item.lightingConfig.beamColor || '#38bdf8'
       });
     }
   };
 
+  // Prepare Export
   const prepareExport = () => {
     if (captureRef.current) {
       try {
@@ -239,9 +260,9 @@ export default function FullStageStudio() {
   };
 
   return (
-    <div className="structure-app-layout" style={{ height: 'calc(100vh - 64px)' }}>
-      {/* Top Bar inside client */}
-      <div className="structure-navbar" style={{ position: 'relative' }}>
+    <div className="structure-app-layout">
+      {/* Top Navbar */}
+      <header className="structure-navbar">
         <div className="navbar-left">
           <div className="navbar-logo-badge" style={{ background: 'linear-gradient(135deg, rgba(236,72,153,0.3) 0%, rgba(99,102,241,0.3) 100%)' }}>
             <span style={{ color: '#ec4899', fontSize: '18px', fontWeight: 900 }}>B</span>
@@ -249,15 +270,17 @@ export default function FullStageStudio() {
           </div>
           <div>
             <div className="navbar-brand">
-              <span className="brand-title">Studio Conception Scénique 3D</span>
+              <span className="brand-title">Bright Stage</span>
               <span className="brand-tag" style={{ background: 'rgba(236,72,153,0.15)', borderColor: 'rgba(236,72,153,0.4)', color: '#f472b6' }}>
-                SCÈNE • TRUSS • LED • LUMIÈRE
+                STUDIO CONCEPTION SCÉNIQUE 3D
               </span>
             </div>
+            <p className="navbar-sub">Scène • Structure Truss • Écran LED • Éclairage & Abaques Unifiés</p>
           </div>
         </div>
 
-        <div className="navbar-event-pill" onClick={() => setIsSavedModalOpen(true)} title="Changer d'événement">
+        {/* Center Event Pill */}
+        <div className="navbar-event-pill" onClick={() => setIsSavedModalOpen(true)} title="Cliquez pour charger une conception d'événement">
           <Sparkles size={14} className="text-amber" />
           <div className="event-pill-text">
             <span className="event-pill-label">Événement Actif :</span>
@@ -266,15 +289,26 @@ export default function FullStageStudio() {
           <ChevronDown size={14} className="text-muted" />
         </div>
 
+        {/* Right Actions */}
         <div className="navbar-right">
-          <button type="button" className="action-btn btn-secondary" onClick={() => setIsSavedModalOpen(true)}>
+          <button
+            type="button"
+            className="action-btn btn-secondary"
+            onClick={() => setIsSavedModalOpen(true)}
+          >
             <FolderOpen size={16} />
-            <span className="btn-text">Modèles Enregistrés</span>
+            <span className="btn-text">Conceptions (X)</span>
           </button>
-          <button type="button" className="action-btn btn-secondary" onClick={() => setIsSaveModalOpen(true)}>
+
+          <button
+            type="button"
+            className="action-btn btn-secondary"
+            onClick={() => setIsSaveModalOpen(true)}
+          >
             <Save size={16} />
             <span className="btn-text">Enregistrer</span>
           </button>
+
           <button
             type="button"
             className="action-btn btn-primary"
@@ -282,22 +316,66 @@ export default function FullStageStudio() {
             onClick={prepareExport}
           >
             <Printer size={16} />
-            <span className="btn-text">Fiche Technique PDF</span>
+            <span className="btn-text">Fiche Technique Complète</span>
           </button>
+
+          {currentUser && (
+            <div className="user-profile-badge">
+              <div className="user-avatar" style={{ background: 'rgba(236,72,153,0.2)', color: '#f472b6' }}>
+                <User size={15} />
+              </div>
+              <div className="user-details-mini">
+                <span className="user-name">{currentUser.name || 'Jilani Wahi'}</span>
+                <span className="user-role">{currentUser.role || 'Production'}</span>
+              </div>
+              <button
+                type="button"
+                className="logout-mini-btn"
+                title="Déconnexion"
+                onClick={() => {
+                  authService.logout();
+                  setCurrentUser(null);
+                  setIsAuthModalOpen(true);
+                }}
+              >
+                <LogOut size={14} />
+              </button>
+            </div>
+          )}
         </div>
-      </div>
+      </header>
 
       {/* Main Studio Area */}
-      <div className="structure-main-workspace">
-        {/* Left Sidebar */}
+      <main className="structure-main-workspace">
+        {/* Left Sidebar Configurator */}
         <aside className="structure-sidebar" style={{ width: '380px', minWidth: '340px' }}>
           {/* Quick Presets */}
           <div className="sidebar-section">
             <div className="section-header">
               <Sparkles size={14} className="text-amber" />
-              <span className="section-title">Presets Scéniques</span>
+              <span className="section-title">Modèles Scéniques Clés en Main</span>
             </div>
             <div className="presets-pill-grid">
+              <button
+                type="button"
+                className="preset-pill highlight"
+                style={{ borderColor: '#38bdf8', color: '#38bdf8', fontWeight: 'bold', gridColumn: 'span 2' }}
+                onClick={() => applyConceptionPreset({
+                  eventName: 'Scénographie Pro : Écran 4×2.5m + Matrices + 3 Totems Beam 280W',
+                  siteName: 'Scène Festival & Live Show',
+                  stage: { lengthModules: 6, widthModules: 4, heightId: 'h75', hasStairs: true, stairsCount: 1, stairsSide: 'right' },
+                  structure: { structureType: 'grid', towerType: 'PT34', gridTypeL: 'HT44', length: 9, width: 7, height: 6, totemsCount: 3, totemHeightM: 2.5 },
+                  screen: { pitch: 'P3.9', mountType: 'suspended_truss', cabinetsW: 8, cabinetsH: 5 }, // 4.0m × 2.5m !
+                  lighting: {
+                    beamsCount: 8, spotsCount: 6, washesCount: 8, ledBarsCount: 6, blindersCount: 4, hazerCount: 2,
+                    sideMatricesCount: 5, // 5 à gauche + 5 à droite = 10 matrices !
+                    showBeams: true, beamColor: '#38bdf8'
+                  }
+                })}
+              >
+                ★ Setup Écran 4×2.5m + Totems + Matrices
+              </button>
+
               <button
                 type="button"
                 className="preset-pill"
@@ -310,8 +388,9 @@ export default function FullStageStudio() {
                   lighting: { beamsCount: 8, spotsCount: 6, washesCount: 8, ledBarsCount: 6, blindersCount: 4, hazerCount: 2, showBeams: true, beamColor: '#38bdf8' }
                 })}
               >
-                Festival 8×6
+                Festival 8×6 (Carthage)
               </button>
+
               <button
                 type="button"
                 className="preset-pill"
@@ -324,8 +403,9 @@ export default function FullStageStudio() {
                   lighting: { beamsCount: 6, spotsCount: 4, washesCount: 6, ledBarsCount: 8, blindersCount: 2, hazerCount: 1, showBeams: true, beamColor: '#f59e0b' }
                 })}
               >
-                Arena 10×7
+                Concert Arena 10×7
               </button>
+
               <button
                 type="button"
                 className="preset-pill"
@@ -338,13 +418,14 @@ export default function FullStageStudio() {
                   lighting: { beamsCount: 4, spotsCount: 4, washesCount: 6, ledBarsCount: 4, blindersCount: 0, hazerCount: 1, showBeams: true, beamColor: '#a855f7' }
                 })}
               >
-                Gala 5×4
+                Gala Corporate 5×4
               </button>
+
               <button
                 type="button"
                 className="preset-pill"
                 onClick={() => applyConceptionPreset({
-                  eventName: 'Stadium Live Outdoor',
+                  eventName: 'Méga Concert Stadium Live Outdoor',
                   siteName: 'Stade Olympique',
                   stage: { lengthModules: 10, widthModules: 8, heightId: 'h100', hasStairs: true, stairsCount: 2 },
                   structure: { structureType: 'grid', towerType: 'HT44', gridTypeL: 'TT104', length: 14, width: 12, height: 8 },
@@ -352,13 +433,13 @@ export default function FullStageStudio() {
                   lighting: { beamsCount: 16, spotsCount: 12, washesCount: 16, ledBarsCount: 12, blindersCount: 8, hazerCount: 4, showBeams: true, beamColor: '#38bdf8' }
                 })}
               >
-                Stadium 12×10
+                Stadium Live 12×10
               </button>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className="segmented-toggle">
+          {/* Pillar Navigation Tabs */}
+          <div className="segmented-toggle" style={{ background: 'rgba(0,0,0,0.4)' }}>
             <button
               type="button"
               className={`segment-btn ${activeTab === 'stage' ? 'active' : ''}`}
@@ -398,7 +479,7 @@ export default function FullStageStudio() {
             <div className="sidebar-section">
               <div className="section-header">
                 <Layers size={15} className="text-indigo" />
-                <span className="section-title">Paramètres Podium Scénique</span>
+                <span className="section-title">Paramètres Podium & Scène</span>
               </div>
 
               <div className="dimensions-box">
@@ -435,8 +516,9 @@ export default function FullStageStudio() {
                 </div>
               </div>
 
+              {/* Hauteurs Disponibles */}
               <div className="form-group">
-                <label className="form-label">Hauteur Praticables</label>
+                <label className="form-label">Hauteur Praticables (3 hauteurs standards)</label>
                 <div className="segmented-toggle">
                   {Object.values(STAGE_HEIGHTS).map(h => (
                     <button
@@ -451,9 +533,10 @@ export default function FullStageStudio() {
                 </div>
               </div>
 
+              {/* Escalier & Options */}
               <div className="form-grid-2">
                 <div className="form-group">
-                  <label className="form-label">Escalier</label>
+                  <label className="form-label">Escaliers de Scène</label>
                   <select
                     className="form-select"
                     value={stageState.stairsCount}
@@ -461,49 +544,73 @@ export default function FullStageStudio() {
                   >
                     <option value={0}>Aucun</option>
                     <option value={1}>1 Escalier</option>
-                    <option value={2}>2 Escaliers</option>
+                    <option value={2}>2 Escaliers (accès bilatéral)</option>
                   </select>
                 </div>
+
                 <div className="form-group">
-                  <label className="form-label">Position</label>
+                  <label className="form-label">Position Escalier</label>
                   <select
                     className="form-select"
                     value={stageState.stairsSide}
                     onChange={(e) => setStageState(prev => ({ ...prev, stairsSide: e.target.value }))}
                   >
-                    <option value="right">Côté Droit</option>
-                    <option value="left">Côté Gauche</option>
-                    <option value="both">Deux Côtés</option>
+                    <option value="right">Côté Droit (Jardin)</option>
+                    <option value="left">Côté Gauche (Cour)</option>
+                    <option value="both">Deux Côtés (Cour & Jardin)</option>
                   </select>
+                </div>
+              </div>
+
+              {/* Quantités Calculées */}
+              <div className="load-analysis-card">
+                <span className="analysis-title">Éléments de scène requis :</span>
+                <div className="analysis-metrics">
+                  <div className="metric-item">
+                    <span className="metric-label">Plaques 18mm</span>
+                    <span className="metric-val">{conception.stage.counts.stagePlaques} pcs</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Pieds vérins</span>
+                    <span className="metric-val">{conception.stage.counts.stagePieds} pcs</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Côtés latéraux</span>
+                    <span className="metric-val">{conception.stage.counts.stageCotes} pcs</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Surface utile</span>
+                    <span className="metric-val highlight">{conception.stage.dimensions.surfaceM2} m²</span>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 2: STRUCTURE */}
+          {/* TAB 2: STRUCTURE TRUSS */}
           {activeTab === 'structure' && (
             <div className="sidebar-section">
               <div className="section-header">
                 <Wrench size={15} className="text-cyan" />
-                <span className="section-title">Paramètres Structure Truss</span>
+                <span className="section-title">Paramètres Structure & Ponts</span>
               </div>
 
               <div className="form-group">
-                <label className="form-label">Type d'Architecture</label>
+                <label className="form-label">Architecture Structurelle</label>
                 <div className="segmented-toggle">
                   <button
                     type="button"
                     className={`segment-btn ${structureState.structureType === 'grid' ? 'active' : ''}`}
                     onClick={() => setStructureState(prev => ({ ...prev, structureType: 'grid' }))}
                   >
-                    Gril (Box Grid)
+                    Gril (Box Grid 4 Tours)
                   </button>
                   <button
                     type="button"
                     className={`segment-btn ${structureState.structureType === 'goalpost' ? 'active' : ''}`}
                     onClick={() => setStructureState(prev => ({ ...prev, structureType: 'goalpost' }))}
                   >
-                    Arche (Goalpost)
+                    Arche (Goalpost 2 Tours)
                   </button>
                 </div>
               </div>
@@ -511,7 +618,7 @@ export default function FullStageStudio() {
               <div className="dimensions-box">
                 <div className="stepper-row">
                   <div className="stepper-meta">
-                    <span className="stepper-title">Longueur Portée (m)</span>
+                    <span className="stepper-title">Portée Longueur (m)</span>
                     <span className="stepper-sub">Axe principal</span>
                   </div>
                   <div className="stepper-controls">
@@ -528,7 +635,7 @@ export default function FullStageStudio() {
                 {structureState.structureType === 'grid' && (
                   <div className="stepper-row">
                     <div className="stepper-meta">
-                      <span className="stepper-title">Largeur Portée (m)</span>
+                      <span className="stepper-title">Portée Largeur (m)</span>
                       <span className="stepper-sub">Profondeur gril</span>
                     </div>
                     <div className="stepper-controls">
@@ -559,6 +666,101 @@ export default function FullStageStudio() {
                   </div>
                 </div>
               </div>
+
+              <div className="form-grid-2">
+                <div className="form-group">
+                  <label className="form-label">Série Tours</label>
+                  <select
+                    className="form-select"
+                    value={structureState.towerType}
+                    onChange={(e) => setStructureState(prev => ({ ...prev, towerType: e.target.value }))}
+                  >
+                    <option value="PT34">PT34 (Std 290)</option>
+                    <option value="FT44">FT44 (Std 400)</option>
+                    <option value="HT44">HT44 (Heavy 400)</option>
+                    <option value="TT104">TT104 (1010 Monumental)</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Série Poutres (L)</label>
+                  <select
+                    className="form-select"
+                    value={structureState.gridTypeL}
+                    onChange={(e) => setStructureState(prev => ({ ...prev, gridTypeL: e.target.value }))}
+                  >
+                    <option value="PT34">PT34 (Std 290)</option>
+                    <option value="FT44">FT44 (Std 400)</option>
+                    <option value="HT44">HT44 (Heavy 400)</option>
+                    <option value="TT104">TT104 (Monumental)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Totems Scéniques de Fond de Scène */}
+              <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '14px' }}>
+                <span className="section-title" style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+                  <Wrench size={13} className="text-cyan" />
+                  <span>Totems Truss Verticaux (Fond de Scène)</span>
+                </span>
+
+                <div className="dimensions-box">
+                  <div className="stepper-row">
+                    <div className="stepper-meta">
+                      <span className="stepper-title">Nombre de Totems</span>
+                      <span className="stepper-sub">Totems verticaux sur embases acier</span>
+                    </div>
+                    <div className="stepper-controls">
+                      <button
+                        type="button"
+                        className="stepper-btn"
+                        onClick={() => setStructureState(prev => ({ ...prev, totemsCount: Math.max(0, (prev.totemsCount ?? 0) - 1) }))}
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className="stepper-input">{structureState.totemsCount ?? 0}</span>
+                      <button
+                        type="button"
+                        className="stepper-btn"
+                        onClick={() => setStructureState(prev => ({ ...prev, totemsCount: Math.min(8, (prev.totemsCount ?? 0) + 1) }))}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {(structureState.totemsCount ?? 0) > 0 && (
+                    <div className="stepper-row">
+                      <div className="stepper-meta">
+                        <span className="stepper-title">Hauteur Totem (m)</span>
+                        <span className="stepper-sub">Élévation fond de scène</span>
+                      </div>
+                      <div className="stepper-controls">
+                        <button
+                          type="button"
+                          className="stepper-btn"
+                          onClick={() => setStructureState(prev => ({ ...prev, totemHeightM: Math.max(1, ((prev.totemHeightM ?? 2.5) - 0.5)) }))}
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="stepper-input">{structureState.totemHeightM ?? 2.5}m</span>
+                        <button
+                          type="button"
+                          className="stepper-btn"
+                          onClick={() => setStructureState(prev => ({ ...prev, totemHeightM: Math.min(5, ((prev.totemHeightM ?? 2.5) + 0.5)) }))}
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {(structureState.totemsCount ?? 0) > 0 && (
+                  <div style={{ marginTop: '8px', fontSize: '11px', color: '#94a3b8', background: 'rgba(56,189,248,0.08)', padding: '7px 10px', borderRadius: '6px', border: '1px solid rgba(56,189,248,0.2)' }}>
+                    💡 <strong>Tête de Totem :</strong> Chaque totem est équipé d'une <strong>Moving Head Beam 280W (Robe Pointe)</strong> orientée vers le haut, d'une platine supérieure et d'une embase acier lestée 28 kg.
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -567,41 +769,82 @@ export default function FullStageStudio() {
             <div className="sidebar-section">
               <div className="section-header">
                 <Monitor size={15} className="text-cyan" />
-                <span className="section-title">Paramètres Écran LED</span>
+                <span className="section-title">Paramètres Mur Vidéo LED</span>
               </div>
 
               <div className="form-grid-2">
                 <div className="form-group">
-                  <label className="form-label">Pitch</label>
+                  <label className="form-label">Pas de masque (Pitch)</label>
                   <select
                     className="form-select"
                     value={screenState.pitch}
                     onChange={(e) => setScreenState(prev => ({ ...prev, pitch: e.target.value }))}
                   >
-                    <option value="P2.6">P2.6 (Haute Déf)</option>
-                    <option value="P2.9">P2.9 (Concert)</option>
-                    <option value="P3.9">P3.9 (Festival Standard)</option>
-                    <option value="P4.8">P4.8 (Stadium)</option>
+                    <option value="P2.6">P2.6 (Haute Déf Indoor)</option>
+                    <option value="P2.9">P2.9 (Concert Indoor)</option>
+                    <option value="P3.9">P3.9 (Festival Outdoor standard)</option>
+                    <option value="P4.8">P4.8 (Grand format Stadium)</option>
                   </select>
                 </div>
+
                 <div className="form-group">
-                  <label className="form-label">Fixation</label>
+                  <label className="form-label">Mode de Fixation</label>
                   <select
                     className="form-select"
                     value={screenState.mountType}
                     onChange={(e) => setScreenState(prev => ({ ...prev, mountType: e.target.value }))}
                   >
-                    <option value="suspended_truss">Suspendu Pont</option>
-                    <option value="ground_stack">Posé au sol</option>
+                    <option value="suspended_truss">Suspendu au Pont Arrière</option>
+                    <option value="ground_stack">Posé au sol (Ground Stack)</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Formats Rapides Écran */}
+              <div style={{ display: 'flex', gap: '6px', marginBottom: '10px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="preset-pill"
+                  style={{
+                    flex: 1, minWidth: '95px', fontSize: '11px', textAlign: 'center',
+                    borderColor: screenState.cabinetsW === 8 && screenState.cabinetsH === 5 ? '#38bdf8' : undefined,
+                    color: screenState.cabinetsW === 8 && screenState.cabinetsH === 5 ? '#38bdf8' : undefined
+                  }}
+                  onClick={() => setScreenState(prev => ({ ...prev, cabinetsW: 8, cabinetsH: 5 }))}
+                >
+                  4.0m × 2.5m (8×5)
+                </button>
+                <button
+                  type="button"
+                  className="preset-pill"
+                  style={{
+                    flex: 1, minWidth: '95px', fontSize: '11px', textAlign: 'center',
+                    borderColor: screenState.cabinetsW === 10 && screenState.cabinetsH === 6 ? '#38bdf8' : undefined,
+                    color: screenState.cabinetsW === 10 && screenState.cabinetsH === 6 ? '#38bdf8' : undefined
+                  }}
+                  onClick={() => setScreenState(prev => ({ ...prev, cabinetsW: 10, cabinetsH: 6 }))}
+                >
+                  5.0m × 3.0m (10×6)
+                </button>
+                <button
+                  type="button"
+                  className="preset-pill"
+                  style={{
+                    flex: 1, minWidth: '95px', fontSize: '11px', textAlign: 'center',
+                    borderColor: screenState.cabinetsW === 12 && screenState.cabinetsH === 7 ? '#38bdf8' : undefined,
+                    color: screenState.cabinetsW === 12 && screenState.cabinetsH === 7 ? '#38bdf8' : undefined
+                  }}
+                  onClick={() => setScreenState(prev => ({ ...prev, cabinetsW: 12, cabinetsH: 7 }))}
+                >
+                  6.0m × 3.5m (12×7)
+                </button>
               </div>
 
               <div className="dimensions-box">
                 <div className="stepper-row">
                   <div className="stepper-meta">
                     <span className="stepper-title">Largeur Écran</span>
-                    <span className="stepper-sub">{conception.screen.dimensions.widthM}m ({screenState.cabinetsW} dalles)</span>
+                    <span className="stepper-sub">{conception.screen.dimensions.widthM} m ({screenState.cabinetsW} dalles)</span>
                   </div>
                   <div className="stepper-controls">
                     <button type="button" className="stepper-btn" onClick={() => adjustScreenCabinets('cabinetsW', -2)}>
@@ -617,7 +860,7 @@ export default function FullStageStudio() {
                 <div className="stepper-row">
                   <div className="stepper-meta">
                     <span className="stepper-title">Hauteur Écran</span>
-                    <span className="stepper-sub">{conception.screen.dimensions.heightM}m ({screenState.cabinetsH} dalles)</span>
+                    <span className="stepper-sub">{conception.screen.dimensions.heightM} m ({screenState.cabinetsH} dalles)</span>
                   </div>
                   <div className="stepper-controls">
                     <button type="button" className="stepper-btn" onClick={() => adjustScreenCabinets('cabinetsH', -1)}>
@@ -630,6 +873,28 @@ export default function FullStageStudio() {
                   </div>
                 </div>
               </div>
+
+              <div className="load-analysis-card">
+                <span className="analysis-title">Caractéristiques Vidéo & Poids :</span>
+                <div className="analysis-metrics">
+                  <div className="metric-item">
+                    <span className="metric-label">Résolution Pixels</span>
+                    <span className="metric-val">{conception.screen.totalPixels.toLocaleString()} px</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Poids Écran Suspendu</span>
+                    <span className="metric-val">{conception.screen.screenWeightKg} kg</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Surface Vidéo</span>
+                    <span className="metric-val highlight">{conception.screen.dimensions.areaM2} m²</span>
+                  </div>
+                  <div className="metric-item">
+                    <span className="metric-label">Consommation</span>
+                    <span className="metric-val">{conception.screen.screenPowerKw} kW</span>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -638,14 +903,14 @@ export default function FullStageStudio() {
             <div className="sidebar-section">
               <div className="section-header">
                 <Sun size={15} className="text-amber" />
-                <span className="section-title">Parc Projecteurs & Show</span>
+                <span className="section-title">Parc Projecteurs & Éclairage</span>
               </div>
 
               <div className="dimensions-box">
                 <div className="stepper-row">
                   <div className="stepper-meta">
-                    <span className="stepper-title">Beams 7R / 10R</span>
-                    <span className="stepper-sub">Faisceaux pont arrière</span>
+                    <span className="stepper-title">Beams 7R / 10R (300W)</span>
+                    <span className="stepper-sub">Faisceaux volumétriques pont arrière</span>
                   </div>
                   <div className="stepper-controls">
                     <button type="button" className="stepper-btn" onClick={() => adjustLightingFixture('beamsCount', -2)}>
@@ -660,8 +925,8 @@ export default function FullStageStudio() {
 
                 <div className="stepper-row">
                   <div className="stepper-meta">
-                    <span className="stepper-title">Spots Profile LED</span>
-                    <span className="stepper-sub">Découpe pont avant</span>
+                    <span className="stepper-title">Spots Profile LED (350W)</span>
+                    <span className="stepper-sub">Découpe artistes pont avant</span>
                   </div>
                   <div className="stepper-controls">
                     <button type="button" className="stepper-btn" onClick={() => adjustLightingFixture('spotsCount', -2)}>
@@ -676,8 +941,8 @@ export default function FullStageStudio() {
 
                 <div className="stepper-row">
                   <div className="stepper-meta">
-                    <span className="stepper-title">Washes LED RGBW</span>
-                    <span className="stepper-sub">Bains de couleurs</span>
+                    <span className="stepper-title">Washes LED RGBW (300W)</span>
+                    <span className="stepper-sub">Bains de couleurs scène</span>
                   </div>
                   <div className="stepper-controls">
                     <button type="button" className="stepper-btn" onClick={() => adjustLightingFixture('washesCount', -2)}>
@@ -692,8 +957,24 @@ export default function FullStageStudio() {
 
                 <div className="stepper-row">
                   <div className="stepper-meta">
-                    <span className="stepper-title">Blinders 4-Lite</span>
-                    <span className="stepper-sub">Face public</span>
+                    <span className="stepper-title">Barres LED / Sunstrips</span>
+                    <span className="stepper-sub">Matrices dynamiques décoratives</span>
+                  </div>
+                  <div className="stepper-controls">
+                    <button type="button" className="stepper-btn" onClick={() => adjustLightingFixture('ledBarsCount', -2)}>
+                      <Minus size={14} />
+                    </button>
+                    <span className="stepper-input">{lightingState.ledBarsCount}</span>
+                    <button type="button" className="stepper-btn" onClick={() => adjustLightingFixture('ledBarsCount', 2)}>
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="stepper-row">
+                  <div className="stepper-meta">
+                    <span className="stepper-title">Blinders 4-Lite DWE</span>
+                    <span className="stepper-sub">Impact aveuglant face public</span>
                   </div>
                   <div className="stepper-controls">
                     <button type="button" className="stepper-btn" onClick={() => adjustLightingFixture('blindersCount', -2)}>
@@ -705,8 +986,36 @@ export default function FullStageStudio() {
                     </button>
                   </div>
                 </div>
+
+                {/* Matrices LED Latérales */}
+                <div className="stepper-row" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
+                  <div className="stepper-meta">
+                    <span className="stepper-title" style={{ color: '#38bdf8' }}>Matrices LED Strobe (Flancs Écran)</span>
+                    <span className="stepper-sub">
+                      {lightingState.sideMatricesCount ?? 0} à gauche + {lightingState.sideMatricesCount ?? 0} à droite ({((lightingState.sideMatricesCount ?? 0) * 2)} au total)
+                    </span>
+                  </div>
+                  <div className="stepper-controls">
+                    <button
+                      type="button"
+                      className="stepper-btn"
+                      onClick={() => setLightingState(prev => ({ ...prev, sideMatricesCount: Math.max(0, (prev.sideMatricesCount ?? 0) - 1) }))}
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="stepper-input">{lightingState.sideMatricesCount ?? 0}/côté</span>
+                    <button
+                      type="button"
+                      className="stepper-btn"
+                      onClick={() => setLightingState(prev => ({ ...prev, sideMatricesCount: Math.min(10, (prev.sideMatricesCount ?? 0) + 1) }))}
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                </div>
               </div>
 
+              {/* Show Beams in 3D & Color picker */}
               <div className="form-grid-2" style={{ marginTop: '10px' }}>
                 <div className="form-group">
                   <label className="form-label">Faisceaux 3D</label>
@@ -717,22 +1026,22 @@ export default function FullStageStudio() {
                     onClick={() => setLightingState(prev => ({ ...prev, showBeams: !prev.showBeams }))}
                   >
                     <Eye size={14} />
-                    <span>{lightingState.showBeams ? 'Actifs' : 'Masqués'}</span>
+                    <span>{lightingState.showBeams ? 'Faisceaux Actifs' : 'Faisceaux Masqués'}</span>
                   </button>
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Teinte</label>
+                  <label className="form-label">Teinte du Show</label>
                   <select
                     className="form-select"
                     value={lightingState.beamColor}
                     onChange={(e) => setLightingState(prev => ({ ...prev, beamColor: e.target.value }))}
                   >
                     <option value="#38bdf8">Cyan Électrique</option>
-                    <option value="#fbbf24">Ambre Concert</option>
-                    <option value="#ec4899">Magenta</option>
-                    <option value="#a855f7">Pourpre</option>
-                    <option value="#ffffff">Blanc Pur</option>
+                    <option value="#fbbf24">Ambre Chaud (Concert)</option>
+                    <option value="#ec4899">Magenta / Rose</option>
+                    <option value="#a855f7">Pourpre / Violet</option>
+                    <option value="#ffffff">Blanc Pur Intense</option>
                     <option value="#10b981">Vert Laser</option>
                   </select>
                 </div>
@@ -740,7 +1049,7 @@ export default function FullStageStudio() {
             </div>
           )}
 
-          {/* Bottom Consolidated Metrics */}
+          {/* CONSOLIDATED GLOBAL SAFETY & POWER CARD */}
           <div className="load-analysis-card" style={{ marginTop: 'auto' }}>
             <div className="analysis-header">
               <Scale size={16} className="text-amber" />
@@ -749,11 +1058,11 @@ export default function FullStageStudio() {
 
             <div className="analysis-metrics">
               <div className="metric-item">
-                <span className="metric-label">Charge Suspendue</span>
+                <span className="metric-label">Poids Total Suspendu</span>
                 <span className="metric-val highlight">{conception.totalRigging.totalSuspendedLoadKg} kg</span>
               </div>
               <div className="metric-item">
-                <span className="metric-label">Charge / Palan 1T</span>
+                <span className="metric-label">Charge / Moteur 1T</span>
                 <span className="metric-val">{conception.totalRigging.pointLoadPerMotorKg} kg</span>
               </div>
               <div className="metric-item">
@@ -766,15 +1075,29 @@ export default function FullStageStudio() {
               </div>
             </div>
 
+            <div className="safety-bar-wrapper">
+              <div className="safety-bar-header">
+                <span>Sécurité Palans : {conception.totalRigging.pointLoadPerMotorKg} kg / 1000 kg</span>
+                <span className="safety-pct">{conception.totalRigging.motorSafetyPercentage}%</span>
+              </div>
+              <div className="safety-bar-track">
+                <div
+                  className={`safety-bar-fill ${conception.totalRigging.isOverload ? 'overload' : 'safe'}`}
+                  style={{ width: `${Math.min(100, conception.totalRigging.motorSafetyPercentage)}%` }}
+                ></div>
+              </div>
+            </div>
+
             <div className="safety-status-alert alert-success">
               <CheckCircle size={15} />
-              <span>Conforme BGV-C1 • Armoire 63A Triphasé requise</span>
+              <span>Conforme aux normes scéniques BGV-C1 (Armoire 63A Triphasé requise)</span>
             </div>
           </div>
         </aside>
 
         {/* Center / Right 3D Viewport */}
         <section className="structure-viewport-section">
+          {/* Controls bar */}
           <div className="viewport-controls-bar">
             <div className="segmented-toggle small">
               <button
@@ -794,31 +1117,39 @@ export default function FullStageStudio() {
             </div>
 
             <div className="viewport-actions">
+              {/* Night Mode Toggle */}
               <button
                 type="button"
                 className="viewport-action-btn"
+                title="Basculer ambiance concert / jour"
                 onClick={() => setNightMode(!nightMode)}
               >
                 <Moon size={14} />
-                <span>{nightMode ? 'Ambiance Nuit' : 'Ambiance Jour'}</span>
+                <span>{nightMode ? 'Ambiance Show Nuit' : 'Ambiance Jour'}</span>
               </button>
+
               <button
                 type="button"
                 className="viewport-action-btn"
                 onClick={() => {
-                  if (captureRef.current) captureRef.current.download(`Conception_3D.png`);
+                  if (captureRef.current) {
+                    captureRef.current.download(`Conception_Scenique_${eventName.slice(0, 20)}_3D.png`);
+                  }
                 }}
               >
                 <Camera size={14} />
                 <span>Capture 3D</span>
               </button>
+
               <button
                 type="button"
                 className="viewport-action-btn"
                 onClick={() => {
                   setViewMode('2D');
                   setTimeout(() => {
-                    if (captureRef.current) captureRef.current.download(`Conception_Plan2D.png`);
+                    if (captureRef.current) {
+                      captureRef.current.download(`Conception_Scenique_${eventName.slice(0, 20)}_Plan2D.png`);
+                    }
                   }, 500);
                 }}
               >
@@ -828,8 +1159,14 @@ export default function FullStageStudio() {
             </div>
           </div>
 
+          {/* 3D Canvas */}
           <div className="structure-canvas-container">
-            <Suspense fallback={<div className="canvas-loading-spinner">Chargement 3D...</div>}>
+            <Suspense fallback={
+              <div className="canvas-loading-spinner">
+                <div className="loading-spinner"></div>
+                <span>Chargement de la scène 3D complète...</span>
+              </div>
+            }>
               <Canvas gl={{ preserveDrawingBuffer: true, antialias: true }}>
                 {viewMode === '3D' ? (
                   <PerspectiveCamera makeDefault position={[12, 11, 16]} fov={45} />
@@ -838,19 +1175,40 @@ export default function FullStageStudio() {
                 )}
 
                 <ambientLight intensity={nightMode ? 0.35 : 0.8} />
-                <directionalLight position={[15, 25, 15]} intensity={nightMode ? 0.8 : 1.4} />
+                <directionalLight position={[15, 25, 15]} intensity={nightMode ? 0.8 : 1.4} castShadow />
                 <directionalLight position={[-15, 12, -10]} intensity={nightMode ? 0.2 : 0.5} />
 
-                <Grid infiniteGrid fadeDistance={70} sectionColor="#ec4899" cellColor="#1e293b" sectionSize={2.44} cellSize={1.22} />
-                <OrbitControls makeDefault enableRotate={viewMode === '3D'} enableZoom={true} maxPolarAngle={Math.PI / 2 + 0.05} />
+                {/* Ground technical grid */}
+                <Grid
+                  infiniteGrid
+                  fadeDistance={70}
+                  sectionColor="#ec4899"
+                  cellColor="#1e293b"
+                  sectionSize={2.44}
+                  cellSize={1.22}
+                />
+
+                <OrbitControls
+                  makeDefault
+                  enableRotate={viewMode === '3D'}
+                  enableZoom={true}
+                  maxPolarAngle={Math.PI / 2 + 0.05}
+                />
+
                 <color attach="background" args={[nightMode ? '#05070d' : '#f8fafc']} />
 
-                <FullStage3D conception={conception} nightMode={nightMode} showLabels={true} />
+                {/* Master Stage 3D Model */}
+                <FullStage3D
+                  conception={conception}
+                  nightMode={nightMode}
+                  showLabels={true}
+                />
+
                 <SceneCapture captureRef={captureRef} />
               </Canvas>
             </Suspense>
 
-            {/* Floating Overview */}
+            {/* Floating Overview Pill */}
             <div className="floating-equipment-summary">
               <div className="floating-header" style={{ color: '#ec4899' }}>
                 <Sparkles size={14} />
@@ -860,6 +1218,10 @@ export default function FullStageStudio() {
                 <div className="floating-item">
                   <span className="f-label">Scène :</span>
                   <span className="f-val">{conception.stage.dimensions.lengthM}×{conception.stage.dimensions.widthM}m</span>
+                </div>
+                <div className="floating-item">
+                  <span className="f-label">Surface :</span>
+                  <span className="f-val">{conception.stage.dimensions.surfaceM2} m²</span>
                 </div>
                 <div className="floating-item">
                   <span className="f-label">Structure :</span>
@@ -874,18 +1236,22 @@ export default function FullStageStudio() {
                   <span className="f-val highlight">{conception.lighting.counts.total} pcs</span>
                 </div>
                 <div className="floating-item">
-                  <span className="f-label">Charge Palans :</span>
+                  <span className="f-label">Charge Suspendue :</span>
                   <span className="f-val">{conception.totalRigging.totalSuspendedLoadKg} kg</span>
                 </div>
                 <div className="floating-item">
-                  <span className="f-label">Puissance :</span>
+                  <span className="f-label">Puissance Élec :</span>
                   <span className="f-val">{conception.totalPower.totalKw} kW</span>
+                </div>
+                <div className="floating-item">
+                  <span className="f-label">Régie DMX :</span>
+                  <span className="f-val">{conception.lighting.dmxUniverses} univers</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bottom BOM table */}
+          {/* Consolidated Master BOM Table */}
           <div className="viewport-bom-section">
             <div className="bom-section-header">
               <div className="bom-header-info">
@@ -932,9 +1298,17 @@ export default function FullStageStudio() {
             </div>
           </div>
         </section>
-      </div>
+      </main>
 
       {/* Modals */}
+      <LoginModal
+        isOpen={isAuthModalOpen}
+        onLoginSuccess={(u) => {
+          setCurrentUser(u);
+          setIsAuthModalOpen(false);
+        }}
+      />
+
       <SaveConceptionModal
         isOpen={isSaveModalOpen}
         onClose={() => setIsSaveModalOpen(false)}

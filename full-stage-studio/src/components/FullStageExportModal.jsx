@@ -103,6 +103,18 @@ export default function FullStageExportModal({
               <span className="strip-label">ÉCRAN LED</span>
               <span className="strip-value">{screen.dimensions.widthM}m × {screen.dimensions.heightM}m ({screen.pitch})</span>
             </div>
+            {structure.totems?.count > 0 && (
+              <div className="strip-item">
+                <span className="strip-label">TOTEMS SCÉNIQUES</span>
+                <span className="strip-value" style={{ color: '#0284c7' }}>{structure.totems.count}x Totems H={structure.totems.heightM}m + Beam 280W</span>
+              </div>
+            )}
+            {lighting.sideMatricesCount > 0 && (
+              <div className="strip-item">
+                <span className="strip-label">MATRICES LATÉRALES</span>
+                <span className="strip-value" style={{ color: '#9333ea' }}>{lighting.totalSideMatrices}x Matrices Strobe/Beam (5G + 5D)</span>
+              </div>
+            )}
           </div>
 
           {/* 2 PLANS TECHNIQUES (Vue du Haut & Vue de Face) */}
@@ -138,10 +150,32 @@ export default function FullStageExportModal({
                       </text>
 
                       {/* LED Screen at back of stage */}
-                      <rect x="65" y="48" width="130" height="10" fill="#2563eb" stroke="#1e40af" strokeWidth="1.5" rx="2" />
+                      <rect x="75" y="48" width="110" height="10" fill="#2563eb" stroke="#1e40af" strokeWidth="1.5" rx="2" />
                       <text x="130" y="42" fill="#2563eb" fontSize="8" fontWeight="bold" textAnchor="middle">
                         ÉCRAN LED {screen.dimensions.widthM}m × {screen.dimensions.heightM}m
                       </text>
+
+                      {/* Totems derrière l'écran */}
+                      {structure.totems?.count > 0 && (
+                        <>
+                          <rect x="85" y="32" width="10" height="10" fill="#0284c7" stroke="#0f172a" strokeWidth="1" />
+                          <rect x="125" y="32" width="10" height="10" fill="#0284c7" stroke="#0f172a" strokeWidth="1" />
+                          <rect x="165" y="32" width="10" height="10" fill="#0284c7" stroke="#0f172a" strokeWidth="1" />
+                          <text x="130" y="28" fill="#0284c7" fontSize="7" fontWeight="bold" textAnchor="middle">
+                            3× TOTEMS (BEAM 280W)
+                          </text>
+                        </>
+                      )}
+
+                      {/* Matrices Strobe flanquant l'écran */}
+                      {lighting.sideMatricesCount > 0 && (
+                        <>
+                          <rect x="62" y="47" width="8" height="12" fill="#9333ea" stroke="#581c87" strokeWidth="1" rx="1" />
+                          <rect x="190" y="47" width="8" height="12" fill="#9333ea" stroke="#581c87" strokeWidth="1" rx="1" />
+                          <text x="50" y="56" fill="#9333ea" fontSize="6" fontWeight="bold" textAnchor="end">5× MATRICES</text>
+                          <text x="202" y="56" fill="#9333ea" fontSize="6" fontWeight="bold" textAnchor="start">5× MATRICES</text>
+                        </>
+                      )}
 
                       {/* Stairs on right */}
                       {stage.hasStairs && (
@@ -209,11 +243,46 @@ export default function FullStageExportModal({
                         SCÈNE H={Math.round(stage.dimensions.heightM * 100)}cm
                       </text>
 
+                      {/* Totems verticaux de fond de scène */}
+                      {structure.totems?.count > 0 && (
+                        <>
+                          <rect x="88" y="45" width="8" height="100" fill="#64748b" stroke="#334155" strokeWidth="0.5" />
+                          <circle cx="92" cy="42" r="5" fill="#0284c7" />
+                          <polygon points="92,40 85,0 99,0" fill="rgba(2, 132, 199, 0.25)" />
+
+                          <rect x="126" y="45" width="8" height="100" fill="#64748b" stroke="#334155" strokeWidth="0.5" />
+                          <circle cx="130" cy="42" r="5" fill="#0284c7" />
+                          <polygon points="130,40 123,0 137,0" fill="rgba(2, 132, 199, 0.25)" />
+
+                          <rect x="164" y="45" width="8" height="100" fill="#64748b" stroke="#334155" strokeWidth="0.5" />
+                          <circle cx="168" cy="42" r="5" fill="#0284c7" />
+                          <polygon points="168,40 161,0 175,0" fill="rgba(2, 132, 199, 0.25)" />
+                        </>
+                      )}
+
                       {/* LED Screen */}
                       <rect x="75" y="60" width="110" height="55" fill="#2563eb" stroke="#1d4ed8" strokeWidth="1.5" rx="2" />
                       <text x="130" y="90" fill="#ffffff" fontSize="9" fontWeight="bold" textAnchor="middle">
                         ÉCRAN LED ({screen.dimensions.widthM}×{screen.dimensions.heightM}m)
                       </text>
+
+                      {/* 5 Matrices Gauche et 5 Matrices Droite */}
+                      {lighting.sideMatricesCount > 0 && (
+                        <>
+                          {/* Gauche */}
+                          <rect x="63" y="60" width="8" height="9" fill="#9333ea" rx="1" />
+                          <rect x="63" y="71" width="8" height="9" fill="#9333ea" rx="1" />
+                          <rect x="63" y="82" width="8" height="9" fill="#9333ea" rx="1" />
+                          <rect x="63" y="93" width="8" height="9" fill="#9333ea" rx="1" />
+                          <rect x="63" y="104" width="8" height="9" fill="#9333ea" rx="1" />
+                          {/* Droite */}
+                          <rect x="189" y="60" width="8" height="9" fill="#9333ea" rx="1" />
+                          <rect x="189" y="71" width="8" height="9" fill="#9333ea" rx="1" />
+                          <rect x="189" y="82" width="8" height="9" fill="#9333ea" rx="1" />
+                          <rect x="189" y="93" width="8" height="9" fill="#9333ea" rx="1" />
+                          <rect x="189" y="104" width="8" height="9" fill="#9333ea" rx="1" />
+                        </>
+                      )}
 
                       {/* Light Cones */}
                       <polygon points="60,42 35,145 85,145" fill="rgba(56, 189, 248, 0.2)" />

@@ -60,40 +60,120 @@ const MovingFixture = ({
   showBeam = true,
   rotation = [0, 0, 0],
   coneAngle = 0.2,
-  coneLength = 5.5
+  coneLength = 5.5,
+  upright = false
 }) => {
+  const dir = upright ? 1 : -1;
   return (
     <group position={position} rotation={rotation}>
       {/* Base / Clamp */}
-      <Box args={[0.22, 0.08, 0.22]} position={[0, 0.04, 0]}>
+      <Box args={[0.22, 0.08, 0.22]} position={[0, upright ? 0.04 : 0.04, 0]}>
         <meshStandardMaterial color="#0f172a" metalness={0.8} roughness={0.2} />
       </Box>
       {/* Yoke (U-bracket) */}
-      <Box args={[0.06, 0.16, 0.26]} position={[0, -0.06, 0]}>
+      <Box args={[0.06, 0.16, 0.26]} position={[0, dir * 0.12, 0]}>
         <meshStandardMaterial color="#1e293b" metalness={0.7} roughness={0.3} />
       </Box>
       {/* Head / Lens */}
-      <Cylinder args={[0.09, 0.08, 0.18, 12]} position={[0, -0.16, 0]}>
+      <Cylinder args={[0.09, 0.08, 0.18, 12]} position={[0, dir * 0.24, 0]}>
         <meshStandardMaterial color="#090d16" metalness={0.9} roughness={0.2} />
       </Cylinder>
       {/* Glowing Lens Face */}
-      <Cylinder args={[0.08, 0.08, 0.02, 12]} position={[0, -0.25, 0]} rotation={[0, 0, 0]}>
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={3} />
+      <Cylinder args={[0.08, 0.08, 0.02, 12]} position={[0, dir * 0.33, 0]} rotation={[0, 0, 0]}>
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={3.5} />
       </Cylinder>
 
       {/* Volumetric Light Cone */}
       {showBeam && (
-        <group position={[0, -0.26 - (coneLength / 2), 0]} rotation={[Math.PI, 0, 0]}>
+        <group position={[0, dir * (0.34 + coneLength / 2), 0]} rotation={[upright ? 0 : Math.PI, 0, 0]}>
           <Cone args={[coneLength * Math.tan(coneAngle), coneLength, 16, 1, true]}>
             <meshBasicMaterial
               color={color}
               transparent={true}
-              opacity={type === 'beam' ? 0.35 : 0.2}
+              opacity={type === 'beam' ? 0.38 : 0.22}
               depthWrite={false}
             />
           </Cone>
         </group>
       )}
+    </group>
+  );
+};
+
+// LED Strobe / Beam Matrix Panel (5x5 / JDC1 style)
+const LedMatrixPanel = ({ position, rotation = [0, 0, 0] }) => {
+  return (
+    <group position={position} rotation={rotation}>
+      {/* Outer Chassis */}
+      <Box args={[0.38, 0.38, 0.08]}>
+        <meshStandardMaterial color="#0f172a" metalness={0.8} roughness={0.3} />
+      </Box>
+      {/* Front Face Frame */}
+      <Box args={[0.34, 0.34, 0.01]} position={[0, 0, 0.041]}>
+        <meshStandardMaterial color="#020617" />
+      </Box>
+      {/* Central High-Intensity White Strobe Tube */}
+      <Box args={[0.30, 0.04, 0.015]} position={[0, 0, 0.046]}>
+        <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={4.0} />
+      </Box>
+      {/* Upper RGB LED Matrix section */}
+      <Box args={[0.30, 0.11, 0.012]} position={[0, 0.085, 0.044]}>
+        <meshStandardMaterial color="#38bdf8" emissive="#38bdf8" emissiveIntensity={2.2} />
+      </Box>
+      {/* Lower RGB LED Matrix section */}
+      <Box args={[0.30, 0.11, 0.012]} position={[0, -0.085, 0.044]}>
+        <meshStandardMaterial color="#a855f7" emissive="#a855f7" emissiveIntensity={2.2} />
+      </Box>
+      {/* Volumetric Strobe Glow */}
+      <Cone args={[0.35, 1.0, 12, 1, true]} position={[0, 0, 0.5]} rotation={[Math.PI / 2, 0, 0]}>
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.16} depthWrite={false} />
+      </Cone>
+    </group>
+  );
+};
+
+// Upstage Vertical Truss Totem with Moving Head Beam 280W on top
+const UpstageTotem = ({
+  position = [0, 0, 0],
+  height = 2.5,
+  beamColor = '#38bdf8',
+  showBeam = true,
+  beamFanAngle = 0
+}) => {
+  const [x, yGround, z] = position;
+  return (
+    <group position={[x, yGround, z]}>
+      {/* Base Plate Acier 600x600x15 mm lestée */}
+      <Box args={[0.6, 0.03, 0.6]} position={[0, 0.015, 0]}>
+        <meshStandardMaterial color="#090d16" metalness={0.9} roughness={0.2} />
+      </Box>
+      {/* Rubber feet */}
+      <Cylinder args={[0.03, 0.03, 0.02, 8]} position={[-0.25, 0.01, -0.25]}><meshStandardMaterial color="#1e293b" /></Cylinder>
+      <Cylinder args={[0.03, 0.03, 0.02, 8]} position={[0.25, 0.01, -0.25]}><meshStandardMaterial color="#1e293b" /></Cylinder>
+      <Cylinder args={[0.03, 0.03, 0.02, 8]} position={[-0.25, 0.01, 0.25]}><meshStandardMaterial color="#1e293b" /></Cylinder>
+      <Cylinder args={[0.03, 0.03, 0.02, 8]} position={[0.25, 0.01, 0.25]}><meshStandardMaterial color="#1e293b" /></Cylinder>
+
+      {/* Vertical Truss Column (section 290mm) */}
+      <group position={[0, height / 2, 0]}>
+        <TrussBeam length={height} width={0.29} height={0.29} color="#94a3b8" />
+      </group>
+
+      {/* Top Mounting Plate 350x350 mm */}
+      <Box args={[0.35, 0.02, 0.35]} position={[0, height + 0.01, 0]}>
+        <meshStandardMaterial color="#334155" metalness={0.7} roughness={0.3} />
+      </Box>
+
+      {/* Moving Head Beam 280W (Robe Pointe / Sharpy) mounted upright on top */}
+      <MovingFixture
+        position={[0, height + 0.02, 0]}
+        type="beam"
+        color={beamColor}
+        showBeam={showBeam}
+        coneAngle={0.065}
+        coneLength={9.5}
+        upright={true}
+        rotation={[-0.18, 0, beamFanAngle]} // Angled slightly forward and fanned out
+      />
     </group>
   );
 };
@@ -299,6 +379,87 @@ export default function FullStage3D({
     return list;
   }, [lighting, structL, structW, structH, isGoalpost, beamColor, showBeams]);
 
+  // Upstage Vertical Totems with Beam 280W (derrière l'écran LED)
+  const upstageTotems = useMemo(() => {
+    const totemsConfig = structure.totems;
+    if (!totemsConfig || !totemsConfig.count || totemsConfig.count <= 0) return [];
+    const count = totemsConfig.count;
+    const height = totemsConfig.heightM || 2.5;
+    const totemZ = screenZ - 0.55;
+    const items = [];
+
+    // Span behind screen or across back stage
+    const span = Math.min(stageL - 1.2, Math.max(2.8, screenW + 0.8));
+    const spacing = count > 1 ? span / (count - 1) : 0;
+    const startX = count > 1 ? -span / 2 : 0;
+
+    for (let i = 0; i < count; i++) {
+      const x = count > 1 ? (startX + i * spacing) : 0;
+      // Slight fan angle outward
+      const fanAngle = count > 1 ? ((i - (count - 1) / 2) / (count - 1)) * 0.22 : 0;
+      items.push(
+        <UpstageTotem
+          key={`totem-${i}`}
+          position={[x, 0, totemZ]}
+          height={height}
+          beamColor={beamColor}
+          showBeam={showBeams}
+          beamFanAngle={fanAngle}
+        />
+      );
+    }
+    return items;
+  }, [structure.totems, stageL, screenW, screenZ, beamColor, showBeams]);
+
+  // Lateral LED Matrices (5 à gauche et 5 à droite de l'écran LED)
+  const sideScreenMatrices = useMemo(() => {
+    const countPerSide = lighting.sideMatricesCount || 0;
+    if (countPerSide <= 0) return [];
+    const items = [];
+    const margin = 0.38;
+    const xLeft = -screenW / 2 - margin;
+    const xRight = screenW / 2 + margin;
+    const z = screenZ;
+
+    // Distribute vertically across screen height
+    const topY = screenY + (screenH / 2) - 0.25;
+    const botY = screenY - (screenH / 2) + 0.25;
+    const stepY = countPerSide > 1 ? (topY - botY) / (countPerSide - 1) : 0;
+
+    // Aluminum boom pipes holding the matrices
+    items.push(
+      <Cylinder key="boom-pipe-left" args={[0.024, 0.024, screenH + 0.3, 8]} position={[xLeft, screenY, z - 0.05]}>
+        <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
+      </Cylinder>
+    );
+    items.push(
+      <Cylinder key="boom-pipe-right" args={[0.024, 0.024, screenH + 0.3, 8]} position={[xRight, screenY, z - 0.05]}>
+        <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
+      </Cylinder>
+    );
+
+    for (let i = 0; i < countPerSide; i++) {
+      const y = countPerSide > 1 ? (botY + i * stepY) : screenY;
+      // Left matrix
+      items.push(
+        <LedMatrixPanel
+          key={`mat-left-${i}`}
+          position={[xLeft, y, z]}
+          rotation={[0, 0.18, 0]}
+        />
+      );
+      // Right matrix
+      items.push(
+        <LedMatrixPanel
+          key={`mat-right-${i}`}
+          position={[xRight, y, z]}
+          rotation={[0, -0.18, 0]}
+        />
+      );
+    }
+    return items;
+  }, [lighting.sideMatricesCount, screenW, screenH, screenY, screenZ]);
+
   return (
     <group>
       {/* ========================================================
@@ -469,7 +630,17 @@ export default function FullStage3D({
       {lightingFixtures}
 
       {/* ========================================================
-          5. DIMENSION LABELS
+          5. TOTEMS FOND DE SCÈNE (AVEC LYRES BEAM 280W)
+          ======================================================== */}
+      {upstageTotems}
+
+      {/* ========================================================
+          6. MATRICES LED LATÉRALES (STROBE / BEAM FLANCS ÉCRAN)
+          ======================================================== */}
+      {sideScreenMatrices}
+
+      {/* ========================================================
+          7. DIMENSION LABELS
           ======================================================== */}
       {showLabels && (
         <>
@@ -485,6 +656,18 @@ export default function FullStage3D({
             position={[-structL / 2 - 0.8, structH / 2, 0]}
             label={`Structure : ${structL}m × ${structW}m (H=${structH}m)`}
           />
+          {structure.totems?.count > 0 && (
+            <DimensionLabel
+              position={[0, (structure.totems.heightM || 2.5) + 0.5, screenZ - 0.6]}
+              label={`${structure.totems.count}x Totems Truss (H=${structure.totems.heightM || 2.5}m) + Beams 280W`}
+            />
+          )}
+          {lighting.sideMatricesCount > 0 && (
+            <DimensionLabel
+              position={[screenW / 2 + 0.9, screenY, screenZ]}
+              label={`${lighting.totalSideMatrices}x Matrices LED Strobe (5G + 5D)`}
+            />
+          )}
         </>
       )}
     </group>
