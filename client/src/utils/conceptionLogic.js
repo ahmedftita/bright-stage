@@ -204,7 +204,7 @@ export const calculateFullConception = (state) => {
 
   const totalFixtures = beamsCount + spotsCount + washesCount + ledBarsCount + blindersCount + hazerCount;
 
-  const lightingWeightKg = Math.round(
+  const totalLightingWeightKg = Math.round(
     (beamsCount * LIGHTING_SPECS.beam.weightKg) +
     (spotsCount * LIGHTING_SPECS.spot.weightKg) +
     (washesCount * LIGHTING_SPECS.wash.weightKg) +
@@ -212,6 +212,7 @@ export const calculateFullConception = (state) => {
     (blindersCount * LIGHTING_SPECS.blinder.weightKg) +
     (hazerCount * LIGHTING_SPECS.hazer.weightKg)
   );
+  const lightingWeightKg = totalLightingWeightKg;
 
   const lightingPowerWatts = (
     (beamsCount * LIGHTING_SPECS.beam.watts) +
@@ -221,7 +222,8 @@ export const calculateFullConception = (state) => {
     (blindersCount * LIGHTING_SPECS.blinder.watts) +
     (hazerCount * LIGHTING_SPECS.hazer.watts)
   );
-  const lightingPowerKw = parseFloat((lightingPowerWatts / 1000).toFixed(1));
+  const totalLightingPowerKw = parseFloat((lightingPowerWatts / 1000).toFixed(1));
+  const lightingPowerKw = totalLightingPowerKw;
 
   const totalDmxChannels = (
     (beamsCount * LIGHTING_SPECS.beam.dmx) +
