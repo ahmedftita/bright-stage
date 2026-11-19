@@ -1169,27 +1169,28 @@ export default function FullStageStudio() {
             }>
               <Canvas gl={{ preserveDrawingBuffer: true, antialias: true }}>
                 {viewMode === '3D' ? (
-                  <PerspectiveCamera makeDefault position={[12, 11, 16]} fov={45} />
+                  <PerspectiveCamera makeDefault position={[8.5, 6.5, 11]} fov={45} />
                 ) : (
-                  <OrthographicCamera makeDefault position={[0, 35, 0]} zoom={30} near={-50} far={200} />
+                  <OrthographicCamera makeDefault position={[0, 25, 0]} zoom={38} near={-50} far={200} />
                 )}
 
-                <ambientLight intensity={nightMode ? 0.35 : 0.8} />
-                <directionalLight position={[15, 25, 15]} intensity={nightMode ? 0.8 : 1.4} castShadow />
-                <directionalLight position={[-15, 12, -10]} intensity={nightMode ? 0.2 : 0.5} />
+                <ambientLight intensity={nightMode ? 0.45 : 0.9} />
+                <directionalLight position={[15, 25, 15]} intensity={nightMode ? 0.9 : 1.5} castShadow />
+                <directionalLight position={[-15, 12, -10]} intensity={nightMode ? 0.3 : 0.6} />
 
                 {/* Ground technical grid */}
                 <Grid
                   infiniteGrid
-                  fadeDistance={70}
-                  sectionColor="#ec4899"
-                  cellColor="#1e293b"
+                  fadeDistance={60}
+                  sectionColor={nightMode ? '#38bdf8' : '#ec4899'}
+                  cellColor={nightMode ? '#1e293b' : '#cbd5e1'}
                   sectionSize={2.44}
                   cellSize={1.22}
                 />
 
                 <OrbitControls
                   makeDefault
+                  target={[0, 2.2, 0]}
                   enableRotate={viewMode === '3D'}
                   enableZoom={true}
                   maxPolarAngle={Math.PI / 2 + 0.05}

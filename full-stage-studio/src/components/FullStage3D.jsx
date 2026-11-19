@@ -11,7 +11,8 @@ import { Box, Cylinder, Cone, Html } from '@react-three/drei';
  */
 
 // Simple Truss Beam helper
-const TrussBeam = ({ length, width = 0.35, height = 0.35, color = '#64748b' }) => {
+// Truss Beam helper with explicit axis orientation
+const TrussBeam = ({ length, width = 0.35, height = 0.35, color = '#64748b', axis = 'y' }) => {
   const halfW = width / 2;
   const halfH = height / 2;
   const tubeR = 0.024;
@@ -20,31 +21,49 @@ const TrussBeam = ({ length, width = 0.35, height = 0.35, color = '#64748b' }) =
   const braces = [];
 
   for (let i = 0; i < count; i++) {
-    const z = (i * braceInterval) - (length / 2) + (braceInterval / 2);
+    const y = (i * braceInterval) - (length / 2) + (braceInterval / 2);
+    // X-axis braces
     braces.push(
-      <Cylinder key={`bt-${i}`} args={[0.01, 0.01, width, 4]} position={[0, halfH, z]} rotation={[0, 0, Math.PI / 2]}>
+      <Cylinder key={`bx1-${i}`} args={[0.01, 0.01, width, 4]} position={[0, y, halfH]} rotation={[0, 0, Math.PI / 2]}>
         <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
       </Cylinder>
     );
     braces.push(
-      <Cylinder key={`bb-${i}`} args={[0.01, 0.01, width, 4]} position={[0, -halfH, z]} rotation={[0, 0, Math.PI / 2]}>
+      <Cylinder key={`bx2-${i}`} args={[0.01, 0.01, width, 4]} position={[0, y, -halfH]} rotation={[0, 0, Math.PI / 2]}>
+        <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+      </Cylinder>
+    );
+    // Z-axis braces
+    braces.push(
+      <Cylinder key={`bz1-${i}`} args={[0.01, 0.01, height, 4]} position={[halfW, y, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+      </Cylinder>
+    );
+    braces.push(
+      <Cylinder key={`bz2-${i}`} args={[0.01, 0.01, height, 4]} position={[-halfW, y, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
       </Cylinder>
     );
   }
 
+  // group rotation based on axis
+  // 'y': vertical (standing up)
+  // 'x': horizontal along X (left to right)
+  // 'z': horizontal along Z (front to back)
+  const groupRot = axis === 'x' ? [0, 0, -Math.PI / 2] : (axis === 'z' ? [Math.PI / 2, 0, 0] : [0, 0, 0]);
+
   return (
-    <group>
-      <Cylinder args={[tubeR, tubeR, length, 8]} position={[halfW, halfH, 0]} rotation={[Math.PI / 2, 0, 0]}>
+    <group rotation={groupRot}>
+      <Cylinder args={[tubeR, tubeR, length, 8]} position={[halfW, 0, halfH]}>
         <meshStandardMaterial color={color} metalness={0.4} roughness={0.3} />
       </Cylinder>
-      <Cylinder args={[tubeR, tubeR, length, 8]} position={[-halfW, halfH, 0]} rotation={[Math.PI / 2, 0, 0]}>
+      <Cylinder args={[tubeR, tubeR, length, 8]} position={[-halfW, 0, halfH]}>
         <meshStandardMaterial color={color} metalness={0.4} roughness={0.3} />
       </Cylinder>
-      <Cylinder args={[tubeR, tubeR, length, 8]} position={[halfW, -halfH, 0]} rotation={[Math.PI / 2, 0, 0]}>
+      <Cylinder args={[tubeR, tubeR, length, 8]} position={[halfW, 0, -halfH]}>
         <meshStandardMaterial color={color} metalness={0.4} roughness={0.3} />
       </Cylinder>
-      <Cylinder args={[tubeR, tubeR, length, 8]} position={[-halfW, -halfH, 0]} rotation={[Math.PI / 2, 0, 0]}>
+      <Cylinder args={[tubeR, tubeR, length, 8]} position={[-halfW, 0, -halfH]}>
         <meshStandardMaterial color={color} metalness={0.4} roughness={0.3} />
       </Cylinder>
       {braces}
@@ -565,8 +584,8 @@ export default function FullStage3D({
             <Box args={[0.2, 0.06, 2]} position={[0, -structH / 2 + 0.1, 0]}><meshStandardMaterial color="#475569" /></Box>
           </group>
           {/* Main Top Beam along X */}
-          <group position={[0, structH, 0]} rotation={[0, Math.PI / 2, 0]}>
-            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" />
+          <group position={[0, structH, 0]}>
+            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
           </group>
         </>
       ) : (
@@ -574,46 +593,46 @@ export default function FullStage3D({
         <>
           {/* Back Left Tower */}
           <group position={[-structL / 2, structH / 2, -structW / 2]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" />
-            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2, 0]}><meshStandardMaterial color="#090d16" /></Box>
+            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
+            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
             {/* Top Pulley head */}
             <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
           </group>
           {/* Back Right Tower */}
           <group position={[structL / 2, structH / 2, -structW / 2]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" />
-            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2, 0]}><meshStandardMaterial color="#090d16" /></Box>
+            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
+            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
             <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
           </group>
           {/* Front Left Tower */}
           <group position={[-structL / 2, structH / 2, structW / 2]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" />
-            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2, 0]}><meshStandardMaterial color="#090d16" /></Box>
+            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
+            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
             <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
           </group>
           {/* Front Right Tower */}
           <group position={[structL / 2, structH / 2, structW / 2]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" />
-            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2, 0]}><meshStandardMaterial color="#090d16" /></Box>
+            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
+            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
             <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
           </group>
 
           {/* Horizontal Beams at height structH */}
           {/* Back Beam (X axis) */}
-          <group position={[0, structH, -structW / 2]} rotation={[0, Math.PI / 2, 0]}>
-            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" />
+          <group position={[0, structH, -structW / 2]}>
+            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
           </group>
           {/* Front Beam (X axis) */}
-          <group position={[0, structH, structW / 2]} rotation={[0, Math.PI / 2, 0]}>
-            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" />
+          <group position={[0, structH, structW / 2]}>
+            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
           </group>
           {/* Left Side Beam (Z axis) */}
-          <group position={[-structL / 2, structH, 0]} rotation={[0, 0, 0]}>
-            <TrussBeam length={structW} width={0.35} height={0.35} color="#818cf8" />
+          <group position={[-structL / 2, structH, 0]}>
+            <TrussBeam length={structW} width={0.35} height={0.35} color="#818cf8" axis="z" />
           </group>
           {/* Right Side Beam (Z axis) */}
-          <group position={[structL / 2, structH, 0]} rotation={[0, 0, 0]}>
-            <TrussBeam length={structW} width={0.35} height={0.35} color="#818cf8" />
+          <group position={[structL / 2, structH, 0]}>
+            <TrussBeam length={structW} width={0.35} height={0.35} color="#818cf8" axis="z" />
           </group>
 
           {/* 4 Corner Sleeve Blocks */}
