@@ -261,8 +261,8 @@ export default function FullStageExportModal({
                       <line x1="0" y1="175" x2="260" y2="175" stroke="#0f172a" strokeWidth="2.5" />
                       <text x="130" y="190" fill="#64748b" fontSize="8" textAnchor="middle">NIVEAU DU SOL (0,00 m)</text>
 
-                      {/* Towers and Top Truss */}
-                      {structure.enabled !== false && (
+                      {/* Towers and Top Truss (seulement si Gril actif) */}
+                      {structure.enabled !== false && structure.structureType !== 'none' && (
                         <>
                           <rect x="25" y="25" width="10" height="150" fill="#94a3b8" stroke="#0f172a" strokeWidth="1" />
                           <rect x="225" y="25" width="10" height="150" fill="#94a3b8" stroke="#0f172a" strokeWidth="1" />
@@ -359,23 +359,29 @@ export default function FullStageExportModal({
                           return <g>{bars}</g>;
                         }
 
-                        // Disposition latérale (Flancs gauche & droite)
-                        const bw = isVert ? 5 : 9;
-                        const bh = isVert ? 9 : 5;
+                        // Disposition latérale (Multiples Flancs gauche & droite)
+                        const bw = isVert ? 5 : 8;
+                        const bh = isVert ? 8 : 4;
                         const stepY = 46 / Math.max(1, count - 1);
+                        const flancs = Math.max(1, lighting.sideMatricesFlancs || 1);
+                        const flancSpacing = bw + 3;
                         const bars = [];
-                        for (let i = 0; i < count; i++) {
-                          const yPos = sy + 4 + i * stepY;
-                          // Gauche
-                          bars.push(<rect key={`sb-l-${i}`} x={72 - bw} y={yPos} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />);
-                          // Droite
-                          bars.push(<rect key={`sb-r-${i}`} x={188} y={yPos} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />);
+                        for (let f = 0; f < flancs; f++) {
+                          const xL = 72 - bw - (f * flancSpacing);
+                          const xR = 188 + (f * flancSpacing);
+                          for (let i = 0; i < count; i++) {
+                            const yPos = sy + 4 + i * stepY;
+                            // Gauche flanc f
+                            bars.push(<rect key={`sb-l-${f}-${i}`} x={xL} y={yPos} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />);
+                            // Droite flanc f
+                            bars.push(<rect key={`sb-r-${f}-${i}`} x={xR} y={yPos} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />);
+                          }
                         }
                         return <g>{bars}</g>;
                       })()}
 
                       {/* Light Cones */}
-                      {structure.enabled !== false && lighting.enabled !== false && (
+                      {structure.enabled !== false && structure.structureType !== 'none' && lighting.enabled !== false && (
                         <>
                           <polygon points="60,42 35,145 85,145" fill="rgba(56, 189, 248, 0.2)" />
                           <polygon points="130,42 95,145 165,145" fill="rgba(56, 189, 248, 0.2)" />

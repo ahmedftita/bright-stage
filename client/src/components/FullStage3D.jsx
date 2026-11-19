@@ -544,6 +544,8 @@ export default function FullStage3D({
 
   // Generate Light Fixtures along Trusses
   const lightingFixtures = useMemo(() => {
+    // If structure is disabled or Gril is deactivated (structureType === 'none'), no fixtures hang in midair
+    if (!isStructureEnabled || structure.structureType === 'none') return [];
     const list = [];
     const bColor = beamColor;
 
@@ -681,20 +683,21 @@ export default function FullStage3D({
     return items;
   }, [isStructureEnabled, isLightingEnabled, structure.totems, stageL, screenW, screenZ, beamColor, showBeams]);
 
-  // Lateral / Horizontal LED Matrices 36LED Strobe Beam 220W (Orientation verticale ou horizontale)
+  // Lateral / Horizontal LED Matrices 36LED Strobe Beam 220W (Orientation verticale ou horizontale, multiples flancs)
   const sideScreenMatrices = useMemo(() => {
     if (!isScreenEnabled || !isLightingEnabled) return [];
-    const countPerSide = lighting.sideMatricesCount || 0;
-    if (countPerSide <= 0) return [];
+    const countPerFlanc = lighting.sideMatricesCount || 0;
+    if (countPerFlanc <= 0) return [];
 
+    const flancsCount = Math.max(1, parseInt(lighting.sideMatricesFlancs) || 1);
     const orientation = lighting.sideMatricesOrientation || 'horizontal'; // 'horizontal' | 'vertical'
     const positionMode = lighting.sideMatricesPosition || 'lateral'; // 'lateral' | 'horizontal_floor'
     const rotZ = orientation === 'vertical' ? Math.PI / 2 : 0;
     const items = [];
 
     if (positionMode === 'horizontal_floor') {
-      // USER OPTION: Horizontal row along the stage deck in front of the screen
-      const totalCount = countPerSide * 2;
+      // USER OPTION: Horizontal rows along the stage deck in front of the screen
+      const totalCount = countPerFlanc * flancsCount * 2;
       const spacing = (screenW - 0.3) / Math.max(1, totalCount - 1);
       const startX = -screenW / 2 + 0.15;
       const y = screenBottomY + (orientation === 'vertical' ? 0.22 : 0.09);
@@ -713,52 +716,59 @@ export default function FullStage3D({
         );
       }
     } else {
-      // Default: Lateral columns on left and right sides of the LED screen
-      const margin = orientation === 'vertical' ? 0.28 : 0.40;
-      const xLeft = -screenW / 2 - margin;
-      const xRight = screenW / 2 + margin;
-      const z = screenZ;
+      // Default & USER REQUEST: Multiple Lateral Flanks / Wings on left and right sides of the LED screen
+      const baseMargin = orientation === 'vertical' ? 0.28 : 0.40;
+      const flancSpacing = orientation === 'vertical' ? 0.32 : 0.50;
 
       // Distribute vertically across screen height
       const topY = screenY + (screenH / 2) - (orientation === 'vertical' ? 0.32 : 0.24);
       const botY = screenY - (screenH / 2) + (orientation === 'vertical' ? 0.32 : 0.24);
-      const stepY = countPerSide > 1 ? (topY - botY) / (countPerSide - 1) : 0;
+      const stepY = countPerFlanc > 1 ? (topY - botY) / (countPerFlanc - 1) : 0;
 
-      // Aluminum boom pipes holding the matrices
-      items.push(
-        <Cylinder key="boom-pipe-left" args={[0.024, 0.024, screenH + 0.2, 8]} position={[xLeft, screenY, z - 0.05]}>
-          <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
-        </Cylinder>
-      );
-      items.push(
-        <Cylinder key="boom-pipe-right" args={[0.024, 0.024, screenH + 0.2, 8]} position={[xRight, screenY, z - 0.05]}>
-          <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
-        </Cylinder>
-      );
+      for (let f = 0; f < flancsCount; f++) {
+        const offset = f * flancSpacing;
+        const xLeft = -screenW / 2 - baseMargin - offset;
+        const xRight = screenW / 2 + baseMargin + offset;
+        // Concert stage curved wing angle (flanks angled slightly forward toward audience)
+        const wingAngle = 0.18 + f * 0.08;
+        const zFlanc = screenZ - (f * 0.12);
 
-      for (let i = 0; i < countPerSide; i++) {
-        const y = countPerSide > 1 ? (botY + i * stepY) : screenY;
-        const tiltAngle = countPerSide > 1 ? ((i - (countPerSide - 1) / 2) * -0.05) : 0;
-        // Left matrix
+        // Aluminum boom pipes holding this flank
         items.push(
-          <StrobeBeam36Fixture
-            key={`mat-left-${i}`}
-            position={[xLeft, y, z]}
-            rotation={[0, 0.18, rotZ]}
-            showBeam={showBeams}
-            tilt={tiltAngle}
-          />
+          <Cylinder key={`boom-pipe-left-${f}`} args={[0.024, 0.024, screenH + 0.2, 8]} position={[xLeft, screenY, zFlanc - 0.05]}>
+            <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
+          </Cylinder>
         );
-        // Right matrix
         items.push(
-          <StrobeBeam36Fixture
-            key={`mat-right-${i}`}
-            position={[xRight, y, z]}
-            rotation={[0, -0.18, rotZ]}
-            showBeam={showBeams}
-            tilt={tiltAngle}
-          />
+          <Cylinder key={`boom-pipe-right-${f}`} args={[0.024, 0.024, screenH + 0.2, 8]} position={[xRight, screenY, zFlanc - 0.05]}>
+            <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
+          </Cylinder>
         );
+
+        for (let i = 0; i < countPerFlanc; i++) {
+          const y = countPerFlanc > 1 ? (botY + i * stepY) : screenY;
+          const tiltAngle = countPerFlanc > 1 ? ((i - (countPerFlanc - 1) / 2) * -0.05) : 0;
+          // Left flank matrix
+          items.push(
+            <StrobeBeam36Fixture
+              key={`mat-left-${f}-${i}`}
+              position={[xLeft, y, zFlanc]}
+              rotation={[0, wingAngle, rotZ]}
+              showBeam={showBeams}
+              tilt={tiltAngle}
+            />
+          );
+          // Right flank matrix
+          items.push(
+            <StrobeBeam36Fixture
+              key={`mat-right-${f}-${i}`}
+              position={[xRight, y, zFlanc]}
+              rotation={[0, -wingAngle, rotZ]}
+              showBeam={showBeams}
+              tilt={tiltAngle}
+            />
+          );
+        }
       }
     }
     return items;
@@ -766,6 +776,7 @@ export default function FullStage3D({
     isScreenEnabled,
     isLightingEnabled,
     lighting.sideMatricesCount,
+    lighting.sideMatricesFlancs,
     lighting.sideMatricesOrientation,
     lighting.sideMatricesPosition,
     screenW,
@@ -888,7 +899,7 @@ export default function FullStage3D({
       {/* ========================================================
           3. STRUCTURE TRUSS (TOURS & GRIL SCÉNIQUE)
           ======================================================== */}
-      {isStructureEnabled && (
+      {isStructureEnabled && structure.structureType !== 'none' && (
         isGoalpost ? (
           // Goalpost: 2 towers at Z=screenZ or Z=0
           <>

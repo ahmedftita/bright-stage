@@ -142,8 +142,9 @@ export const calculateFullConception = (state) => {
   // ==========================================
   // 2. STRUCTURE (TRUSS) CALCULATIONS
   // ==========================================
-  const structType = structure.structureType || 'grid'; // 'grid' or 'goalpost'
-  const isGoalpost = structType === 'goalpost';
+  const structType = structure.structureType || 'grid'; // 'grid', 'goalpost', or 'none' (sans gril)
+  const hasGrid = isStructureEnabled && structType !== 'none';
+  const isGoalpost = hasGrid && structType === 'goalpost';
   const structL = Math.max(4, parseFloat(structure.length) || (lengthM + 2)); // default stage + 2m
   const structW = isGoalpost ? 4 : Math.max(4, parseFloat(structure.width) || (widthM + 2));
   const structH = Math.max(4, parseFloat(structure.height) || 6); // clearance height
@@ -156,9 +157,9 @@ export const calculateFullConception = (state) => {
   const gridSpecL = TRUSS_SERIES[gridTypeL] || TRUSS_SERIES.HT44;
   const gridSpecW = TRUSS_SERIES[gridTypeW] || TRUSS_SERIES.PT34;
 
-  const numTowers = isStructureEnabled ? (isGoalpost ? 2 : 4) : 0;
-  const numBeamsL = isStructureEnabled ? (isGoalpost ? 1 : 2) : 0;
-  const numBeamsW = isStructureEnabled ? (isGoalpost ? 0 : 2) : 0;
+  const numTowers = hasGrid ? (isGoalpost ? 2 : 4) : 0;
+  const numBeamsL = hasGrid ? (isGoalpost ? 1 : 2) : 0;
+  const numBeamsW = hasGrid ? (isGoalpost ? 0 : 2) : 0;
 
   // Totems Scéniques Verticaux (fond de scène / upstage)
   const totemsCount = isStructureEnabled ? Math.max(0, parseInt(structure.totemsCount ?? 0)) : 0;
@@ -170,18 +171,18 @@ export const calculateFullConception = (state) => {
   const totemsTopPlatesWeight = totemsCount * 4.5;
   const totemsWeightKg = totemsAluWeight + totemsBasesWeight + totemsTopPlatesWeight;
 
-  const segsL = isStructureEnabled ? calcSegments(structL) : { s3: 0, s2: 0, s1: 0, s05: 0 };
-  const segsW = isStructureEnabled ? (isGoalpost ? { s3: 0, s2: 0, s1: 0, s05: 0 } : calcSegments(structW)) : { s3: 0, s2: 0, s1: 0, s05: 0 };
-  const segsH = isStructureEnabled ? calcSegments(structH) : { s3: 0, s2: 0, s1: 0, s05: 0 };
-  const outriggerSegs = (isStructureEnabled && isGoalpost) ? calcSegments(2) : { s3: 0, s2: 0, s1: 0, s05: 0 };
-  const numOutriggers = (isStructureEnabled && isGoalpost) ? 4 : 0;
+  const segsL = hasGrid ? calcSegments(structL) : { s3: 0, s2: 0, s1: 0, s05: 0 };
+  const segsW = hasGrid ? (isGoalpost ? { s3: 0, s2: 0, s1: 0, s05: 0 } : calcSegments(structW)) : { s3: 0, s2: 0, s1: 0, s05: 0 };
+  const segsH = hasGrid ? calcSegments(structH) : { s3: 0, s2: 0, s1: 0, s05: 0 };
+  const outriggerSegs = (hasGrid && isGoalpost) ? calcSegments(2) : { s3: 0, s2: 0, s1: 0, s05: 0 };
+  const numOutriggers = (hasGrid && isGoalpost) ? 4 : 0;
 
   const trussTotals = {
     s3: (segsL.s3 * numBeamsL) + (segsW.s3 * numBeamsW) + (segsH.s3 * numTowers) + (outriggerSegs.s3 * numOutriggers) + (totemSegs.s3 * totemsCount),
     s2: (segsL.s2 * numBeamsL) + (segsW.s2 * numBeamsW) + (segsH.s2 * numTowers) + (outriggerSegs.s2 * numOutriggers) + (totemSegs.s2 * totemsCount),
     s1: (segsL.s1 * numBeamsL) + (segsW.s1 * numBeamsW) + (segsH.s1 * numTowers) + (outriggerSegs.s1 * numOutriggers) + (totemSegs.s1 * totemsCount),
     s05: (segsL.s05 * numBeamsL) + (segsW.s05 * numBeamsW) + (segsH.s05 * numTowers) + (outriggerSegs.s05 * numOutriggers) + (totemSegs.s05 * totemsCount),
-    corners: isStructureEnabled ? (isGoalpost ? 2 : 4) : 0,
+    corners: hasGrid ? (isGoalpost ? 2 : 4) : 0,
     bases: numTowers + totemsCount,
     hinges: numTowers * 4,
     motors: numTowers,
@@ -191,7 +192,7 @@ export const calculateFullConception = (state) => {
   const linearMetersL = structL * numBeamsL;
   const linearMetersW = structW * numBeamsW;
   const linearMetersH = structH * numTowers;
-  const linearMetersOut = (isStructureEnabled && isGoalpost) ? (2 * 4) : 0;
+  const linearMetersOut = (hasGrid && isGoalpost) ? (2 * 4) : 0;
 
   const towerWeight = (linearMetersH + linearMetersOut) * towSpec.weightPerMeter;
   const gridWeight = (linearMetersL * gridSpecL.weightPerMeter) + (linearMetersW * gridSpecW.weightPerMeter);
@@ -229,9 +230,10 @@ export const calculateFullConception = (state) => {
   const showBeams = isLightingEnabled && lighting.showBeams !== false;
   const beamColor = lighting.beamColor || '#38bdf8';
 
-  // Matrices LED Latérales
+  // Matrices LED Latérales (Flancs à gauche et à droite de l'écran LED)
   const sideMatricesCount = isLightingEnabled ? Math.max(0, parseInt(lighting.sideMatricesCount ?? 0)) : 0;
-  const totalSideMatrices = sideMatricesCount * 2;
+  const sideMatricesFlancs = isLightingEnabled ? Math.max(1, parseInt(lighting.sideMatricesFlancs ?? 1)) : 1;
+  const totalSideMatrices = sideMatricesCount * sideMatricesFlancs * 2;
 
   // Lyres Beam 280W sur têtes de totem
   const totemBeamsCount = isLightingEnabled ? totemsCount : 0;
@@ -658,6 +660,7 @@ export const calculateFullConception = (state) => {
         total: totalFixtures
       },
       sideMatricesCount,
+      sideMatricesFlancs,
       sideMatricesOrientation: lighting.sideMatricesOrientation || 'horizontal',
       sideMatricesPosition: lighting.sideMatricesPosition || 'lateral',
       totalSideMatrices,

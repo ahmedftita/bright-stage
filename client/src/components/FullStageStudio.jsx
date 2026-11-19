@@ -137,7 +137,8 @@ export default function FullStageStudio() {
     ledBarsCount: 6,
     blindersCount: 4,
     hazerCount: 2,
-    sideMatricesCount: 5, // 5 matrices à gauche + 5 à droite = 10 matrices !
+    sideMatricesCount: 5, // 5 appareils par flanc
+    sideMatricesFlancs: 1, // 1 flanc à gauche + 1 flanc à droite (extensible à 2, 3, etc.)
     sideMatricesOrientation: 'horizontal', // 'horizontal' ou 'vertical'
     sideMatricesPosition: 'lateral', // 'lateral' ou 'horizontal_floor'
     showBeams: true,
@@ -248,6 +249,7 @@ export default function FullStageStudio() {
         blindersCount: item.lightingConfig.blindersCount ?? 4,
         hazerCount: item.lightingConfig.hazerCount ?? 2,
         sideMatricesCount: item.lightingConfig.sideMatricesCount ?? 0,
+        sideMatricesFlancs: item.lightingConfig.sideMatricesFlancs ?? 1,
         sideMatricesOrientation: item.lightingConfig.sideMatricesOrientation || 'horizontal',
         sideMatricesPosition: item.lightingConfig.sideMatricesPosition || 'lateral',
         showBeams: item.lightingConfig.showBeams !== false,
@@ -808,8 +810,16 @@ export default function FullStageStudio() {
               ) : (
                 <>
                   <div className="form-group">
-                    <label className="form-label">Architecture Structurelle</label>
-                    <div className="segmented-toggle">
+                    <label className="form-label">Architecture du Gril Structurel</label>
+                    <div className="segmented-toggle" style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
+                      <button
+                        type="button"
+                        className={`segment-btn ${structureState.structureType === 'none' ? 'active' : ''}`}
+                        style={{ borderColor: structureState.structureType === 'none' ? '#ef4444' : undefined, color: structureState.structureType === 'none' ? '#f87171' : undefined }}
+                        onClick={() => setStructureState(prev => ({ ...prev, structureType: 'none' }))}
+                      >
+                        ✕ Sans Gril (0 Tour)
+                      </button>
                       <button
                         type="button"
                         className={`segment-btn ${structureState.structureType === 'grid' ? 'active' : ''}`}
@@ -827,86 +837,108 @@ export default function FullStageStudio() {
                     </div>
                   </div>
 
-                  <div className="dimensions-box">
-                    <div className="stepper-row">
-                      <div className="stepper-meta">
-                        <span className="stepper-title">Portée Longueur (m)</span>
-                        <span className="stepper-sub">Axe principal</span>
-                      </div>
-                      <div className="stepper-controls">
-                        <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('length', -1)}>
-                          <Minus size={14} />
-                        </button>
-                        <span className="stepper-input">{structureState.length}m</span>
-                        <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('length', 1)}>
-                          <Plus size={14} />
-                        </button>
+                  {structureState.structureType === 'none' ? (
+                    <div style={{
+                      padding: '12px 14px',
+                      background: 'rgba(15, 23, 42, 0.6)',
+                      borderRadius: '8px',
+                      border: '1px dashed rgba(239, 68, 68, 0.3)',
+                      color: '#cbd5e1',
+                      fontSize: '11px',
+                      marginBottom: '14px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      <span style={{ fontSize: '16px', color: '#10b981' }}>✓</span>
+                      <div>
+                        <strong>Gril suspendu désactivé (0 Tour) :</strong> La scène et l'écran sont sans accroche aérienne. Vous pouvez configurer des totems verticaux au sol ci-dessous.
                       </div>
                     </div>
-
-                    {structureState.structureType === 'grid' && (
-                      <div className="stepper-row">
-                        <div className="stepper-meta">
-                          <span className="stepper-title">Portée Largeur (m)</span>
-                          <span className="stepper-sub">Profondeur gril</span>
+                  ) : (
+                    <>
+                      <div className="dimensions-box">
+                        <div className="stepper-row">
+                          <div className="stepper-meta">
+                            <span className="stepper-title">Portée Longueur (m)</span>
+                            <span className="stepper-sub">Axe principal</span>
+                          </div>
+                          <div className="stepper-controls">
+                            <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('length', -1)}>
+                              <Minus size={14} />
+                            </button>
+                            <span className="stepper-input">{structureState.length}m</span>
+                            <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('length', 1)}>
+                              <Plus size={14} />
+                            </button>
+                          </div>
                         </div>
-                        <div className="stepper-controls">
-                          <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('width', -1)}>
-                            <Minus size={14} />
-                          </button>
-                          <span className="stepper-input">{structureState.width}m</span>
-                          <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('width', 1)}>
-                            <Plus size={14} />
-                          </button>
+
+                        {structureState.structureType === 'grid' && (
+                          <div className="stepper-row">
+                            <div className="stepper-meta">
+                              <span className="stepper-title">Portée Largeur (m)</span>
+                              <span className="stepper-sub">Profondeur gril</span>
+                            </div>
+                            <div className="stepper-controls">
+                              <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('width', -1)}>
+                                <Minus size={14} />
+                              </button>
+                              <span className="stepper-input">{structureState.width}m</span>
+                              <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('width', 1)}>
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="stepper-row">
+                          <div className="stepper-meta">
+                            <span className="stepper-title">Hauteur Dégagement (m)</span>
+                            <span className="stepper-sub">Hauteur sous pont</span>
+                          </div>
+                          <div className="stepper-controls">
+                            <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('height', -0.5)}>
+                              <Minus size={14} />
+                            </button>
+                            <span className="stepper-input">{structureState.height}m</span>
+                            <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('height', 0.5)}>
+                              <Plus size={14} />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    )}
 
-                    <div className="stepper-row">
-                      <div className="stepper-meta">
-                        <span className="stepper-title">Hauteur Dégagement (m)</span>
-                        <span className="stepper-sub">Hauteur sous pont</span>
+                      <div className="form-grid-2">
+                        <div className="form-group">
+                          <label className="form-label">Série Tours</label>
+                          <select
+                            className="form-select"
+                            value={structureState.towerType}
+                            onChange={(e) => setStructureState(prev => ({ ...prev, towerType: e.target.value }))}
+                          >
+                            <option value="PT34">PT34 (Std 290)</option>
+                            <option value="FT44">FT44 (Std 400)</option>
+                            <option value="HT44">HT44 (Heavy 400)</option>
+                            <option value="TT104">TT104 (1010 Monumental)</option>
+                          </select>
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">Série Poutres (L)</label>
+                          <select
+                            className="form-select"
+                            value={structureState.gridTypeL}
+                            onChange={(e) => setStructureState(prev => ({ ...prev, gridTypeL: e.target.value }))}
+                          >
+                            <option value="PT34">PT34 (Std 290)</option>
+                            <option value="FT44">FT44 (Std 400)</option>
+                            <option value="HT44">HT44 (Heavy 400)</option>
+                            <option value="TT104">TT104 (Monumental)</option>
+                          </select>
+                        </div>
                       </div>
-                      <div className="stepper-controls">
-                        <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('height', -0.5)}>
-                          <Minus size={14} />
-                        </button>
-                        <span className="stepper-input">{structureState.height}m</span>
-                        <button type="button" className="stepper-btn" onClick={() => adjustStructureDim('height', 0.5)}>
-                          <Plus size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="form-grid-2">
-                    <div className="form-group">
-                      <label className="form-label">Série Tours</label>
-                      <select
-                        className="form-select"
-                        value={structureState.towerType}
-                        onChange={(e) => setStructureState(prev => ({ ...prev, towerType: e.target.value }))}
-                      >
-                        <option value="PT34">PT34 (Std 290)</option>
-                        <option value="FT44">FT44 (Std 400)</option>
-                        <option value="HT44">HT44 (Heavy 400)</option>
-                        <option value="TT104">TT104 (1010 Monumental)</option>
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Série Poutres (L)</label>
-                      <select
-                        className="form-select"
-                        value={structureState.gridTypeL}
-                        onChange={(e) => setStructureState(prev => ({ ...prev, gridTypeL: e.target.value }))}
-                      >
-                        <option value="PT34">PT34 (Std 290)</option>
-                        <option value="FT44">FT44 (Std 400)</option>
-                        <option value="HT44">HT44 (Heavy 400)</option>
-                        <option value="TT104">TT104 (Monumental)</option>
-                      </select>
-                    </div>
-                  </div>
+                    </>
+                  )}
 
                   {/* Totems Scéniques de Fond de Scène */}
                   <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '14px' }}>
@@ -1337,9 +1369,9 @@ export default function FullStageStudio() {
                     {/* Matrices LED Latérales */}
                     <div className="stepper-row" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
                       <div className="stepper-meta">
-                        <span className="stepper-title" style={{ color: '#38bdf8' }}>36LED Strobe Beam 220W (Flancs Écran)</span>
+                        <span className="stepper-title" style={{ color: '#38bdf8' }}>36LED Strobe Beam 220W</span>
                         <span className="stepper-sub">
-                          {lightingState.sideMatricesCount ?? 0} à gauche + {lightingState.sideMatricesCount ?? 0} à droite ({((lightingState.sideMatricesCount ?? 0) * 2)} au total)
+                          {(lightingState.sideMatricesCount ?? 0) * (lightingState.sideMatricesFlancs ?? 1)} à gauche + {(lightingState.sideMatricesCount ?? 0) * (lightingState.sideMatricesFlancs ?? 1)} à droite ({((lightingState.sideMatricesCount ?? 0) * (lightingState.sideMatricesFlancs ?? 1) * 2)} au total)
                         </span>
                       </div>
                       <div className="stepper-controls">
@@ -1350,7 +1382,7 @@ export default function FullStageStudio() {
                         >
                           <Minus size={14} />
                         </button>
-                        <span className="stepper-input">{lightingState.sideMatricesCount ?? 0}/côté</span>
+                        <span className="stepper-input">{lightingState.sideMatricesCount ?? 0}/flanc</span>
                         <button
                           type="button"
                           className="stepper-btn"
@@ -1360,6 +1392,35 @@ export default function FullStageStudio() {
                         </button>
                       </div>
                     </div>
+
+                    {/* USER REQUEST: "on peut ajouet des autre des autre flans des led strobe beam agauche et a droite de lecran" */}
+                    {(lightingState.sideMatricesCount ?? 0) > 0 && (
+                      <div className="stepper-row" style={{ background: 'rgba(56,189,248,0.04)', padding: '6px 8px', borderRadius: '6px' }}>
+                        <div className="stepper-meta">
+                          <span className="stepper-title" style={{ fontSize: '12px' }}>Nombre de Flancs (Colonnes par côté)</span>
+                          <span className="stepper-sub">
+                            {lightingState.sideMatricesFlancs ?? 1} colonne(s) à gauche + {lightingState.sideMatricesFlancs ?? 1} à droite
+                          </span>
+                        </div>
+                        <div className="stepper-controls">
+                          <button
+                            type="button"
+                            className="stepper-btn"
+                            onClick={() => setLightingState(prev => ({ ...prev, sideMatricesFlancs: Math.max(1, (prev.sideMatricesFlancs ?? 1) - 1) }))}
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="stepper-input">{lightingState.sideMatricesFlancs ?? 1} flanc{((lightingState.sideMatricesFlancs ?? 1) > 1) ? 's' : ''}</span>
+                          <button
+                            type="button"
+                            className="stepper-btn"
+                            onClick={() => setLightingState(prev => ({ ...prev, sideMatricesFlancs: Math.min(5, (prev.sideMatricesFlancs ?? 1) + 1) }))}
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
                     {(lightingState.sideMatricesCount ?? 0) > 0 && (
                       <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
