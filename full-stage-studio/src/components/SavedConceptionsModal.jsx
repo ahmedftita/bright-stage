@@ -188,25 +188,57 @@ export default function SavedConceptionsModal({
 
                     {/* 4 Pillars Chips */}
                     <div className="card-specs-row">
-                      <div className="spec-chip highlight">
-                        <Layers size={12} />
-                        <span>Scène {stageConf.lengthM || 7.32}×{stageConf.widthM || 4.88}m</span>
-                      </div>
-                      <div className="spec-chip">
-                        <Wrench size={12} />
-                        <span>Truss {structConf.length || 10}×{structConf.width || 8}m</span>
-                      </div>
-                      <div className="spec-chip">
-                        <Monitor size={12} />
-                        <span>LED {screenConf.screenWidthM || 6}×{screenConf.screenHeightM || 3}m ({screenConf.pitch || 'P3.9'})</span>
-                      </div>
-                      <div className="spec-chip">
-                        <Sun size={12} />
-                        <span>{totalLightCount} Projecteurs</span>
-                      </div>
+                      {stageConf.enabled !== false ? (
+                        <div className="spec-chip highlight">
+                          <Layers size={12} />
+                          <span>Scène {stageConf.lengthM || 7.32}×{stageConf.widthM || 4.88}m</span>
+                        </div>
+                      ) : (
+                        <div className="spec-chip" style={{ opacity: 0.5 }}>
+                          <Layers size={12} />
+                          <span>Sans Scène</span>
+                        </div>
+                      )}
+
+                      {structConf.enabled !== false ? (
+                        <div className="spec-chip">
+                          <Wrench size={12} />
+                          <span>Truss {structConf.length || 10}×{structConf.width || 8}m</span>
+                        </div>
+                      ) : (
+                        <div className="spec-chip" style={{ opacity: 0.5 }}>
+                          <Wrench size={12} />
+                          <span>Sans Truss</span>
+                        </div>
+                      )}
+
+                      {screenConf.enabled !== false ? (
+                        <div className="spec-chip">
+                          <Monitor size={12} />
+                          <span>LED {screenConf.screenWidthM || 6}×{screenConf.screenHeightM || 3}m ({screenConf.pitch || 'P3.9'})</span>
+                        </div>
+                      ) : (
+                        <div className="spec-chip" style={{ opacity: 0.5 }}>
+                          <Monitor size={12} />
+                          <span>Sans Écran</span>
+                        </div>
+                      )}
+
+                      {lightConf.enabled !== false ? (
+                        <div className="spec-chip">
+                          <Sun size={12} />
+                          <span>{totalLightCount} Projecteurs</span>
+                        </div>
+                      ) : (
+                        <div className="spec-chip" style={{ opacity: 0.5 }}>
+                          <Sun size={12} />
+                          <span>Sans Lumière</span>
+                        </div>
+                      )}
+
                       <div className="spec-chip">
                         <Zap size={12} />
-                        <span>{item.totalPower?.totalKw || 23.4} kW</span>
+                        <span>{item.totalPower?.totalKw || 0} kW</span>
                       </div>
                     </div>
 

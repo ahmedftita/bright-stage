@@ -227,10 +227,15 @@ export default function FullStage3D({
 }) {
   const { stage, structure, screen, lighting } = conception;
 
+  const isStageEnabled = stage.enabled !== false;
+  const isStructureEnabled = structure.enabled !== false;
+  const isScreenEnabled = screen.enabled !== false;
+  const isLightingEnabled = lighting.enabled !== false;
+
   // Dimensions
-  const stageL = stage.dimensions.lengthM;
-  const stageW = stage.dimensions.widthM;
-  const stageH = stage.dimensions.heightM;
+  const stageL = isStageEnabled ? stage.dimensions.lengthM : 0;
+  const stageW = isStageEnabled ? stage.dimensions.widthM : 0;
+  const stageH = isStageEnabled ? stage.dimensions.heightM : 0;
 
   const structL = structure.dimensions.length;
   const structW = structure.dimensions.width;
@@ -239,25 +244,25 @@ export default function FullStage3D({
 
   const screenW = screen.dimensions.widthM;
   const screenH = screen.dimensions.heightM;
-  const isScreenSuspended = screen.mountType === 'suspended_truss';
+  const isScreenSuspended = isStructureEnabled && (screen.mountType === 'suspended_truss');
 
   // Positions
   // Stage is centered on X=0, Y=stageH/2, Z=0
   const stageCenterY = stageH / 2;
 
-  // Screen is placed near the back edge of stage: Z = -stageW/2 + 0.3m
-  const screenZ = -stageW / 2 + 0.35;
+  // Screen is placed near the back edge of stage: Z = -stageW/2 + 0.35m (or centered if no stage)
+  const screenZ = isStageEnabled ? (-stageW / 2 + 0.35) : (isStructureEnabled ? -structW / 2 + 0.5 : 0);
   const screenY = isScreenSuspended
     ? (stageH + 0.6 + screenH / 2)
     : (stageH + screenH / 2);
 
   // Lighting parameters
   const beamColor = lighting.beamColor || '#38bdf8';
-  const showBeams = lighting.showBeams;
+  const showBeams = isLightingEnabled && lighting.showBeams;
 
   // Generate stairs steps
   const stairSteps = useMemo(() => {
-    if (!stage.hasStairs || stage.counts.stairs === 0) return [];
+    if (!isStageEnabled || !stage.hasStairs || stage.counts.stairs === 0 || stageH <= 0) return [];
     const stepsCount = stage.counts.stairSteps;
     const stepH = stageH / stepsCount;
     const stepDepth = 0.35;
@@ -400,6 +405,7 @@ export default function FullStage3D({
 
   // Upstage Vertical Totems with Beam 280W (derrière l'écran LED)
   const upstageTotems = useMemo(() => {
+    if (!isStructureEnabled) return [];
     const totemsConfig = structure.totems;
     if (!totemsConfig || !totemsConfig.count || totemsConfig.count <= 0) return [];
     const count = totemsConfig.count;
@@ -408,7 +414,7 @@ export default function FullStage3D({
     const items = [];
 
     // Span behind screen or across back stage
-    const span = Math.min(stageL - 1.2, Math.max(2.8, screenW + 0.8));
+    const span = Math.min(Math.max(2.8, stageL > 0 ? stageL - 1.2 : 4), Math.max(2.8, screenW + 0.8));
     const spacing = count > 1 ? span / (count - 1) : 0;
     const startX = count > 1 ? -span / 2 : 0;
 
@@ -422,16 +428,17 @@ export default function FullStage3D({
           position={[x, 0, totemZ]}
           height={height}
           beamColor={beamColor}
-          showBeam={showBeams}
+          showBeam={isLightingEnabled && showBeams}
           beamFanAngle={fanAngle}
         />
       );
     }
     return items;
-  }, [structure.totems, stageL, screenW, screenZ, beamColor, showBeams]);
+  }, [isStructureEnabled, isLightingEnabled, structure.totems, stageL, screenW, screenZ, beamColor, showBeams]);
 
   // Lateral LED Matrices (5 à gauche et 5 à droite de l'écran LED)
   const sideScreenMatrices = useMemo(() => {
+    if (!isScreenEnabled || !isLightingEnabled) return [];
     const countPerSide = lighting.sideMatricesCount || 0;
     if (countPerSide <= 0) return [];
     const items = [];
@@ -477,211 +484,224 @@ export default function FullStage3D({
       );
     }
     return items;
-  }, [lighting.sideMatricesCount, screenW, screenH, screenY, screenZ]);
+  }, [isScreenEnabled, isLightingEnabled, lighting.sideMatricesCount, screenW, screenH, screenY, screenZ]);
 
   return (
     <group>
       {/* ========================================================
           1. STAGE (SCÈNE & PODIUMS MODULAIRES)
           ======================================================== */}
-      <group position={[0, stageCenterY, 0]}>
-        {/* Stage Top Deck (Plaques 18mm antidérapantes) */}
-        <Box args={[stageL, 0.05, stageW]} position={[0, stageCenterY - 0.025, 0]}>
-          <meshStandardMaterial color="#1e2230" roughness={0.6} metalness={0.2} />
-        </Box>
-
-        {/* Modular Grid lines on deck (1.22m x 1.22m plaques representation) */}
-        <Box args={[stageL, 0.052, stageW]} position={[0, stageCenterY - 0.024, 0]}>
-          <meshStandardMaterial color="#0f172a" wireframe wireframeLinewidth={1.5} />
-        </Box>
-
-        {/* Stage Skirting / Jupe de scène noire plissée */}
-        {stage.hasSkirting && (
-          <>
-            {/* Front Skirt */}
-            <Box args={[stageL, stageH - 0.02, 0.02]} position={[0, 0, stageW / 2]}>
-              <meshStandardMaterial color="#090d16" roughness={0.8} />
+      {isStageEnabled && (
+        <>
+          <group position={[0, stageCenterY, 0]}>
+            {/* Stage Top Deck (Plaques 18mm antidérapantes) */}
+            <Box args={[stageL, 0.05, stageW]} position={[0, stageCenterY - 0.025, 0]}>
+              <meshStandardMaterial color="#1e2230" roughness={0.6} metalness={0.2} />
             </Box>
-            {/* Left Skirt */}
-            <Box args={[0.02, stageH - 0.02, stageW]} position={[-stageL / 2, 0, 0]}>
-              <meshStandardMaterial color="#090d16" roughness={0.8} />
-            </Box>
-            {/* Right Skirt */}
-            <Box args={[0.02, stageH - 0.02, stageW]} position={[stageL / 2, 0, 0]}>
-              <meshStandardMaterial color="#090d16" roughness={0.8} />
-            </Box>
-          </>
-        )}
 
-        {/* Legs / Stage Pieds (Vérins) */}
-        <Cylinder args={[0.03, 0.03, stageH, 8]} position={[-stageL / 2 + 0.1, 0, -stageW / 2 + 0.1]}>
-          <meshStandardMaterial color="#475569" metalness={0.7} />
-        </Cylinder>
-        <Cylinder args={[0.03, 0.03, stageH, 8]} position={[stageL / 2 - 0.1, 0, -stageW / 2 + 0.1]}>
-          <meshStandardMaterial color="#475569" metalness={0.7} />
-        </Cylinder>
-        <Cylinder args={[0.03, 0.03, stageH, 8]} position={[-stageL / 2 + 0.1, 0, stageW / 2 - 0.1]}>
-          <meshStandardMaterial color="#475569" metalness={0.7} />
-        </Cylinder>
-        <Cylinder args={[0.03, 0.03, stageH, 8]} position={[stageL / 2 - 0.1, 0, stageW / 2 - 0.1]}>
-          <meshStandardMaterial color="#475569" metalness={0.7} />
-        </Cylinder>
-      </group>
+            {/* Modular Grid lines on deck (1.22m x 1.22m plaques representation) */}
+            <Box args={[stageL, 0.052, stageW]} position={[0, stageCenterY - 0.024, 0]}>
+              <meshStandardMaterial color="#0f172a" wireframe wireframeLinewidth={1.5} />
+            </Box>
 
-      {/* Stairs */}
-      {stairSteps}
+            {/* Stage Skirting / Jupe de scène noire plissée */}
+            {stage.hasSkirting && (
+              <>
+                {/* Front Skirt */}
+                <Box args={[stageL, stageH - 0.02, 0.02]} position={[0, 0, stageW / 2]}>
+                  <meshStandardMaterial color="#090d16" roughness={0.8} />
+                </Box>
+                {/* Left Skirt */}
+                <Box args={[0.02, stageH - 0.02, stageW]} position={[-stageL / 2, 0, 0]}>
+                  <meshStandardMaterial color="#090d16" roughness={0.8} />
+                </Box>
+                {/* Right Skirt */}
+                <Box args={[0.02, stageH - 0.02, stageW]} position={[stageL / 2, 0, 0]}>
+                  <meshStandardMaterial color="#090d16" roughness={0.8} />
+                </Box>
+              </>
+            )}
+
+            {/* Legs / Stage Pieds (Vérins) */}
+            <Cylinder args={[0.03, 0.03, stageH, 8]} position={[-stageL / 2 + 0.1, 0, -stageW / 2 + 0.1]}>
+              <meshStandardMaterial color="#475569" metalness={0.7} />
+            </Cylinder>
+            <Cylinder args={[0.03, 0.03, stageH, 8]} position={[stageL / 2 - 0.1, 0, -stageW / 2 + 0.1]}>
+              <meshStandardMaterial color="#475569" metalness={0.7} />
+            </Cylinder>
+            <Cylinder args={[0.03, 0.03, stageH, 8]} position={[-stageL / 2 + 0.1, 0, stageW / 2 - 0.1]}>
+              <meshStandardMaterial color="#475569" metalness={0.7} />
+            </Cylinder>
+            <Cylinder args={[0.03, 0.03, stageH, 8]} position={[stageL / 2 - 0.1, 0, stageW / 2 - 0.1]}>
+              <meshStandardMaterial color="#475569" metalness={0.7} />
+            </Cylinder>
+          </group>
+
+          {/* Stairs */}
+          {stairSteps}
+        </>
+      )}
 
       {/* ========================================================
           2. ÉCRAN LED (MUR VIDÉO FOND DE SCÈNE)
           ======================================================== */}
-      <group position={[0, screenY, screenZ]}>
-        {/* Main Display Face */}
-        <Box args={[screenW, screenH, 0.08]}>
-          <meshStandardMaterial
-            color="#0f172a"
-            emissive="#1e1b4b"
-            emissiveIntensity={0.8}
-            roughness={0.2}
-          />
-        </Box>
+      {isScreenEnabled && (
+        <group position={[0, screenY, screenZ]}>
+          {/* Main Display Face */}
+          <Box args={[screenW, screenH, 0.08]}>
+            <meshStandardMaterial
+              color="#0f172a"
+              emissive="#1e1b4b"
+              emissiveIntensity={0.8}
+              roughness={0.2}
+            />
+          </Box>
 
-        {/* Glowing Screen Content Simulation */}
-        <Box args={[screenW - 0.06, screenH - 0.06, 0.09]}>
-          <meshStandardMaterial
-            color="#2563eb"
-            emissive="#38bdf8"
-            emissiveIntensity={1.2}
-            roughness={0.1}
-          />
-        </Box>
+          {/* Glowing Screen Content Simulation */}
+          <Box args={[screenW - 0.06, screenH - 0.06, 0.09]}>
+            <meshStandardMaterial
+              color="#2563eb"
+              emissive="#38bdf8"
+              emissiveIntensity={1.2}
+              roughness={0.1}
+            />
+          </Box>
 
-        {/* LED Back Structure & Vertical Bumping Bars */}
-        <Box args={[screenW + 0.1, screenH + 0.1, 0.04]} position={[0, 0, -0.06]}>
-          <meshStandardMaterial color="#020617" metalness={0.7} />
-        </Box>
-        {/* Top Bumping Bar */}
-        <Cylinder args={[0.025, 0.025, screenW, 8]} position={[0, screenH / 2 + 0.05, -0.06]} rotation={[0, 0, Math.PI / 2]}>
-          <meshStandardMaterial color="#475569" metalness={0.8} />
-        </Cylinder>
-      </group>
+          {/* LED Back Structure & Vertical Bumping Bars */}
+          <Box args={[screenW + 0.1, screenH + 0.1, 0.04]} position={[0, 0, -0.06]}>
+            <meshStandardMaterial color="#020617" metalness={0.7} />
+          </Box>
+          {/* Top Bumping Bar */}
+          <Cylinder args={[0.025, 0.025, screenW, 8]} position={[0, screenH / 2 + 0.05, -0.06]} rotation={[0, 0, Math.PI / 2]}>
+            <meshStandardMaterial color="#475569" metalness={0.8} />
+          </Cylinder>
+        </group>
+      )}
 
       {/* ========================================================
           3. STRUCTURE TRUSS (TOURS & GRIL SCÉNIQUE)
           ======================================================== */}
-      {/* 4 Towers / Poteaux */}
-      {isGoalpost ? (
-        // Goalpost: 2 towers at Z=screenZ or Z=0
-        <>
-          <group position={[-structL / 2, structH / 2, 0]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" />
-            <Box args={[0.7, 0.04, 0.7]} position={[0, -structH / 2, 0]}><meshStandardMaterial color="#0f172a" /></Box>
-            {/* Outriggers 2m */}
-            <Box args={[0.2, 0.06, 2]} position={[0, -structH / 2 + 0.1, 0]}><meshStandardMaterial color="#475569" /></Box>
-          </group>
-          <group position={[structL / 2, structH / 2, 0]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" />
-            <Box args={[0.7, 0.04, 0.7]} position={[0, -structH / 2, 0]}><meshStandardMaterial color="#0f172a" /></Box>
-            <Box args={[0.2, 0.06, 2]} position={[0, -structH / 2 + 0.1, 0]}><meshStandardMaterial color="#475569" /></Box>
-          </group>
-          {/* Main Top Beam along X */}
-          <group position={[0, structH, 0]}>
-            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
-          </group>
-        </>
-      ) : (
-        // Box Grid: 4 towers at 4 corners
-        <>
-          {/* Back Left Tower */}
-          <group position={[-structL / 2, structH / 2, -structW / 2]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
-            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
-            {/* Top Pulley head */}
-            <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
-          </group>
-          {/* Back Right Tower */}
-          <group position={[structL / 2, structH / 2, -structW / 2]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
-            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
-            <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
-          </group>
-          {/* Front Left Tower */}
-          <group position={[-structL / 2, structH / 2, structW / 2]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
-            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
-            <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
-          </group>
-          {/* Front Right Tower */}
-          <group position={[structL / 2, structH / 2, structW / 2]}>
-            <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
-            <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
-            <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
-          </group>
+      {isStructureEnabled && (
+        isGoalpost ? (
+          // Goalpost: 2 towers at Z=screenZ or Z=0
+          <>
+            <group position={[-structL / 2, structH / 2, 0]}>
+              <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" />
+              <Box args={[0.7, 0.04, 0.7]} position={[0, -structH / 2, 0]}><meshStandardMaterial color="#0f172a" /></Box>
+              {/* Outriggers 2m */}
+              <Box args={[0.2, 0.06, 2]} position={[0, -structH / 2 + 0.1, 0]}><meshStandardMaterial color="#475569" /></Box>
+            </group>
+            <group position={[structL / 2, structH / 2, 0]}>
+              <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" />
+              <Box args={[0.7, 0.04, 0.7]} position={[0, -structH / 2, 0]}><meshStandardMaterial color="#0f172a" /></Box>
+              <Box args={[0.2, 0.06, 2]} position={[0, -structH / 2 + 0.1, 0]}><meshStandardMaterial color="#475569" /></Box>
+            </group>
+            {/* Main Top Beam along X */}
+            <group position={[0, structH, 0]}>
+              <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
+            </group>
+          </>
+        ) : (
+          // Box Grid: 4 towers at 4 corners
+          <>
+            {/* Back Left Tower */}
+            <group position={[-structL / 2, structH / 2, -structW / 2]}>
+              <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
+              <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
+              {/* Top Pulley head */}
+              <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
+            </group>
+            {/* Back Right Tower */}
+            <group position={[structL / 2, structH / 2, -structW / 2]}>
+              <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
+              <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
+              <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
+            </group>
+            {/* Front Left Tower */}
+            <group position={[-structL / 2, structH / 2, structW / 2]}>
+              <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
+              <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
+              <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
+            </group>
+            {/* Front Right Tower */}
+            <group position={[structL / 2, structH / 2, structW / 2]}>
+              <TrussBeam length={structH} width={0.35} height={0.35} color="#64748b" axis="y" />
+              <Box args={[0.65, 0.04, 0.65]} position={[0, -structH / 2 + 0.02, 0]}><meshStandardMaterial color="#090d16" /></Box>
+              <Box args={[0.4, 0.2, 0.4]} position={[0, structH / 2 + 0.1, 0]}><meshStandardMaterial color="#ef4444" /></Box>
+            </group>
 
-          {/* Horizontal Beams at height structH */}
-          {/* Back Beam (X axis) */}
-          <group position={[0, structH, -structW / 2]}>
-            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
-          </group>
-          {/* Front Beam (X axis) */}
-          <group position={[0, structH, structW / 2]}>
-            <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
-          </group>
-          {/* Left Side Beam (Z axis) */}
-          <group position={[-structL / 2, structH, 0]}>
-            <TrussBeam length={structW} width={0.35} height={0.35} color="#818cf8" axis="z" />
-          </group>
-          {/* Right Side Beam (Z axis) */}
-          <group position={[structL / 2, structH, 0]}>
-            <TrussBeam length={structW} width={0.35} height={0.35} color="#818cf8" axis="z" />
-          </group>
+            {/* Horizontal Beams at height structH */}
+            {/* Back Beam (X axis) */}
+            <group position={[0, structH, -structW / 2]}>
+              <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
+            </group>
+            {/* Front Beam (X axis) */}
+            <group position={[0, structH, structW / 2]}>
+              <TrussBeam length={structL} width={0.4} height={0.4} color="#38bdf8" axis="x" />
+            </group>
+            {/* Left Side Beam (Z axis) */}
+            <group position={[-structL / 2, structH, 0]}>
+              <TrussBeam length={structW} width={0.35} height={0.35} color="#818cf8" axis="z" />
+            </group>
+            {/* Right Side Beam (Z axis) */}
+            <group position={[structL / 2, structH, 0]}>
+              <TrussBeam length={structW} width={0.35} height={0.35} color="#818cf8" axis="z" />
+            </group>
 
-          {/* 4 Corner Sleeve Blocks */}
-          <Box args={[0.48, 0.48, 0.48]} position={[-structL / 2, structH, -structW / 2]}><meshStandardMaterial color="#1e293b" /></Box>
-          <Box args={[0.48, 0.48, 0.48]} position={[structL / 2, structH, -structW / 2]}><meshStandardMaterial color="#1e293b" /></Box>
-          <Box args={[0.48, 0.48, 0.48]} position={[-structL / 2, structH, structW / 2]}><meshStandardMaterial color="#1e293b" /></Box>
-          <Box args={[0.48, 0.48, 0.48]} position={[structL / 2, structH, structW / 2]}><meshStandardMaterial color="#1e293b" /></Box>
-        </>
+            {/* 4 Corner Sleeve Blocks */}
+            <Box args={[0.48, 0.48, 0.48]} position={[-structL / 2, structH, -structW / 2]}><meshStandardMaterial color="#1e293b" /></Box>
+            <Box args={[0.48, 0.48, 0.48]} position={[structL / 2, structH, -structW / 2]}><meshStandardMaterial color="#1e293b" /></Box>
+            <Box args={[0.48, 0.48, 0.48]} position={[-structL / 2, structH, structW / 2]}><meshStandardMaterial color="#1e293b" /></Box>
+            <Box args={[0.48, 0.48, 0.48]} position={[structL / 2, structH, structW / 2]}><meshStandardMaterial color="#1e293b" /></Box>
+          </>
+        )
       )}
 
       {/* ========================================================
           4. ÉCLAIRAGE (LIGHTING FIXTURES & VOLUMETRIC BEAMS)
           ======================================================== */}
-      {lightingFixtures}
+      {isLightingEnabled && isStructureEnabled && lightingFixtures}
 
       {/* ========================================================
           5. TOTEMS FOND DE SCÈNE (AVEC LYRES BEAM 280W)
           ======================================================== */}
-      {upstageTotems}
+      {isStructureEnabled && upstageTotems}
 
       {/* ========================================================
           6. MATRICES LED LATÉRALES (STROBE / BEAM FLANCS ÉCRAN)
           ======================================================== */}
-      {sideScreenMatrices}
+      {isScreenEnabled && isLightingEnabled && sideScreenMatrices}
 
       {/* ========================================================
           7. DIMENSION LABELS
           ======================================================== */}
       {showLabels && (
         <>
-          <DimensionLabel
-            position={[0, stageH + 0.3, stageW / 2 + 0.3]}
-            label={`Scène : ${stageL}m × ${stageW}m (H=${Math.round(stageH * 100)}cm)`}
-          />
-          <DimensionLabel
-            position={[0, screenY + screenH / 2 + 0.3, screenZ]}
-            label={`Écran LED : ${screenW}m × ${screenH}m (${screen.pitch})`}
-          />
-          <DimensionLabel
-            position={[-structL / 2 - 0.8, structH / 2, 0]}
-            label={`Structure : ${structL}m × ${structW}m (H=${structH}m)`}
-          />
-          {structure.totems?.count > 0 && (
+          {isStageEnabled && (
             <DimensionLabel
-              position={[0, (structure.totems.heightM || 2.5) + 0.5, screenZ - 0.6]}
-              label={`${structure.totems.count}x Totems Truss (H=${structure.totems.heightM || 2.5}m) + Beams 280W`}
+              position={[0, stageH + 0.3, stageW / 2 + 0.3]}
+              label={`Scène : ${stageL}m × ${stageW}m (H=${Math.round(stageH * 100)}cm)`}
             />
           )}
-          {lighting.sideMatricesCount > 0 && (
+          {isScreenEnabled && (
+            <DimensionLabel
+              position={[0, screenY + screenH / 2 + 0.3, screenZ]}
+              label={`Écran LED : ${screenW}m × ${screenH}m (${screen.pitch})`}
+            />
+          )}
+          {isStructureEnabled && (
+            <DimensionLabel
+              position={[-structL / 2 - 0.8, structH / 2, 0]}
+              label={`Structure : ${structL}m × ${structW}m (H=${structH}m)`}
+            />
+          )}
+          {isStructureEnabled && structure.totems?.count > 0 && (
+            <DimensionLabel
+              position={[0, (structure.totems.heightM || 2.5) + 0.5, screenZ - 0.6]}
+              label={`${structure.totems.count}x Totems Truss (H=${structure.totems.heightM || 2.5}m)${isLightingEnabled ? ' + Beams 280W' : ''}`}
+            />
+          )}
+          {isScreenEnabled && isLightingEnabled && lighting.sideMatricesCount > 0 && (
             <DimensionLabel
               position={[screenW / 2 + 0.9, screenY, screenZ]}
               label={`${lighting.totalSideMatrices}x Matrices LED Strobe (5G + 5D)`}

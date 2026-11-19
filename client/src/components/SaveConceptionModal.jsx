@@ -34,6 +34,7 @@ export default function SaveConceptionModal({
         eventName: eventName.trim(),
         siteName: siteName.trim(),
         stageConfig: {
+          enabled: stage.enabled !== false,
           lengthModules: stage.modules.length,
           widthModules: stage.modules.width,
           lengthM: stage.dimensions.lengthM,
@@ -49,6 +50,7 @@ export default function SaveConceptionModal({
           totalWeightKg: stage.totalWeightKg
         },
         structureConfig: {
+          enabled: structure.enabled !== false,
           structureType: structure.structureType,
           towerType: structure.series.towerType,
           gridTypeL: structure.series.gridTypeL,
@@ -64,6 +66,7 @@ export default function SaveConceptionModal({
           totals: structure.totals
         },
         screenConfig: {
+          enabled: screen.enabled !== false,
           pitch: screen.pitch,
           mountType: screen.mountType,
           cabinetsW: screen.cabinets.width,
@@ -75,6 +78,7 @@ export default function SaveConceptionModal({
           powerConsumptionKw: screen.screenPowerKw
         },
         lightingConfig: {
+          enabled: lighting.enabled !== false,
           beamsCount: lighting.counts.beams,
           spotsCount: lighting.counts.spots,
           washesCount: lighting.counts.washes,
