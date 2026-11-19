@@ -1537,43 +1537,114 @@ button, input, select, textarea {
 
 /* Print Rules */
 @media print {
-  body {
+  html, body {
     background: #ffffff !important;
     color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
   }
 
+  /* Cache formellement toute l'interface de l'application, les barres, le canvas 3D et le modal de login */
   .no-print,
   .structure-navbar,
   .structure-sidebar,
   .viewport-controls-bar,
   .floating-equipment-summary,
   .viewport-bom-section,
-  .modal-backdrop-overlay {
+  .structure-canvas-container,
+  .structure-main-workspace,
+  .login-modal-backdrop,
+  .login-card-container,
+  .modal-header,
+  .app-root > *:not(.modal-backdrop-overlay) {
     display: none !important;
+  }
+
+  /* Affichage propre du document imprimable */
+  .modal-backdrop-overlay {
+    background: transparent !important;
+    position: static !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
   }
 
   .modal-dialog-box.export-modal-dialog {
     position: static !important;
     width: 100% !important;
+    max-width: 100% !important;
     box-shadow: none !important;
     border: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
   }
 
   .printable-structure-doc {
     padding: 0 !important;
-    gap: 10px !important;
+    margin: 0 !important;
+    gap: 8px !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  .print-page-break {
+    page-break-before: always !important;
+    break-before: page !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .print-plans-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .print-kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .plan-capture-img,
+  .truss-2d-svg-container svg {
+    max-height: 115px !important;
+    width: 100% !important;
+    object-fit: contain !important;
+  }
+
+  .plan-diagram-content {
+    height: 125px !important;
+    max-height: 125px !important;
+    overflow: hidden !important;
+  }
+
+  .print-header,
+  .print-event-strip,
+  .print-plans-grid,
+  .print-kpi-grid,
+  .print-table,
+  .print-safety-stamp,
+  .print-signatures-row {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   @page {
     size: A4 portrait;
-    margin: 10mm;
+    margin: 8mm 10mm;
   }
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
+/* Responsive (Screen only, never leak into print) */
+@media screen and (max-width: 1024px) {
   .structure-main-workspace {
     flex-direction: column;
   }
@@ -1591,7 +1662,7 @@ button, input, select, textarea {
   }
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   .structure-navbar {
     padding: 10px 14px;
   }
