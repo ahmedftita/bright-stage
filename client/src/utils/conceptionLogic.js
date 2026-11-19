@@ -661,6 +661,8 @@ export const calculateFullConception = (state) => {
       },
       sideMatricesCount,
       sideMatricesFlancs,
+      sideMatricesMargin: lighting.sideMatricesMargin ?? 0.4,
+      sideMatricesFlancSpacing: lighting.sideMatricesFlancSpacing ?? 0.5,
       sideMatricesOrientation: lighting.sideMatricesOrientation || 'horizontal',
       sideMatricesPosition: lighting.sideMatricesPosition || 'lateral',
       totalSideMatrices,

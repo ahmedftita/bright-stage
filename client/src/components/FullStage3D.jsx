@@ -717,8 +717,13 @@ export default function FullStage3D({
       }
     } else {
       // Default & USER REQUEST: Multiple Lateral Flanks / Wings on left and right sides of the LED screen
-      const baseMargin = orientation === 'vertical' ? 0.28 : 0.40;
-      const flancSpacing = orientation === 'vertical' ? 0.32 : 0.50;
+      // Configurable distance between screen and first flank, and distance between flanks
+      const baseMargin = typeof lighting.sideMatricesMargin === 'number'
+        ? lighting.sideMatricesMargin
+        : (orientation === 'vertical' ? 0.28 : 0.40);
+      const flancSpacing = typeof lighting.sideMatricesFlancSpacing === 'number'
+        ? lighting.sideMatricesFlancSpacing
+        : (orientation === 'vertical' ? 0.32 : 0.50);
 
       // Distribute vertically across screen height
       const topY = screenY + (screenH / 2) - (orientation === 'vertical' ? 0.32 : 0.24);
@@ -777,6 +782,8 @@ export default function FullStage3D({
     isLightingEnabled,
     lighting.sideMatricesCount,
     lighting.sideMatricesFlancs,
+    lighting.sideMatricesMargin,
+    lighting.sideMatricesFlancSpacing,
     lighting.sideMatricesOrientation,
     lighting.sideMatricesPosition,
     screenW,

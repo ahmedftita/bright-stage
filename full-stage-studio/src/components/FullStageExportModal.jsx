@@ -364,11 +364,12 @@ export default function FullStageExportModal({
                         const bh = isVert ? 8 : 4;
                         const stepY = 46 / Math.max(1, count - 1);
                         const flancs = Math.max(1, lighting.sideMatricesFlancs || 1);
-                        const flancSpacing = bw + 3;
+                        const marginPx = Math.round((lighting.sideMatricesMargin ?? 0.4) * 12);
+                        const flancSpacingPx = Math.round((lighting.sideMatricesFlancSpacing ?? 0.5) * 14);
                         const bars = [];
                         for (let f = 0; f < flancs; f++) {
-                          const xL = 72 - bw - (f * flancSpacing);
-                          const xR = 188 + (f * flancSpacing);
+                          const xL = 75 - marginPx - bw - (f * flancSpacingPx);
+                          const xR = 185 + marginPx + (f * flancSpacingPx);
                           for (let i = 0; i < count; i++) {
                             const yPos = sy + 4 + i * stepY;
                             // Gauche flanc f

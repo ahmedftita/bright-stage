@@ -139,6 +139,8 @@ export default function FullStageStudio() {
     hazerCount: 2,
     sideMatricesCount: 5, // 5 appareils par flanc
     sideMatricesFlancs: 1, // 1 flanc à gauche + 1 flanc à droite (extensible à 2, 3, etc.)
+    sideMatricesMargin: 0.4, // Distance écran ↔ 1er flanc (en mètres)
+    sideMatricesFlancSpacing: 0.5, // Distance entre chaque flanc (en mètres)
     sideMatricesOrientation: 'horizontal', // 'horizontal' ou 'vertical'
     sideMatricesPosition: 'lateral', // 'lateral' ou 'horizontal_floor'
     showBeams: true,
@@ -250,6 +252,8 @@ export default function FullStageStudio() {
         hazerCount: item.lightingConfig.hazerCount ?? 2,
         sideMatricesCount: item.lightingConfig.sideMatricesCount ?? 0,
         sideMatricesFlancs: item.lightingConfig.sideMatricesFlancs ?? 1,
+        sideMatricesMargin: item.lightingConfig.sideMatricesMargin ?? 0.4,
+        sideMatricesFlancSpacing: item.lightingConfig.sideMatricesFlancSpacing ?? 0.5,
         sideMatricesOrientation: item.lightingConfig.sideMatricesOrientation || 'horizontal',
         sideMatricesPosition: item.lightingConfig.sideMatricesPosition || 'lateral',
         showBeams: item.lightingConfig.showBeams !== false,
@@ -1415,6 +1419,71 @@ export default function FullStageStudio() {
                             type="button"
                             className="stepper-btn"
                             onClick={() => setLightingState(prev => ({ ...prev, sideMatricesFlancs: Math.min(5, (prev.sideMatricesFlancs ?? 1) + 1) }))}
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* USER REQUEST: "on peut aussi modifier la distance entre les flanc" */}
+                    {(lightingState.sideMatricesCount ?? 0) > 0 && (
+                      <div className="stepper-row" style={{ background: 'rgba(56,189,248,0.04)', padding: '6px 8px', borderRadius: '6px', marginTop: '6px' }}>
+                        <div className="stepper-meta">
+                          <span className="stepper-title" style={{ fontSize: '12px' }}>Distance Écran ↔ Flanc</span>
+                          <span className="stepper-sub">Écartement latéral depuis l'écran</span>
+                        </div>
+                        <div className="stepper-controls">
+                          <button
+                            type="button"
+                            className="stepper-btn"
+                            onClick={() => setLightingState(prev => ({
+                              ...prev,
+                              sideMatricesMargin: Math.max(0.1, parseFloat(((prev.sideMatricesMargin ?? 0.4) - 0.1).toFixed(2)))
+                            }))}
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="stepper-input">{(lightingState.sideMatricesMargin ?? 0.4).toFixed(1)} m</span>
+                          <button
+                            type="button"
+                            className="stepper-btn"
+                            onClick={() => setLightingState(prev => ({
+                              ...prev,
+                              sideMatricesMargin: Math.min(3.0, parseFloat(((prev.sideMatricesMargin ?? 0.4) + 0.1).toFixed(2)))
+                            }))}
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {(lightingState.sideMatricesCount ?? 0) > 0 && (lightingState.sideMatricesFlancs ?? 1) > 1 && (
+                      <div className="stepper-row" style={{ background: 'rgba(56,189,248,0.04)', padding: '6px 8px', borderRadius: '6px', marginTop: '6px' }}>
+                        <div className="stepper-meta">
+                          <span className="stepper-title" style={{ fontSize: '12px' }}>Distance Entre les Flancs</span>
+                          <span className="stepper-sub">Espacement entre chaque colonne</span>
+                        </div>
+                        <div className="stepper-controls">
+                          <button
+                            type="button"
+                            className="stepper-btn"
+                            onClick={() => setLightingState(prev => ({
+                              ...prev,
+                              sideMatricesFlancSpacing: Math.max(0.2, parseFloat(((prev.sideMatricesFlancSpacing ?? 0.5) - 0.1).toFixed(2)))
+                            }))}
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="stepper-input">{(lightingState.sideMatricesFlancSpacing ?? 0.5).toFixed(1)} m</span>
+                          <button
+                            type="button"
+                            className="stepper-btn"
+                            onClick={() => setLightingState(prev => ({
+                              ...prev,
+                              sideMatricesFlancSpacing: Math.min(3.0, parseFloat(((prev.sideMatricesFlancSpacing ?? 0.5) + 0.1).toFixed(2)))
+                            }))}
                           >
                             <Plus size={14} />
                           </button>
