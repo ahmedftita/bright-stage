@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { Box, Cylinder, Cone, Sphere, Html } from '@react-three/drei';
+import { CanvasTexture } from 'three';
 
 /**
  * Full Stage 3D Studio Visualizer
@@ -365,6 +366,138 @@ export default function FullStage3D({
   const beamColor = lighting.beamColor || '#38bdf8';
   const showBeams = isLightingEnabled && lighting.showBeams;
 
+  // Dynamic Canvas Texture for LED Screen: Bright Stage Logo + "Réalisé avec Ahmed Ftita"
+  const screenTexture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 640;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    const w = canvas.width;
+    const h = canvas.height;
+
+    // 1. Dark futuristic concert stage background gradient
+    const bgGrad = ctx.createRadialGradient(w / 2, h / 2, 40, w / 2, h / 2, w / 1.1);
+    bgGrad.addColorStop(0, '#1e1b4b'); // deep indigo
+    bgGrad.addColorStop(0.55, '#090d16'); // dark slate
+    bgGrad.addColorStop(1, '#020617'); // obsidian black
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. Subtle LED cabinet grid lines (representing 500x500mm tiles)
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+    ctx.lineWidth = 1.5;
+    const gridCols = screen.cabinets?.width || 8;
+    const gridRows = screen.cabinets?.height || 5;
+    for (let c = 1; c < gridCols; c++) {
+      const gx = (c / gridCols) * w;
+      ctx.beginPath();
+      ctx.moveTo(gx, 0);
+      ctx.lineTo(gx, h);
+      ctx.stroke();
+    }
+    for (let r = 1; r < gridRows; r++) {
+      const gy = (r / gridRows) * h;
+      ctx.beginPath();
+      ctx.moveTo(0, gy);
+      ctx.lineTo(w, gy);
+      ctx.stroke();
+    }
+
+    // 3. Ambient neon lighting aura / glow behind logo
+    const glowGrad = ctx.createRadialGradient(w / 2, h * 0.38, 20, w / 2, h * 0.38, 260);
+    glowGrad.addColorStop(0, 'rgba(236, 72, 153, 0.5)'); // hot pink magenta aura
+    glowGrad.addColorStop(0.45, 'rgba(99, 102, 241, 0.35)'); // vibrant indigo aura
+    glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = glowGrad;
+    ctx.beginPath();
+    ctx.arc(w / 2, h * 0.38, 260, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4. Logo Icon: Glowing "BS" Stage Crest
+    const badgeW = 96;
+    const badgeH = 96;
+    const badgeX = w / 2 - badgeW / 2;
+    const badgeY = h * 0.16;
+
+    ctx.save();
+    ctx.shadowColor = '#ec4899';
+    ctx.shadowBlur = 24;
+    const badgeGrad = ctx.createLinearGradient(badgeX, badgeY, badgeX + badgeW, badgeY + badgeH);
+    badgeGrad.addColorStop(0, '#ec4899');
+    badgeGrad.addColorStop(1, '#6366f1');
+    ctx.fillStyle = badgeGrad;
+    if (typeof ctx.roundRect === 'function') {
+      ctx.beginPath();
+      ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 18);
+      ctx.fill();
+    } else {
+      ctx.fillRect(badgeX, badgeY, badgeW, badgeH);
+    }
+    ctx.restore();
+
+    // Badge letters "BS"
+    ctx.font = '900 48px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('BS', w / 2, badgeY + badgeH / 2);
+
+    // 5. Brand Title: "BRIGHT STAGE"
+    ctx.save();
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 18;
+    ctx.font = '900 62px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('BRIGHT STAGE', w / 2, h * 0.48);
+    ctx.restore();
+
+    // Cyan subtitle / tag
+    ctx.save();
+    ctx.font = '700 18px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText('PROFESSIONAL STAGE & LIGHTING DESIGN', w / 2, h * 0.58);
+    ctx.restore();
+
+    // 6. Gold / Amber Accent Line
+    ctx.save();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 3;
+    ctx.shadowColor = '#f59e0b';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.moveTo(w / 2 - 160, h * 0.67);
+    ctx.lineTo(w / 2 + 160, h * 0.67);
+    ctx.stroke();
+    ctx.restore();
+
+    // 7. USER REQUEST: "réalisé avec ahmed ftita"
+    ctx.save();
+    ctx.font = 'italic 700 28px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#fef08a'; // glowing warm gold/cream
+    ctx.shadowColor = '#eab308';
+    ctx.shadowBlur = 16;
+    ctx.fillText('Réalisé avec Ahmed Ftita', w / 2, h * 0.78);
+    ctx.restore();
+
+    const texture = new CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }, [screenW, screenH, screen.cabinets]);
+
+  useEffect(() => {
+    return () => {
+      if (screenTexture) screenTexture.dispose();
+    };
+  }, [screenTexture]);
+
   // Generate stairs steps
   const stairSteps = useMemo(() => {
     if (!isStageEnabled || !stage.hasStairs || stage.counts.stairs === 0 || stageH <= 0) return [];
@@ -657,25 +790,27 @@ export default function FullStage3D({
           ======================================================== */}
       {isScreenEnabled && (
         <group position={[0, screenY, screenZ]}>
-          {/* Main Display Face */}
+          {/* Main Display Frame / Backing Cabinet */}
           <Box args={[screenW, screenH, 0.08]}>
             <meshStandardMaterial
-              color="#0f172a"
-              emissive="#1e1b4b"
-              emissiveIntensity={0.8}
-              roughness={0.2}
+              color="#0b0f19"
+              metalness={0.7}
+              roughness={0.4}
             />
           </Box>
 
-          {/* Glowing Screen Content Simulation */}
-          <Box args={[screenW - 0.06, screenH - 0.06, 0.09]}>
+          {/* Glowing LED Screen with Bright Stage Logo + Réalisé avec Ahmed Ftita */}
+          <mesh position={[0, 0, 0.041]}>
+            <planeGeometry args={[screenW - 0.02, screenH - 0.02]} />
             <meshStandardMaterial
-              color="#2563eb"
-              emissive="#38bdf8"
-              emissiveIntensity={1.2}
-              roughness={0.1}
+              map={screenTexture}
+              emissive="#ffffff"
+              emissiveMap={screenTexture}
+              emissiveIntensity={0.95}
+              roughness={0.2}
+              metalness={0.1}
             />
-          </Box>
+          </mesh>
 
           {/* LED Back Structure & Vertical Bumping Bars */}
           <Box args={[screenW + 0.1, screenH + 0.1, 0.04]} position={[0, 0, -0.06]}>

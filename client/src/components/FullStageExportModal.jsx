@@ -301,14 +301,39 @@ export default function FullStageExportModal({
                       )}
 
                       {/* LED Screen */}
-                      {screen.enabled !== false && (
-                        <>
-                          <rect x="75" y={stage.enabled !== false ? 60 : 100} width="110" height="55" fill="#2563eb" stroke="#1d4ed8" strokeWidth="1.5" rx="2" />
-                          <text x="130" y={stage.enabled !== false ? 90 : 130} fill="#ffffff" fontSize="9" fontWeight="bold" textAnchor="middle">
-                            ÉCRAN LED ({screen.dimensions.widthM}×{screen.dimensions.heightM}m)
-                          </text>
-                        </>
-                      )}
+                      {screen.enabled !== false && (() => {
+                        const sy = stage.enabled !== false ? 60 : 100;
+                        return (
+                          <g>
+                            {/* Screen cabinet frame */}
+                            <rect x="75" y={sy} width="110" height="55" fill="#0b0f19" stroke="#6366f1" strokeWidth="1.2" rx="2" />
+                            {/* Glowing screen display */}
+                            <rect x="77" y={sy + 2} width="106" height="51" fill="#1e1b4b" opacity="0.85" rx="1" />
+                            
+                            {/* Bright Stage Crest Badge */}
+                            <rect x="123" y={sy + 6} width="14" height="14" rx="3" fill="#ec4899" />
+                            <text x="130" y={sy + 16} fill="#ffffff" fontSize="8" fontWeight="900" textAnchor="middle">BS</text>
+                            
+                            {/* BRIGHT STAGE Title */}
+                            <text x="130" y={sy + 27} fill="#38bdf8" fontSize="7.5" fontWeight="900" letterSpacing="0.8" textAnchor="middle">
+                              BRIGHT STAGE
+                            </text>
+                            
+                            {/* Accent separator */}
+                            <line x1="102" y1={sy + 31} x2="158" y2={sy + 31} stroke="#f59e0b" strokeWidth="0.8" />
+
+                            {/* User Subtitle: Réalisé avec Ahmed Ftita */}
+                            <text x="130" y={sy + 39} fill="#fef08a" fontSize="6.5" fontStyle="italic" fontWeight="bold" textAnchor="middle">
+                              Réalisé avec Ahmed Ftita
+                            </text>
+
+                            {/* Dimension tag */}
+                            <text x="130" y={sy + 48} fill="#94a3b8" fontSize="5" textAnchor="middle">
+                              Mur LED {screen.dimensions.widthM}m × {screen.dimensions.heightM}m
+                            </text>
+                          </g>
+                        );
+                      })()}
 
                       {/* 5 Matrices Gauche et 5 Matrices Droite */}
                       {screen.enabled !== false && lighting.enabled !== false && lighting.sideMatricesCount > 0 && (
