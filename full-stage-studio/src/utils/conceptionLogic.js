@@ -204,8 +204,9 @@ export const calculateFullConception = (state) => {
   const pitchSpec = LED_PITCHES[pitchKey] || LED_PITCHES['P3.9'];
   const cabW = Math.max(2, parseInt(screen.cabinetsW) || 8);
   const cabH = Math.max(2, parseInt(screen.cabinetsH) || 5);
-  // If no structure truss, screen defaults to ground stack support
-  const mountType = isStructureEnabled ? (screen.mountType || 'suspended_truss') : 'ground_stack';
+  // Default mount type: ground stack (débute depuis la scène)
+  const mountType = screen.mountType || 'ground_stack';
+  const startFromStage = screen.startFromStage !== false;
 
   const screenWidthM = parseFloat((cabW * 0.5).toFixed(2));
   const screenHeightM = parseFloat((cabH * 0.5).toFixed(2));
@@ -636,6 +637,7 @@ export const calculateFullConception = (state) => {
       pitch: pitchKey,
       pitchSpec,
       mountType,
+      startFromStage,
       cabinets: { width: cabW, height: cabH, total: totalCabinets },
       dimensions: { widthM: screenWidthM, heightM: screenHeightM, areaM2: screenAreaM2 },
       totalPixels,
@@ -656,6 +658,8 @@ export const calculateFullConception = (state) => {
         total: totalFixtures
       },
       sideMatricesCount,
+      sideMatricesOrientation: lighting.sideMatricesOrientation || 'horizontal',
+      sideMatricesPosition: lighting.sideMatricesPosition || 'lateral',
       totalSideMatrices,
       totemBeamsCount,
       totalLightingWeightKg,

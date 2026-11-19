@@ -84,33 +84,37 @@ const MovingFixture = ({
   upright = false
 }) => {
   const dir = upright ? 1 : -1;
+  const isBeam = type === 'beam';
   return (
     <group position={position} rotation={rotation}>
       {/* Base / Clamp */}
-      <Box args={[0.22, 0.08, 0.22]} position={[0, upright ? 0.04 : 0.04, 0]}>
+      <Box args={[0.22, 0.08, 0.22]} position={[0, dir * 0.04, 0]}>
         <meshStandardMaterial color="#0f172a" metalness={0.8} roughness={0.2} />
       </Box>
       {/* Yoke (U-bracket) */}
       <Box args={[0.06, 0.16, 0.26]} position={[0, dir * 0.12, 0]}>
         <meshStandardMaterial color="#1e293b" metalness={0.7} roughness={0.3} />
       </Box>
-      {/* Head / Lens */}
+      {/* Head / Lens Chassis */}
       <Cylinder args={[0.09, 0.08, 0.18, 12]} position={[0, dir * 0.24, 0]}>
         <meshStandardMaterial color="#090d16" metalness={0.9} roughness={0.2} />
       </Cylinder>
-      {/* Glowing Lens Face */}
-      <Cylinder args={[0.08, 0.08, 0.02, 12]} position={[0, dir * 0.33, 0]} rotation={[0, 0, 0]}>
+      {/* Compact Glowing Lens Face */}
+      <Cylinder args={[0.075, 0.075, 0.015, 12]} position={[0, dir * 0.33, 0]}>
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={3.5} />
       </Cylinder>
 
-      {/* Volumetric Light Cone */}
+      {/* Volumetric Light Cone: apex starts at lens (Y=dir*0.34) and expands cleanly without oversized lamp disc */}
       {showBeam && (
-        <group position={[0, dir * (0.34 + coneLength / 2), 0]} rotation={[upright ? 0 : Math.PI, 0, 0]}>
-          <Cone args={[coneLength * Math.tan(coneAngle), coneLength, 16, 1, true]}>
+        <group
+          position={[0, dir * (0.34 + coneLength / 2), 0]}
+          rotation={[upright ? Math.PI : 0, 0, 0]}
+        >
+          <Cone args={[coneLength * Math.tan(coneAngle), coneLength, 20, 1, true]}>
             <meshBasicMaterial
               color={color}
               transparent={true}
-              opacity={type === 'beam' ? 0.38 : 0.22}
+              opacity={isBeam ? 0.32 : 0.18}
               depthWrite={false}
             />
           </Cone>
@@ -239,16 +243,16 @@ const StrobeBeam36Fixture = ({ position, rotation = [0, 0, 0], showBeam = true, 
         {showBeam && (
           <group position={[0, 0, 0.05]}>
             {/* Wide wash & strobe glow */}
-            <Cone args={[0.45, 2.5, 16, 1, true]} position={[0, 0, 1.25]} rotation={[Math.PI / 2, 0, 0]}>
-              <meshBasicMaterial color="#fef08a" transparent opacity={0.18} depthWrite={false} />
+            <Cone args={[0.45, 2.5, 16, 1, true]} position={[0, 0, 1.25]} rotation={[-Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#fef08a" transparent opacity={0.16} depthWrite={false} />
             </Cone>
             {/* Intense Warm Center Beams */}
-            <Cone args={[0.22, 3.2, 12, 1, true]} position={[0, 0, 1.6]} rotation={[Math.PI / 2, 0, 0]}>
-              <meshBasicMaterial color="#ffffff" transparent opacity={0.28} depthWrite={false} />
+            <Cone args={[0.22, 3.2, 12, 1, true]} position={[0, 0, 1.6]} rotation={[-Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#ffffff" transparent opacity={0.26} depthWrite={false} />
             </Cone>
             {/* Lateral RGB Strobe Wash Cone */}
-            <Cone args={[0.55, 2.0, 12, 1, true]} position={[0, 0, 1.0]} rotation={[Math.PI / 2, 0, 0]}>
-              <meshBasicMaterial color="#38bdf8" transparent opacity={0.12} depthWrite={false} />
+            <Cone args={[0.55, 2.0, 12, 1, true]} position={[0, 0, 1.0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#38bdf8" transparent opacity={0.10} depthWrite={false} />
             </Cone>
           </group>
         )}
@@ -289,6 +293,7 @@ const UpstageTotem = ({
       </Box>
 
       {/* Moving Head Beam 280W (Robe Pointe / Sharpy) mounted upright on top */}
+      {/* Angled forward towards audience/face ("en face") */}
       <MovingFixture
         position={[0, height + 0.02, 0]}
         type="beam"
@@ -297,7 +302,7 @@ const UpstageTotem = ({
         coneAngle={0.065}
         coneLength={9.5}
         upright={true}
-        rotation={[-0.18, 0, beamFanAngle]} // Angled slightly forward and fanned out
+        rotation={[0.32, 0, beamFanAngle]}
       />
     </group>
   );
@@ -350,7 +355,12 @@ export default function FullStage3D({
 
   const screenW = screen.dimensions.widthM;
   const screenH = screen.dimensions.heightM;
-  const isScreenSuspended = isStructureEnabled && (screen.mountType === 'suspended_truss');
+  // USER REQUEST: "lecran debut depuis la scene svp" -> L'écran démarre posé directement sur le plateau de scène
+  const screenBottomY = isStageEnabled ? stageH : 0;
+  const isScreenSuspended = isStructureEnabled && (screen.mountType === 'suspended_truss') && !screen.startFromStage;
+  const screenY = isScreenSuspended
+    ? (stageH + 0.6 + screenH / 2)
+    : (screenBottomY + screenH / 2);
 
   // Positions
   // Stage is centered on X=0, Y=stageH/2, Z=0
@@ -358,9 +368,6 @@ export default function FullStage3D({
 
   // Screen is placed near the back edge of stage: Z = -stageW/2 + 0.35m (or centered if no stage)
   const screenZ = isStageEnabled ? (-stageW / 2 + 0.35) : (isStructureEnabled ? -structW / 2 + 0.5 : 0);
-  const screenY = isScreenSuspended
-    ? (stageH + 0.6 + screenH / 2)
-    : (stageH + screenH / 2);
 
   // Lighting parameters
   const beamColor = lighting.beamColor || '#38bdf8';
@@ -674,60 +681,100 @@ export default function FullStage3D({
     return items;
   }, [isStructureEnabled, isLightingEnabled, structure.totems, stageL, screenW, screenZ, beamColor, showBeams]);
 
-  // Lateral LED Matrices (5 à gauche et 5 à droite de l'écran LED)
+  // Lateral / Horizontal LED Matrices 36LED Strobe Beam 220W (Orientation verticale ou horizontale)
   const sideScreenMatrices = useMemo(() => {
     if (!isScreenEnabled || !isLightingEnabled) return [];
     const countPerSide = lighting.sideMatricesCount || 0;
     if (countPerSide <= 0) return [];
+
+    const orientation = lighting.sideMatricesOrientation || 'horizontal'; // 'horizontal' | 'vertical'
+    const positionMode = lighting.sideMatricesPosition || 'lateral'; // 'lateral' | 'horizontal_floor'
+    const rotZ = orientation === 'vertical' ? Math.PI / 2 : 0;
     const items = [];
-    const margin = 0.38;
-    const xLeft = -screenW / 2 - margin;
-    const xRight = screenW / 2 + margin;
-    const z = screenZ;
 
-    // Distribute vertically across screen height
-    const topY = screenY + (screenH / 2) - 0.25;
-    const botY = screenY - (screenH / 2) + 0.25;
-    const stepY = countPerSide > 1 ? (topY - botY) / (countPerSide - 1) : 0;
+    if (positionMode === 'horizontal_floor') {
+      // USER OPTION: Horizontal row along the stage deck in front of the screen
+      const totalCount = countPerSide * 2;
+      const spacing = (screenW - 0.3) / Math.max(1, totalCount - 1);
+      const startX = -screenW / 2 + 0.15;
+      const y = screenBottomY + (orientation === 'vertical' ? 0.22 : 0.09);
+      const z = screenZ + 0.32;
 
-    // Aluminum boom pipes holding the matrices
-    items.push(
-      <Cylinder key="boom-pipe-left" args={[0.024, 0.024, screenH + 0.3, 8]} position={[xLeft, screenY, z - 0.05]}>
-        <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
-      </Cylinder>
-    );
-    items.push(
-      <Cylinder key="boom-pipe-right" args={[0.024, 0.024, screenH + 0.3, 8]} position={[xRight, screenY, z - 0.05]}>
-        <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
-      </Cylinder>
-    );
+      for (let i = 0; i < totalCount; i++) {
+        const x = totalCount > 1 ? startX + i * spacing : 0;
+        items.push(
+          <StrobeBeam36Fixture
+            key={`sb-floor-${i}`}
+            position={[x, y, z]}
+            rotation={[0, 0, rotZ]}
+            showBeam={showBeams}
+            tilt={0.22}
+          />
+        );
+      }
+    } else {
+      // Default: Lateral columns on left and right sides of the LED screen
+      const margin = orientation === 'vertical' ? 0.28 : 0.40;
+      const xLeft = -screenW / 2 - margin;
+      const xRight = screenW / 2 + margin;
+      const z = screenZ;
 
-    for (let i = 0; i < countPerSide; i++) {
-      const y = countPerSide > 1 ? (botY + i * stepY) : screenY;
-      const tiltAngle = countPerSide > 1 ? ((i - (countPerSide - 1) / 2) * -0.05) : 0;
-      // Left matrix
+      // Distribute vertically across screen height
+      const topY = screenY + (screenH / 2) - (orientation === 'vertical' ? 0.32 : 0.24);
+      const botY = screenY - (screenH / 2) + (orientation === 'vertical' ? 0.32 : 0.24);
+      const stepY = countPerSide > 1 ? (topY - botY) / (countPerSide - 1) : 0;
+
+      // Aluminum boom pipes holding the matrices
       items.push(
-        <StrobeBeam36Fixture
-          key={`mat-left-${i}`}
-          position={[xLeft, y, z]}
-          rotation={[0, 0.18, 0]}
-          showBeam={showBeams}
-          tilt={tiltAngle}
-        />
+        <Cylinder key="boom-pipe-left" args={[0.024, 0.024, screenH + 0.2, 8]} position={[xLeft, screenY, z - 0.05]}>
+          <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
+        </Cylinder>
       );
-      // Right matrix
       items.push(
-        <StrobeBeam36Fixture
-          key={`mat-right-${i}`}
-          position={[xRight, y, z]}
-          rotation={[0, -0.18, 0]}
-          showBeam={showBeams}
-          tilt={tiltAngle}
-        />
+        <Cylinder key="boom-pipe-right" args={[0.024, 0.024, screenH + 0.2, 8]} position={[xRight, screenY, z - 0.05]}>
+          <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
+        </Cylinder>
       );
+
+      for (let i = 0; i < countPerSide; i++) {
+        const y = countPerSide > 1 ? (botY + i * stepY) : screenY;
+        const tiltAngle = countPerSide > 1 ? ((i - (countPerSide - 1) / 2) * -0.05) : 0;
+        // Left matrix
+        items.push(
+          <StrobeBeam36Fixture
+            key={`mat-left-${i}`}
+            position={[xLeft, y, z]}
+            rotation={[0, 0.18, rotZ]}
+            showBeam={showBeams}
+            tilt={tiltAngle}
+          />
+        );
+        // Right matrix
+        items.push(
+          <StrobeBeam36Fixture
+            key={`mat-right-${i}`}
+            position={[xRight, y, z]}
+            rotation={[0, -0.18, rotZ]}
+            showBeam={showBeams}
+            tilt={tiltAngle}
+          />
+        );
+      }
     }
     return items;
-  }, [isScreenEnabled, isLightingEnabled, lighting.sideMatricesCount, screenW, screenH, screenY, screenZ]);
+  }, [
+    isScreenEnabled,
+    isLightingEnabled,
+    lighting.sideMatricesCount,
+    lighting.sideMatricesOrientation,
+    lighting.sideMatricesPosition,
+    screenW,
+    screenH,
+    screenY,
+    screenZ,
+    screenBottomY,
+    showBeams
+  ]);
 
   return (
     <group>
@@ -820,6 +867,21 @@ export default function FullStage3D({
           <Cylinder args={[0.025, 0.025, screenW, 8]} position={[0, screenH / 2 + 0.05, -0.06]} rotation={[0, 0, Math.PI / 2]}>
             <meshStandardMaterial color="#475569" metalness={0.8} />
           </Cylinder>
+          {/* Bottom Ground-Support Feet resting directly on the stage deck */}
+          {!isScreenSuspended && (
+            <group position={[0, -screenH / 2 + 0.02, -0.04]}>
+              <Box args={[screenW, 0.04, 0.28]}>
+                <meshStandardMaterial color="#1e293b" metalness={0.8} roughness={0.3} />
+              </Box>
+              {/* Back outrigger stabilizers to stage floor */}
+              <Box args={[0.04, 0.04, 0.5]} position={[-screenW / 3, -0.01, -0.2]}>
+                <meshStandardMaterial color="#334155" metalness={0.8} />
+              </Box>
+              <Box args={[0.04, 0.04, 0.5]} position={[screenW / 3, -0.01, -0.2]}>
+                <meshStandardMaterial color="#334155" metalness={0.8} />
+              </Box>
+            </group>
+          )}
         </group>
       )}
 

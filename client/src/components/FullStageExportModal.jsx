@@ -300,9 +300,9 @@ export default function FullStageExportModal({
                         </>
                       )}
 
-                      {/* LED Screen */}
+                      {/* LED Screen (Débute directement depuis la scène) */}
                       {screen.enabled !== false && (() => {
-                        const sy = stage.enabled !== false ? 60 : 100;
+                        const sy = stage.enabled !== false ? (145 - 55) : 100;
                         return (
                           <g>
                             {/* Screen cabinet frame */}
@@ -335,23 +335,44 @@ export default function FullStageExportModal({
                         );
                       })()}
 
-                      {/* 5 Matrices Gauche et 5 Matrices Droite */}
-                      {screen.enabled !== false && lighting.enabled !== false && lighting.sideMatricesCount > 0 && (
-                        <>
-                          {/* Gauche */}
-                          <rect x="63" y={stage.enabled !== false ? 60 : 100} width="8" height="9" fill="#9333ea" rx="1" />
-                          <rect x="63" y={stage.enabled !== false ? 71 : 111} width="8" height="9" fill="#9333ea" rx="1" />
-                          <rect x="63" y={stage.enabled !== false ? 82 : 122} width="8" height="9" fill="#9333ea" rx="1" />
-                          <rect x="63" y={stage.enabled !== false ? 93 : 133} width="8" height="9" fill="#9333ea" rx="1" />
-                          <rect x="63" y={stage.enabled !== false ? 104 : 144} width="8" height="9" fill="#9333ea" rx="1" />
-                          {/* Droite */}
-                          <rect x="189" y={stage.enabled !== false ? 60 : 100} width="8" height="9" fill="#9333ea" rx="1" />
-                          <rect x="189" y={stage.enabled !== false ? 71 : 111} width="8" height="9" fill="#9333ea" rx="1" />
-                          <rect x="189" y={stage.enabled !== false ? 82 : 122} width="8" height="9" fill="#9333ea" rx="1" />
-                          <rect x="189" y={stage.enabled !== false ? 93 : 133} width="8" height="9" fill="#9333ea" rx="1" />
-                          <rect x="189" y={stage.enabled !== false ? 104 : 144} width="8" height="9" fill="#9333ea" rx="1" />
-                        </>
-                      )}
+                      {/* 36LED Strobe Beam (Position Latérale ou Horizontale au sol, Orientation Horiz ou Vert) */}
+                      {screen.enabled !== false && lighting.enabled !== false && lighting.sideMatricesCount > 0 && (() => {
+                        const sy = stage.enabled !== false ? (145 - 55) : 100;
+                        const isFloor = lighting.sideMatricesPosition === 'horizontal_floor';
+                        const isVert = lighting.sideMatricesOrientation === 'vertical';
+                        const count = lighting.sideMatricesCount;
+
+                        if (isFloor) {
+                          // Alignées en ligne horizontale au pied de l'écran LED
+                          const total = count * 2;
+                          const bw = isVert ? 5 : 9;
+                          const bh = isVert ? 10 : 5;
+                          const startX = 78;
+                          const stepX = (104 - bw) / Math.max(1, total - 1);
+                          const by = 145 - bh;
+                          const bars = [];
+                          for (let i = 0; i < total; i++) {
+                            bars.push(
+                              <rect key={`sb-fl-${i}`} x={startX + i * stepX} y={by} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />
+                            );
+                          }
+                          return <g>{bars}</g>;
+                        }
+
+                        // Disposition latérale (Flancs gauche & droite)
+                        const bw = isVert ? 5 : 9;
+                        const bh = isVert ? 9 : 5;
+                        const stepY = 46 / Math.max(1, count - 1);
+                        const bars = [];
+                        for (let i = 0; i < count; i++) {
+                          const yPos = sy + 4 + i * stepY;
+                          // Gauche
+                          bars.push(<rect key={`sb-l-${i}`} x={72 - bw} y={yPos} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />);
+                          // Droite
+                          bars.push(<rect key={`sb-r-${i}`} x={188} y={yPos} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />);
+                        }
+                        return <g>{bars}</g>;
+                      })()}
 
                       {/* Light Cones */}
                       {structure.enabled !== false && lighting.enabled !== false && (

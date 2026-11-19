@@ -123,7 +123,8 @@ export default function FullStageStudio() {
   const [screenState, setScreenState] = useState({
     enabled: true,
     pitch: 'P3.9',
-    mountType: 'suspended_truss',
+    mountType: 'ground_stack', // Par défaut posé et débute depuis la scène
+    startFromStage: true,
     cabinetsW: 8, // 4.0m de largeur (8 dalles de 0.5m)
     cabinetsH: 5  // 2.5m de hauteur (5 dalles de 0.5m)
   });
@@ -137,6 +138,8 @@ export default function FullStageStudio() {
     blindersCount: 4,
     hazerCount: 2,
     sideMatricesCount: 5, // 5 matrices à gauche + 5 à droite = 10 matrices !
+    sideMatricesOrientation: 'horizontal', // 'horizontal' ou 'vertical'
+    sideMatricesPosition: 'lateral', // 'lateral' ou 'horizontal_floor'
     showBeams: true,
     beamColor: '#38bdf8'
   });
@@ -228,7 +231,8 @@ export default function FullStageStudio() {
       setScreenState({
         enabled: item.screenConfig.enabled !== false,
         pitch: item.screenConfig.pitch || 'P3.9',
-        mountType: item.screenConfig.mountType || 'suspended_truss',
+        mountType: item.screenConfig.mountType || 'ground_stack',
+        startFromStage: item.screenConfig.startFromStage !== false,
         cabinetsW: item.screenConfig.cabinetsW || 8,
         cabinetsH: item.screenConfig.cabinetsH || 5
       });
@@ -244,6 +248,8 @@ export default function FullStageStudio() {
         blindersCount: item.lightingConfig.blindersCount ?? 4,
         hazerCount: item.lightingConfig.hazerCount ?? 2,
         sideMatricesCount: item.lightingConfig.sideMatricesCount ?? 0,
+        sideMatricesOrientation: item.lightingConfig.sideMatricesOrientation || 'horizontal',
+        sideMatricesPosition: item.lightingConfig.sideMatricesPosition || 'lateral',
         showBeams: item.lightingConfig.showBeams !== false,
         beamColor: item.lightingConfig.beamColor || '#38bdf8'
       });
@@ -389,12 +395,14 @@ export default function FullStageStudio() {
                   eventName: 'Scénographie Pro : Écran 4×2.5m + 10x 36LED Strobe Beam + 3 Totems Beam 280W',
                   siteName: 'Scène Festival & Live Show',
                   stage: { enabled: true, lengthModules: 6, widthModules: 4, heightId: 'h75', hasStairs: true, stairsCount: 1, stairsSide: 'right' },
-                  structure: { enabled: true, structureType: 'grid', towerType: 'PT34', gridTypeL: 'HT44', length: 9, width: 7, height: 6, totemsCount: 3, totemHeightM: 2.5 },
-                  screen: { enabled: true, pitch: 'P3.9', mountType: 'suspended_truss', cabinetsW: 8, cabinetsH: 5 }, // 4.0m × 2.5m !
+                  structure: { enabled: true, structureType: 'grid', towerType: 'PT34', gridTypeL: 'HT44', length: 9, width: 7, height: 6, totemsCount: 3, totemHeightM: 2.8 },
+                  screen: { enabled: true, pitch: 'P3.9', mountType: 'ground_stack', startFromStage: true, cabinetsW: 8, cabinetsH: 5 }, // 4.0m × 2.5m débute depuis la scène !
                   lighting: {
                     enabled: true,
                     beamsCount: 8, spotsCount: 6, washesCount: 8, ledBarsCount: 6, blindersCount: 4, hazerCount: 2,
                     sideMatricesCount: 5, // 5 à gauche + 5 à droite = 10 matrices !
+                    sideMatricesOrientation: 'horizontal',
+                    sideMatricesPosition: 'lateral',
                     showBeams: true, beamColor: '#38bdf8'
                   }
                 })}
@@ -1058,21 +1066,18 @@ export default function FullStageStudio() {
                     </div>
 
                     <div className="form-group">
-                      <label className="form-label">Mode de Fixation</label>
+                      <label className="form-label">Position Verticale de l'Écran</label>
                       <select
                         className="form-select"
-                        value={!structureState.enabled ? 'ground_stack' : screenState.mountType}
-                        disabled={!structureState.enabled}
+                        value={screenState.mountType || 'ground_stack'}
                         onChange={(e) => setScreenState(prev => ({ ...prev, mountType: e.target.value }))}
                       >
-                        <option value="ground_stack">Posé au sol (Ground Stack)</option>
-                        {structureState.enabled && <option value="suspended_truss">Suspendu au Pont Arrière</option>}
+                        <option value="ground_stack">Posé sur la scène (Débute depuis la scène)</option>
+                        {structureState.enabled && <option value="suspended_truss">Suspendu au Pont Arrière (+60 cm)</option>}
                       </select>
-                      {!structureState.enabled && (
-                        <div style={{ fontSize: '10px', color: '#f59e0b', marginTop: '3px' }}>
-                          * Sans structure : écran posé au sol ou sur scène.
-                        </div>
-                      )}
+                      <div style={{ fontSize: '10px', color: '#38bdf8', marginTop: '3px' }}>
+                        ✓ L'écran démarre posé directement sur le plateau de scène.
+                      </div>
                     </div>
                   </div>
 
@@ -1357,8 +1362,60 @@ export default function FullStageStudio() {
                     </div>
 
                     {(lightingState.sideMatricesCount ?? 0) > 0 && (
-                      <div style={{ marginTop: '8px', fontSize: '11px', color: '#94a3b8', background: 'rgba(56,189,248,0.08)', padding: '7px 10px', borderRadius: '6px', border: '1px solid rgba(56,189,248,0.2)' }}>
-                        ⚡ <strong>36LED Strobe Beam 220W (LeLeght) :</strong> 36 LED Beams blanc chaud + 648 LED RGB Strobe • Tilt motorisé 180° • 220W • 16 canaux DMX.
+                      <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {/* Orientation des barres */}
+                        <div>
+                          <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '4px', fontWeight: 600 }}>
+                            Orientation des barres Strobe Beam :
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                            <button
+                              type="button"
+                              className={`action-btn ${lightingState.sideMatricesOrientation !== 'vertical' ? 'btn-primary' : 'btn-secondary'}`}
+                              style={{ justifyContent: 'center', fontSize: '11px', padding: '6px' }}
+                              onClick={() => setLightingState(prev => ({ ...prev, sideMatricesOrientation: 'horizontal' }))}
+                            >
+                              Horizontale ▤
+                            </button>
+                            <button
+                              type="button"
+                              className={`action-btn ${lightingState.sideMatricesOrientation === 'vertical' ? 'btn-primary' : 'btn-secondary'}`}
+                              style={{ justifyContent: 'center', fontSize: '11px', padding: '6px' }}
+                              onClick={() => setLightingState(prev => ({ ...prev, sideMatricesOrientation: 'vertical' }))}
+                            >
+                              Verticale ▥
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Disposition / Emplacement */}
+                        <div>
+                          <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '4px', fontWeight: 600 }}>
+                            Positionnement des projecteurs :
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                            <button
+                              type="button"
+                              className={`action-btn ${lightingState.sideMatricesPosition !== 'horizontal_floor' ? 'btn-primary' : 'btn-secondary'}`}
+                              style={{ justifyContent: 'center', fontSize: '11px', padding: '6px' }}
+                              onClick={() => setLightingState(prev => ({ ...prev, sideMatricesPosition: 'lateral' }))}
+                            >
+                              Flancs Latéraux
+                            </button>
+                            <button
+                              type="button"
+                              className={`action-btn ${lightingState.sideMatricesPosition === 'horizontal_floor' ? 'btn-primary' : 'btn-secondary'}`}
+                              style={{ justifyContent: 'center', fontSize: '11px', padding: '6px' }}
+                              onClick={() => setLightingState(prev => ({ ...prev, sideMatricesPosition: 'horizontal_floor' }))}
+                            >
+                              Pied d'Écran (Sol)
+                            </button>
+                          </div>
+                        </div>
+
+                        <div style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(56,189,248,0.08)', padding: '7px 10px', borderRadius: '6px', border: '1px solid rgba(56,189,248,0.2)' }}>
+                          ⚡ <strong>36LED Strobe Beam 220W (LeLeght) :</strong> 36 LED Beams blanc chaud + 648 LED RGB Strobe • Tilt motorisé 180° • 220W • 16 canaux DMX.
+                        </div>
                       </div>
                     )}
                   </div>
