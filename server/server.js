@@ -137,6 +137,7 @@ const lossReportRoutes = require('./routes/lossReportRoutes');
 const ledProjectRoutes = require('./routes/ledProjectRoutes');
 const stageModelRoutes = require('./routes/stageModelRoutes');
 const structureModelRoutes = require('./routes/structureModelRoutes');
+const stageConceptionRoutes = require('./routes/stageConceptionRoutes');
 
 // Mount Routes
 app.use('/api/auth', authRoutes);
@@ -167,6 +168,7 @@ app.use('/api/loss-reports', lossReportRoutes);
 app.use('/api/led-projects', ledProjectRoutes);
 app.use('/api/stage-models', stageModelRoutes);
 app.use('/api/structure-models', structureModelRoutes);
+app.use('/api/stage-conceptions', stageConceptionRoutes);
 
 // Catch-all 404
 app.use((req, res) => {

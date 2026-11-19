@@ -75,6 +75,7 @@ import SubcontractedManagement from './components/SubcontractedManagement';
 import StructureCalcView from './components/StructureCalcView';
 import LedConfigurator from './components/LedConfigurator';
 import StageConfigurator from './components/StageConfigurator';
+import FullStageStudio from './components/FullStageStudio';
 
 // ✅ Finance Module & Administration
 import QuotesList from './components/QuotesList';
@@ -425,6 +426,7 @@ const AuthenticatedApp = () => {
                         <SidebarItem icon={Calculator} label={t('structure_calc')} path="/calculator" active={isPathActive('/calculator')} iconColor="#a855f7" />
                         <SidebarItem icon={Monitor} label="LED Configurator" path="/led-config" active={isPathActive('/led-config')} iconColor="#3b82f6" />
                         <SidebarItem icon={Layers} label="Stage Calculator" path="/stage-calc" active={isPathActive('/stage-calc')} iconColor="#10b981" />
+                        <SidebarItem icon={Sparkles} label="Studio Conception 3D" path="/stage-studio" active={isPathActive('/stage-studio')} iconColor="#ec4899" />
                       </>
                     )}
                     {hasAccess(['Founder', 'Manager', 'Storekeeper', 'Site Manager']) && (
@@ -592,6 +594,7 @@ const AuthenticatedApp = () => {
                 <Route path="/calculator" element={<ComingSoon icon={Calculator} featureName="Calculateur Structure" description="Calculateur de charges et résistances pour vos structures scéniques. Ce module sera bientôt disponible." />} />
                 <Route path="/led-config" element={<ComingSoon icon={Monitor} featureName="LED Configurator" description="Configurez et visualisez en 3D vos murs et scènes LED. Ce module sera bientôt disponible." />} />
                 <Route path="/stage-calc" element={getSection(<StageConfigurator />, { icon: Layers, featureName: "Stage Calculator", description: "Calculateur de dimensions et de capacité pour vos scènes et podiums." }, ['Founder', 'Manager', 'Storekeeper', 'Site Manager'])} />
+                <Route path="/stage-studio" element={getSection(<FullStageStudio />, { icon: Sparkles, featureName: "Studio Conception Scénique 3D", description: "Studio unifié de conception complète : Scène, Écran LED, Éclairage & Structure Truss." }, ['Founder', 'Manager', 'Storekeeper', 'Site Manager'])} />
 
                 {/* ── FINANCE MODULE ── */}
                 <Route path="/quotes" element={getSection(<QuotesList />, { icon: FileSpreadsheet, featureName: "Devis", description: "Créez des devis professionnels et suivez leur validation par vos clients." }, ['Founder', 'Manager'])} />
