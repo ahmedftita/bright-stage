@@ -136,6 +136,19 @@ export const SIDE_FIXTURE_SPECS = {
     color: '#38bdf8',
     beamColor: '#38bdf8'
   },
+  portman_hex_6: {
+    id: 'portman_hex_6',
+    name: 'Totem Hexagonal Portman P3',
+    fullName: 'Totem / Alvéole Hexagonale Vintage Honeycomb (Style Portman P3 PIXX200)',
+    badge: '⬡ Portman Hex P3',
+    specShort: 'Alvéole hexagonale Ø26cm nid d’abeille • Halogène 230W',
+    specFull: 'Alvéole hexagonale aluminium satiné Ø260mm • Réflecteur doré & Grille alvéolaire nid d’abeille • Lampe halogène 230W + rétro-éclairage RGB • DMX 512 (6 Ch)',
+    weightKg: 4.2,
+    watts: 230,
+    dmx: 6,
+    color: '#d97706',
+    beamColor: '#f59e0b'
+  },
   strobe_beam_36: {
     id: 'strobe_beam_36',
     name: '36LED Strobe Beam 220W',
@@ -156,7 +169,8 @@ export const SIDE_FIXTURE_SPECS = {
  * Supporte :
  * - 'single' : Modèle unique sélectionné
  * - 'mix_all_4' : Panachage cyclique des 4 projecteurs (Blinder COB + Retro Bowl + Halogène Rond + PAR LED)
- * - 'mix_all_5' : Panachage cyclique des 5 projecteurs (incluant Strobe Beam 220W)
+ * - 'mix_all_5' : Panachage cyclique des 5 projecteurs vintage scéniques (incluant Portman Hex P3)
+ * - 'mix_all_6' : Panachage complet des 6 projecteurs (incluant Strobe Beam 220W)
  * - 'alternate_2' : Duo alterné A ⇋ B (1 sur 2)
  * - 'by_flanc' : Flanc intérieur vs Flanc extérieur
  */
@@ -164,7 +178,7 @@ export const getFixtureTypeForPosition = ({
   mode = 'single',
   singleType = 'cob_blinder_2eye',
   fixtureA = 'cob_blinder_2eye',
-  fixtureB = 'retro_bowl',
+  fixtureB = 'portman_hex_6',
   flancIndex = 0,
   itemIndex = 0,
   totalFlancs = 1,
@@ -172,8 +186,13 @@ export const getFixtureTypeForPosition = ({
 }) => {
   if (mode === 'single') return singleType || 'cob_blinder_2eye';
 
+  if (mode === 'mix_all_6') {
+    const sequence = ['cob_blinder_2eye', 'retro_bowl', 'vintage_round', 'par_led_18', 'portman_hex_6', 'strobe_beam_36'];
+    return sequence[(itemIndex + flancIndex) % sequence.length];
+  }
+
   if (mode === 'mix_all_5') {
-    const sequence = ['cob_blinder_2eye', 'retro_bowl', 'vintage_round', 'par_led_18', 'strobe_beam_36'];
+    const sequence = ['cob_blinder_2eye', 'retro_bowl', 'vintage_round', 'par_led_18', 'portman_hex_6'];
     return sequence[(itemIndex + flancIndex) % sequence.length];
   }
 
@@ -183,11 +202,11 @@ export const getFixtureTypeForPosition = ({
   }
 
   if (mode === 'alternate_2') {
-    return (itemIndex % 2 === 0) ? (fixtureA || 'cob_blinder_2eye') : (fixtureB || 'retro_bowl');
+    return (itemIndex % 2 === 0) ? (fixtureA || 'cob_blinder_2eye') : (fixtureB || 'portman_hex_6');
   }
 
   if (mode === 'by_flanc') {
-    return (flancIndex % 2 === 0) ? (fixtureA || 'cob_blinder_2eye') : (fixtureB || 'retro_bowl');
+    return (flancIndex % 2 === 0) ? (fixtureA || 'cob_blinder_2eye') : (fixtureB || 'portman_hex_6');
   }
 
   return singleType || 'cob_blinder_2eye';

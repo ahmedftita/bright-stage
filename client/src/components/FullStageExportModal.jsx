@@ -571,7 +571,7 @@ export default function FullStageExportModal({
                   <span className="strip-label">PROJECTEURS FLANCS</span>
                   <span className="strip-value" style={{ color: lighting.sideFixtureSpec?.color || '#fbbf24' }}>
                     {lighting.sideFixtureMode !== 'single'
-                      ? `${lighting.totalSideMatrices}x Mix Scénographique (${lighting.sideFixtureMode === 'mix_all_4' ? '4 Modèles' : lighting.sideFixtureMode === 'mix_all_5' ? '5 Modèles' : 'Duo Alterné'})`
+                      ? `${lighting.totalSideMatrices}x Mix Scénographique (${lighting.sideFixtureMode === 'mix_all_6' ? '6 Modèles' : lighting.sideFixtureMode === 'mix_all_5' ? '5 Modèles' : lighting.sideFixtureMode === 'mix_all_4' ? '4 Modèles' : 'Duo Alterné'})`
                       : `${lighting.totalSideMatrices}x ${lighting.sideFixtureSpec?.name || 'Projecteurs'} (${lighting.sideMatricesOrientation === 'vertical' ? 'Vert.' : 'Horiz.'})`
                     }
                   </span>
@@ -851,6 +851,22 @@ export default function FullStageExportModal({
                                   <circle cx={px + r + 1.5} cy={py + r - 1.5} r="0.6" fill="#38bdf8" />
                                   <circle cx={px + r - 1.5} cy={py + r + 1.5} r="0.6" fill="#38bdf8" />
                                   <circle cx={px + r + 1.5} cy={py + r + 1.5} r="0.6" fill="#38bdf8" />
+                                </g>
+                              );
+                            }
+                            if (fType === 'portman_hex_6') {
+                              const r = 3.6;
+                              const cx = px + r;
+                              const cy = py + r;
+                              return (
+                                <g key={key}>
+                                  <polygon
+                                    points={`${cx + r},${cy} ${cx + r * 0.5},${cy + r * 0.866} ${cx - r * 0.5},${cy + r * 0.866} ${cx - r},${cy} ${cx - r * 0.5},${cy - r * 0.866} ${cx + r * 0.5},${cy - r * 0.866}`}
+                                    fill="#d97706"
+                                    stroke="#78350f"
+                                    strokeWidth="0.6"
+                                  />
+                                  <circle cx={cx} cy={cy} r="1.3" fill="#fef08a" />
                                 </g>
                               );
                             }

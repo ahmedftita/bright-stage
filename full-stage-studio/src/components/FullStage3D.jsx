@@ -573,6 +573,104 @@ const ParLed18Fixture = ({ position, rotation = [0, 0, 0], showBeam = true, tilt
   );
 };
 
+// 5. Portman P3 PIXX200 Vintage Hexagonal Honeycomb Fixture (Photo utilisateur)
+const PortmanHexFixture = ({
+  position = [0, 0, 0],
+  rotation = [0, 0, 0],
+  showBeam = true,
+  tilt = 0.15,
+  beamColor = '#f59e0b'
+}) => {
+  const [x, y, z] = position;
+  const [rx, ry, rz] = rotation;
+
+  return (
+    <group position={[x, y, z]} rotation={[rx, ry, rz]}>
+      {/* Mounting pivot clamp to vertical pole */}
+      <Box args={[0.04, 0.035, 0.05]} position={[0, 0, -0.06]}>
+        <meshStandardMaterial color="#0f172a" metalness={0.85} roughness={0.25} />
+      </Box>
+      <Cylinder args={[0.012, 0.012, 0.04, 8]} position={[0, 0, -0.03]} rotation={[Math.PI / 2, 0, 0]}>
+        <meshStandardMaterial color="#334155" metalness={0.9} />
+      </Cylinder>
+
+      {/* Head tilted */}
+      <group rotation={[tilt, 0, 0]}>
+        {/* Outer Hexagonal Housing (Ø 26cm, 6 sides) */}
+        <Cylinder args={[0.13, 0.14, 0.07, 6]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+          <meshStandardMaterial color="#090d16" metalness={0.85} roughness={0.25} />
+        </Cylinder>
+
+        {/* Outer Hexagonal Bezel Ring */}
+        <Cylinder args={[0.142, 0.142, 0.012, 6]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.036]}>
+          <meshStandardMaterial color="#1e293b" metalness={0.9} roughness={0.2} />
+        </Cylinder>
+
+        {/* Inner Golden Honeycomb Reflector Cavity */}
+        <Cylinder args={[0.12, 0.08, 0.05, 6]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.01]}>
+          <meshStandardMaterial
+            color="#d97706"
+            emissive="#b45309"
+            emissiveIntensity={0.35}
+            metalness={0.8}
+            roughness={0.2}
+          />
+        </Cylinder>
+
+        {/* Honeycomb Pattern / Alvéoles Front Face */}
+        <Cylinder args={[0.118, 0.118, 0.005, 6]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.038]}>
+          <meshStandardMaterial
+            color="#f59e0b"
+            emissive="#d97706"
+            emissiveIntensity={0.65}
+            metalness={0.7}
+            roughness={0.3}
+          />
+        </Cylinder>
+
+        {/* Mini Hex Honeycomb Sub-cells */}
+        {[-0.045, 0, 0.045].map((hx, idx) => (
+          <Cylinder
+            key={`subhex-${idx}`}
+            args={[0.022, 0.022, 0.008, 6]}
+            rotation={[Math.PI / 2, 0, 0]}
+            position={[hx, idx % 2 === 0 ? 0.025 : -0.025, 0.04]}
+          >
+            <meshStandardMaterial
+              color="#fef3c7"
+              emissive="#f59e0b"
+              emissiveIntensity={0.85}
+              metalness={0.5}
+            />
+          </Cylinder>
+        ))}
+
+        {/* Center Halogen HPL Bulb / Core */}
+        <Sphere args={[0.022, 12, 12]} position={[0, 0, 0.042]}>
+          <meshStandardMaterial
+            color="#ffffff"
+            emissive="#fef08a"
+            emissiveIntensity={1.8}
+            roughness={0.1}
+          />
+        </Sphere>
+
+        {/* Warm Golden Volumetric Beam */}
+        {showBeam && (
+          <group position={[0, 0, 0.06]}>
+            <Cylinder args={[0.12, 0.55, 3.2, 16, 1, true]} position={[0, 0, 1.6]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color={beamColor} transparent opacity={0.22} depthWrite={false} side={2} />
+            </Cylinder>
+            <Cylinder args={[0.04, 0.26, 3.2, 16, 1, true]} position={[0, 0, 1.6]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#fef08a" transparent opacity={0.30} depthWrite={false} side={2} />
+            </Cylinder>
+          </group>
+        )}
+      </group>
+    </group>
+  );
+};
+
 // Dispatcher Component for Side / Flank Scenic Fixtures
 const SideScenicFixture = ({
   fixtureType = 'cob_blinder_2eye',
@@ -591,6 +689,8 @@ const SideScenicFixture = ({
       return <VintageHalogenRoundFixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} />;
     case 'par_led_18':
       return <ParLed18Fixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} beamColor={beamColor} />;
+    case 'portman_hex_6':
+      return <PortmanHexFixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} beamColor="#f59e0b" />;
     case 'strobe_beam_36':
     default:
       return <StrobeBeam36Fixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} />;
@@ -1086,16 +1186,27 @@ export default function FullStage3D({
         const wingAngle = 0.18 + f * 0.08;
         const zFlanc = screenZ - (f * 0.12);
 
-        // Aluminum boom pipes holding this flank
+        // Aluminum boom pipes & heavy floor base plate (Style Portman P3 Totem / Stand)
         items.push(
           <Cylinder key={`boom-pipe-left-${f}`} args={[0.024, 0.024, screenH + 0.2, 8]} position={[xLeft, screenY, zFlanc - 0.05]}>
             <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
           </Cylinder>
         );
         items.push(
+          <Box key={`boom-base-left-${f}`} args={[0.38, 0.015, 0.38]} position={[xLeft, (isStageEnabled ? stageHeight : 0) + 0.008, zFlanc - 0.05]}>
+            <meshStandardMaterial color="#090d16" metalness={0.85} roughness={0.2} />
+          </Box>
+        );
+
+        items.push(
           <Cylinder key={`boom-pipe-right-${f}`} args={[0.024, 0.024, screenH + 0.2, 8]} position={[xRight, screenY, zFlanc - 0.05]}>
             <meshStandardMaterial color="#64748b" metalness={0.8} roughness={0.3} />
           </Cylinder>
+        );
+        items.push(
+          <Box key={`boom-base-right-${f}`} args={[0.38, 0.015, 0.38]} position={[xRight, (isStageEnabled ? stageHeight : 0) + 0.008, zFlanc - 0.05]}>
+            <meshStandardMaterial color="#090d16" metalness={0.85} roughness={0.2} />
+          </Box>
         );
 
         for (let i = 0; i < countPerFlanc; i++) {

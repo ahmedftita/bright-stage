@@ -1521,10 +1521,32 @@ export default function FullStageStudio() {
                                 onClick={() => setLightingState(prev => ({ ...prev, sideFixtureMode: 'mix_all_5' }))}
                               >
                                 <span style={{ fontSize: '11px', fontWeight: 800, color: lightingState.sideFixtureMode === 'mix_all_5' ? '#38bdf8' : '#f8fafc' }}>
-                                  ✨ Panachage 5 Modèles
+                                  🌈 5 Modèles Vintage & Scène
                                 </span>
                                 <span style={{ fontSize: '8.5px', color: '#94a3b8', marginTop: '2px' }}>
-                                  4 Modèles + ⚡ Strobe Beam 220W
+                                  Blinder + Retro + Halogène + PAR + ⬡ Hex P3
+                                </span>
+                              </button>
+
+                              <button
+                                type="button"
+                                className={`action-btn ${lightingState.sideFixtureMode === 'mix_all_6' ? 'btn-primary' : 'btn-secondary'}`}
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'flex-start',
+                                  padding: '7px 8px',
+                                  borderRadius: '6px',
+                                  textAlign: 'left',
+                                  height: 'auto'
+                                }}
+                                onClick={() => setLightingState(prev => ({ ...prev, sideFixtureMode: 'mix_all_6' }))}
+                              >
+                                <span style={{ fontSize: '11px', fontWeight: 800, color: lightingState.sideFixtureMode === 'mix_all_6' ? '#38bdf8' : '#f8fafc' }}>
+                                  ✨ 6 Modèles Complets
+                                </span>
+                                <span style={{ fontSize: '8.5px', color: '#94a3b8', marginTop: '2px' }}>
+                                  5 Modèles + ⚡ Strobe Beam 220W
                                 </span>
                               </button>
 
