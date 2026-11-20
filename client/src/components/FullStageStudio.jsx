@@ -38,6 +38,7 @@ import {
   STAGE_HEIGHTS,
   TRUSS_SERIES,
   LED_PITCHES,
+  SIDE_FIXTURE_SPECS,
   calculateFullConception
 } from '../utils/conceptionLogic';
 import { authService } from '../services/authService';
@@ -143,6 +144,7 @@ export default function FullStageStudio() {
     sideMatricesFlancSpacing: 0.5, // Distance entre chaque flanc (en mètres)
     sideMatricesOrientation: 'horizontal', // 'horizontal' ou 'vertical'
     sideMatricesPosition: 'lateral', // 'lateral' ou 'horizontal_floor'
+    sideFixtureType: 'cob_blinder_2eye', // Modèle de projecteur par défaut : Blinder COB 2 Yeux
     showBeams: true,
     beamColor: '#38bdf8'
   });
@@ -256,6 +258,7 @@ export default function FullStageStudio() {
         sideMatricesFlancSpacing: item.lightingConfig.sideMatricesFlancSpacing ?? 0.5,
         sideMatricesOrientation: item.lightingConfig.sideMatricesOrientation || 'horizontal',
         sideMatricesPosition: item.lightingConfig.sideMatricesPosition || 'lateral',
+        sideFixtureType: item.lightingConfig.sideFixtureType || 'cob_blinder_2eye',
         showBeams: item.lightingConfig.showBeams !== false,
         beamColor: item.lightingConfig.beamColor || '#38bdf8'
       });
@@ -1370,10 +1373,12 @@ export default function FullStageStudio() {
                       </div>
                     </div>
 
-                    {/* Matrices LED Latérales */}
+                    {/* Matrices LED / Projecteurs Latéraux Flancs & Sol */}
                     <div className="stepper-row" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
                       <div className="stepper-meta">
-                        <span className="stepper-title" style={{ color: '#38bdf8' }}>36LED Strobe Beam 220W</span>
+                        <span className="stepper-title" style={{ color: '#38bdf8' }}>
+                          {conception.lighting.sideFixtureSpec?.name || 'Projecteurs Flancs & Sol'}
+                        </span>
                         <span className="stepper-sub">
                           {(lightingState.sideMatricesCount ?? 0) * (lightingState.sideMatricesFlancs ?? 1)} à gauche + {(lightingState.sideMatricesCount ?? 0) * (lightingState.sideMatricesFlancs ?? 1)} à droite ({((lightingState.sideMatricesCount ?? 0) * (lightingState.sideMatricesFlancs ?? 1) * 2)} au total)
                         </span>
@@ -1397,9 +1402,53 @@ export default function FullStageStudio() {
                       </div>
                     </div>
 
+                    {/* CHOIX DU MODÈLE DE PROJECTEUR FLANCS / SCÉNIQUE (Images fournies par l'utilisateur) */}
+                    {(lightingState.sideMatricesCount ?? 0) > 0 && (
+                      <div style={{ marginTop: '10px', background: 'rgba(56,189,248,0.03)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(56,189,248,0.15)' }}>
+                        <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '8px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span>Type de Projecteur Flancs / Scénique :</span>
+                          <span style={{ fontSize: '9.5px', color: '#38bdf8' }}>4 Modèles Studio</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                          {Object.values(SIDE_FIXTURE_SPECS).map(f => {
+                            const isSelected = (lightingState.sideFixtureType || 'cob_blinder_2eye') === f.id;
+                            return (
+                              <button
+                                key={f.id}
+                                type="button"
+                                className={`action-btn ${isSelected ? 'btn-primary' : 'btn-secondary'}`}
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'flex-start',
+                                  padding: '7px 9px',
+                                  borderRadius: '6px',
+                                  textAlign: 'left',
+                                  height: 'auto',
+                                  border: isSelected ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.08)',
+                                  background: isSelected ? 'rgba(56,189,248,0.16)' : 'rgba(255,255,255,0.02)'
+                                }}
+                                onClick={() => setLightingState(prev => ({ ...prev, sideFixtureType: f.id }))}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '2px' }}>
+                                  <span style={{ fontSize: '11px', fontWeight: 800, color: isSelected ? '#38bdf8' : '#f8fafc' }}>
+                                    {f.badge}
+                                  </span>
+                                  {isSelected && <CheckCircle size={12} color="#38bdf8" />}
+                                </div>
+                                <span style={{ fontSize: '9px', color: '#94a3b8', lineHeight: 1.2 }}>
+                                  {f.specShort}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                     {/* USER REQUEST: "on peut ajouet des autre des autre flans des led strobe beam agauche et a droite de lecran" */}
                     {(lightingState.sideMatricesCount ?? 0) > 0 && (
-                      <div className="stepper-row" style={{ background: 'rgba(56,189,248,0.04)', padding: '6px 8px', borderRadius: '6px' }}>
+                      <div className="stepper-row" style={{ background: 'rgba(56,189,248,0.04)', padding: '6px 8px', borderRadius: '6px', marginTop: '6px' }}>
                         <div className="stepper-meta">
                           <span className="stepper-title" style={{ fontSize: '12px' }}>Nombre de Flancs (Colonnes par côté)</span>
                           <span className="stepper-sub">
@@ -1493,10 +1542,10 @@ export default function FullStageStudio() {
 
                     {(lightingState.sideMatricesCount ?? 0) > 0 && (
                       <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {/* Orientation des barres */}
+                        {/* Orientation des projecteurs */}
                         <div>
                           <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '4px', fontWeight: 600 }}>
-                            Orientation des barres Strobe Beam :
+                            Orientation des projecteurs :
                           </div>
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                             <button
@@ -1543,9 +1592,28 @@ export default function FullStageStudio() {
                           </div>
                         </div>
 
-                        <div style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(56,189,248,0.08)', padding: '7px 10px', borderRadius: '6px', border: '1px solid rgba(56,189,248,0.2)' }}>
-                          ⚡ <strong>36LED Strobe Beam 220W (LeLeght) :</strong> 36 LED Beams blanc chaud + 648 LED RGB Strobe • Tilt motorisé 180° • 220W • 16 canaux DMX.
-                        </div>
+                        {/* Fiche Technique dynamique du projecteur actif */}
+                        {(() => {
+                          const currentSpec = SIDE_FIXTURE_SPECS[lightingState.sideFixtureType || 'cob_blinder_2eye'] || SIDE_FIXTURE_SPECS.cob_blinder_2eye;
+                          return (
+                            <div style={{
+                              fontSize: '11px',
+                              color: '#cbd5e1',
+                              background: 'rgba(56,189,248,0.08)',
+                              padding: '8px 10px',
+                              borderRadius: '6px',
+                              border: '1px solid rgba(56,189,248,0.25)',
+                              marginTop: '4px'
+                            }}>
+                              <div style={{ fontWeight: 800, color: currentSpec.color, marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span>⚡ {currentSpec.fullName} :</span>
+                              </div>
+                              <div style={{ fontSize: '10px', color: '#94a3b8', lineHeight: 1.35 }}>
+                                {currentSpec.specFull} • <strong>Poids :</strong> {currentSpec.weightKg} kg/pc • <strong>Puissance :</strong> {currentSpec.watts}W • <strong>DMX :</strong> {currentSpec.dmx} canaux.
+                              </div>
+                            </div>
+                          );
+                        })()}
                       </div>
                     )}
                   </div>

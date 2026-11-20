@@ -81,6 +81,77 @@ export const LIGHTING_SPECS = {
 };
 
 /**
+ * Modèles de Projecteurs Scéniques pour Flancs / Sol (Images Fournies par l'utilisateur)
+ */
+export const SIDE_FIXTURE_SPECS = {
+  cob_blinder_2eye: {
+    id: 'cob_blinder_2eye',
+    name: 'Blinder COB 2 Yeux (2×100W)',
+    fullName: 'Blinder Public COB LED 2×100W Warm White / Amber',
+    badge: '🟡 Blinder COB 2 Yeux',
+    specShort: '2×100W COB 3200K Blanc Chaud / Ambre',
+    specFull: '2× Modules COB 100W • 3200K Blanc Chaud + Ambre • DMX 512 (4 Ch) • Double réflecteur parabolique alu',
+    weightKg: 3.8,
+    watts: 200,
+    dmx: 4,
+    color: '#fbbf24',
+    beamColor: '#fef08a'
+  },
+  retro_bowl: {
+    id: 'retro_bowl',
+    name: 'Vintage Retro Bowl Ø55cm (Portman P1)',
+    fullName: 'Projecteur Décoratif Vintage Retro Bowl Ø55cm (Style Portman P1)',
+    badge: '🟠 Retro Bowl Ø55cm',
+    specShort: 'Coupelle dorée martelée Ø55cm • Tungstène 300W',
+    specFull: 'Coupelle réflecteur doré martelé Ø550mm • Lampe tungstène 300W + Halo LED RGB décoratif • DMX 512 (7 Ch)',
+    weightKg: 8.5,
+    watts: 350,
+    dmx: 7,
+    color: '#f59e0b',
+    beamColor: '#fbbf24'
+  },
+  vintage_round: {
+    id: 'vintage_round',
+    name: 'Halogène Vintage Rond Ø50cm (Portman P2)',
+    fullName: 'Projecteur Halogène Vintage Rond Ø50cm avec Grille Croix',
+    badge: '🔘 Halogène Rond Grille',
+    specShort: 'Fût alu brossé Ø50cm + Grille croix • 250W HPL',
+    specFull: 'Fût aluminium brossé Ø500mm • Réflecteur ambre + Grille métallique en croix • 250W HPL • DMX 512 (4 Ch)',
+    weightKg: 6.2,
+    watts: 250,
+    dmx: 4,
+    color: '#ea580c',
+    beamColor: '#f97316'
+  },
+  par_led_18: {
+    id: 'par_led_18',
+    name: 'PAR LED 18×12W RGBW',
+    fullName: 'Projecteur PAR LED 18×12W RGBW 4-en-1 Multi-Lentilles',
+    badge: '🔴 PAR LED 18×12W',
+    specShort: '18×12W RGBW • Optique 25° nid d’abeille',
+    specFull: '18× LED 12W RGBW (216W optique) • Lentilles nid d’abeille 25° • Boîtier alu étanche à double lyre • DMX 512 (8 Ch)',
+    weightKg: 3.2,
+    watts: 180,
+    dmx: 8,
+    color: '#38bdf8',
+    beamColor: '#38bdf8'
+  },
+  strobe_beam_36: {
+    id: 'strobe_beam_36',
+    name: '36LED Strobe Beam 220W',
+    fullName: '36LED Strobe Beam 220W (LeLeght / Swingable 180°)',
+    badge: '⚡ Strobe Beam 220W',
+    specShort: '36 Beams blanc chaud + 648 RGB • Tilt 180°',
+    specFull: '36 LED Beams blanc chaud + 648 LED RGB Strobe • Tilt motorisé 180° • 220W • DMX 16 Ch',
+    weightKg: 6.8,
+    watts: 220,
+    dmx: 16,
+    color: '#9333ea',
+    beamColor: '#fef08a'
+  }
+};
+
+/**
  * Modular segment helper for truss spans
  */
 export const calcSegments = (distance) => {
@@ -230,10 +301,12 @@ export const calculateFullConception = (state) => {
   const showBeams = isLightingEnabled && lighting.showBeams !== false;
   const beamColor = lighting.beamColor || '#38bdf8';
 
-  // Matrices LED Latérales (Flancs à gauche et à droite de l'écran LED)
+  // Matrices LED / Projecteurs Latéraux (Flancs à gauche et à droite de l'écran LED)
   const sideMatricesCount = isLightingEnabled ? Math.max(0, parseInt(lighting.sideMatricesCount ?? 0)) : 0;
   const sideMatricesFlancs = isLightingEnabled ? Math.max(1, parseInt(lighting.sideMatricesFlancs ?? 1)) : 1;
   const totalSideMatrices = sideMatricesCount * sideMatricesFlancs * 2;
+  const sideFixtureType = lighting.sideFixtureType || 'cob_blinder_2eye';
+  const sideFixtureSpec = SIDE_FIXTURE_SPECS[sideFixtureType] || SIDE_FIXTURE_SPECS.cob_blinder_2eye;
 
   // Lyres Beam 280W sur têtes de totem
   const totemBeamsCount = isLightingEnabled ? totemsCount : 0;
@@ -247,7 +320,7 @@ export const calculateFullConception = (state) => {
     (ledBarsCount * LIGHTING_SPECS.ledBar.weightKg) +
     (blindersCount * LIGHTING_SPECS.blinder.weightKg) +
     (hazerCount * LIGHTING_SPECS.hazer.weightKg) +
-    (totalSideMatrices * LIGHTING_SPECS.matrixStrobe.weightKg) +
+    (totalSideMatrices * sideFixtureSpec.weightKg) +
     (totemBeamsCount * LIGHTING_SPECS.beam280.weightKg)
   ) : 0;
   const lightingWeightKg = totalLightingWeightKg;
@@ -259,7 +332,7 @@ export const calculateFullConception = (state) => {
     (ledBarsCount * LIGHTING_SPECS.ledBar.weightKg) +
     (blindersCount * LIGHTING_SPECS.blinder.weightKg) +
     (hazerCount * LIGHTING_SPECS.hazer.weightKg) +
-    (totalSideMatrices * LIGHTING_SPECS.matrixStrobe.weightKg)
+    (totalSideMatrices * sideFixtureSpec.weightKg)
   ) : 0;
 
   const lightingPowerWatts = isLightingEnabled ? (
@@ -269,7 +342,7 @@ export const calculateFullConception = (state) => {
     (ledBarsCount * LIGHTING_SPECS.ledBar.watts) +
     (blindersCount * LIGHTING_SPECS.blinder.watts) +
     (hazerCount * LIGHTING_SPECS.hazer.watts) +
-    (totalSideMatrices * LIGHTING_SPECS.matrixStrobe.watts) +
+    (totalSideMatrices * sideFixtureSpec.watts) +
     (totemBeamsCount * LIGHTING_SPECS.beam280.watts)
   ) : 0;
   const totalLightingPowerKw = parseFloat((lightingPowerWatts / 1000).toFixed(1));
@@ -282,7 +355,7 @@ export const calculateFullConception = (state) => {
     (ledBarsCount * LIGHTING_SPECS.ledBar.dmx) +
     (blindersCount * LIGHTING_SPECS.blinder.dmx) +
     (hazerCount * LIGHTING_SPECS.hazer.dmx) +
-    (totalSideMatrices * LIGHTING_SPECS.matrixStrobe.dmx) +
+    (totalSideMatrices * sideFixtureSpec.dmx) +
     (totemBeamsCount * LIGHTING_SPECS.beam280.dmx)
   ) : 0;
   const dmxUniverses = totalDmxChannels > 0 ? (Math.ceil(totalDmxChannels / 512) || 1) : 0;
@@ -559,18 +632,18 @@ export const calculateFullConception = (state) => {
     }] : []),
     ...(totalSideMatrices > 0 ? [
       {
-        id: 'light_matrix_strobe',
+        id: `light_side_${sideFixtureSpec.id}`,
         category: '4. Éclairage & Asservis',
-        name: `${LIGHTING_SPECS.matrixStrobe.name} (Flancs Écran LED)`,
-        spec: `${sideMatricesCount} à gauche + ${sideMatricesCount} à droite • 36 LED Beams blanc chaud + 648 LED RGB Strobe • 220W DMX-512 (Swingable 180°)`,
+        name: `${sideFixtureSpec.fullName} (Flancs Scéniques)`,
+        spec: `${sideMatricesCount} par flanc (${sideMatricesFlancs} flanc${sideMatricesFlancs > 1 ? 's' : ''}/côté) • ${sideFixtureSpec.specFull}`,
         quantity: totalSideMatrices,
-        unitWeightKg: LIGHTING_SPECS.matrixStrobe.weightKg,
-        totalWeightKg: Math.round(totalSideMatrices * LIGHTING_SPECS.matrixStrobe.weightKg)
+        unitWeightKg: sideFixtureSpec.weightKg,
+        totalWeightKg: Math.round(totalSideMatrices * sideFixtureSpec.weightKg)
       },
       {
         id: 'matrix_clamp',
         category: '4. Éclairage & Asservis',
-        name: 'Clamps & Élingues de sécurité Matrices LED',
+        name: 'Clamps & Élingues de sécurité Projecteurs Flancs',
         spec: 'Colliers Trigger 50 mm alu + élingues acier 50 kg BGV-C1',
         quantity: totalSideMatrices,
         unitWeightKg: 0.8,
@@ -665,6 +738,8 @@ export const calculateFullConception = (state) => {
       sideMatricesFlancSpacing: lighting.sideMatricesFlancSpacing ?? 0.5,
       sideMatricesOrientation: lighting.sideMatricesOrientation || 'horizontal',
       sideMatricesPosition: lighting.sideMatricesPosition || 'lateral',
+      sideFixtureType,
+      sideFixtureSpec,
       totalSideMatrices,
       totemBeamsCount,
       totalLightingWeightKg,

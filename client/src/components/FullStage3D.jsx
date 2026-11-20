@@ -261,6 +261,341 @@ const StrobeBeam36Fixture = ({ position, rotation = [0, 0, 0], showBeam = true, 
   );
 };
 
+// 1. Blinder COB LED 2 Yeux (2x100W Warm White / Amber) - Image 2
+const BlinderCob2EyeFixture = ({ position, rotation = [0, 0, 0], showBeam = true, tilt = 0.15 }) => {
+  return (
+    <group position={position} rotation={rotation}>
+      <group rotation={[tilt, 0, 0]}>
+        {/* Main rectangular black aluminum housing */}
+        <Box args={[0.36, 0.18, 0.12]}>
+          <meshStandardMaterial color="#0f172a" roughness={0.35} metalness={0.8} />
+        </Box>
+        {/* Rear heat sink fins */}
+        <Box args={[0.34, 0.16, 0.02]} position={[0, 0, -0.065]}>
+          <meshStandardMaterial color="#1e293b" metalness={0.9} roughness={0.2} />
+        </Box>
+        {/* Top/Side U-bracket */}
+        <Box args={[0.40, 0.012, 0.04]} position={[0, 0.10, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        <Box args={[0.012, 0.18, 0.035]} position={[-0.195, 0.01, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        <Box args={[0.012, 0.18, 0.035]} position={[0.195, 0.01, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        {/* Adjustment knobs */}
+        <Cylinder args={[0.018, 0.018, 0.02, 12]} position={[-0.205, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <meshStandardMaterial color="#1e293b" metalness={0.9} />
+        </Cylinder>
+        <Cylinder args={[0.018, 0.018, 0.02, 12]} position={[0.205, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <meshStandardMaterial color="#1e293b" metalness={0.9} />
+        </Cylinder>
+
+        {/* EYE 1: Left COB Cell */}
+        <group position={[-0.088, 0, 0.055]}>
+          <Cylinder args={[0.075, 0.075, 0.01, 24]} rotation={[Math.PI / 2, 0, 0]}>
+            <meshStandardMaterial color="#1e293b" metalness={0.8} />
+          </Cylinder>
+          <Cylinder args={[0.070, 0.032, 0.035, 24]} position={[0, 0, -0.01]} rotation={[Math.PI / 2, 0, 0]}>
+            <meshStandardMaterial color="#e2e8f0" metalness={0.95} roughness={0.15} />
+          </Cylinder>
+          <Box args={[0.024, 0.024, 0.005]} position={[0, 0, -0.025]}>
+            <meshStandardMaterial color="#fef08a" emissive="#f59e0b" emissiveIntensity={3.5} />
+          </Box>
+          <Cylinder args={[0.068, 0.068, 0.003, 24]} position={[0, 0, 0.005]} rotation={[Math.PI / 2, 0, 0]}>
+            <meshStandardMaterial color="#fef08a" emissive="#fbbf24" emissiveIntensity={1.8} transparent opacity={0.85} />
+          </Cylinder>
+          {showBeam && (
+            <group position={[0, 0, 0.02]}>
+              <Cylinder args={[0.07, 0.42, 2.8, 16, 1, true]} position={[0, 0, 1.4]} rotation={[Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial color="#fef08a" transparent opacity={0.18} depthWrite={false} side={2} />
+              </Cylinder>
+              <Cylinder args={[0.03, 0.22, 2.8, 16, 1, true]} position={[0, 0, 1.4]} rotation={[Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial color="#ffffff" transparent opacity={0.28} depthWrite={false} side={2} />
+              </Cylinder>
+            </group>
+          )}
+        </group>
+
+        {/* EYE 2: Right COB Cell */}
+        <group position={[0.088, 0, 0.055]}>
+          <Cylinder args={[0.075, 0.075, 0.01, 24]} rotation={[Math.PI / 2, 0, 0]}>
+            <meshStandardMaterial color="#1e293b" metalness={0.8} />
+          </Cylinder>
+          <Cylinder args={[0.070, 0.032, 0.035, 24]} position={[0, 0, -0.01]} rotation={[Math.PI / 2, 0, 0]}>
+            <meshStandardMaterial color="#e2e8f0" metalness={0.95} roughness={0.15} />
+          </Cylinder>
+          <Box args={[0.024, 0.024, 0.005]} position={[0, 0, -0.025]}>
+            <meshStandardMaterial color="#fef08a" emissive="#f59e0b" emissiveIntensity={3.5} />
+          </Box>
+          <Cylinder args={[0.068, 0.068, 0.003, 24]} position={[0, 0, 0.005]} rotation={[Math.PI / 2, 0, 0]}>
+            <meshStandardMaterial color="#fef08a" emissive="#fbbf24" emissiveIntensity={1.8} transparent opacity={0.85} />
+          </Cylinder>
+          {showBeam && (
+            <group position={[0, 0, 0.02]}>
+              <Cylinder args={[0.07, 0.42, 2.8, 16, 1, true]} position={[0, 0, 1.4]} rotation={[Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial color="#fef08a" transparent opacity={0.18} depthWrite={false} side={2} />
+              </Cylinder>
+              <Cylinder args={[0.03, 0.22, 2.8, 16, 1, true]} position={[0, 0, 1.4]} rotation={[Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial color="#ffffff" transparent opacity={0.28} depthWrite={false} side={2} />
+              </Cylinder>
+            </group>
+          )}
+        </group>
+      </group>
+    </group>
+  );
+};
+
+// 2. Projecteur Décoratif Vintage Retro Bowl Ø55cm (Style Portman P1) - Image 3
+const RetroVintageBowlFixture = ({ position, rotation = [0, 0, 0], showBeam = true, tilt = 0.15 }) => {
+  return (
+    <group position={position} rotation={rotation}>
+      <group rotation={[tilt, 0, 0]}>
+        {/* Outer dark grey shell */}
+        <Cylinder args={[0.22, 0.12, 0.14, 32]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#1e293b" roughness={0.5} metalness={0.7} />
+        </Cylinder>
+        {/* Outer rim bezel */}
+        <Cylinder args={[0.225, 0.225, 0.015, 32]} position={[0, 0, 0.065]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#0f172a" metalness={0.8} />
+        </Cylinder>
+
+        {/* Inner Golden Hammered Parabolic Reflector Dish */}
+        <Cylinder args={[0.21, 0.07, 0.12, 32]} position={[0, 0, 0.01]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial
+            color="#eab308"
+            emissive="#78350f"
+            emissiveIntensity={0.9}
+            metalness={0.92}
+            roughness={0.35}
+          />
+        </Cylinder>
+
+        {/* Concentric metal rings */}
+        <Cylinder args={[0.15, 0.15, 0.006, 24]} position={[0, 0, 0.05]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Cylinder>
+        <Cylinder args={[0.09, 0.09, 0.006, 24]} position={[0, 0, 0.05]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Cylinder>
+        {/* Radial struts */}
+        <Box args={[0.38, 0.006, 0.006]} position={[0, 0, 0.05]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        <Box args={[0.006, 0.38, 0.006]} position={[0, 0, 0.05]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+
+        {/* Central Black Dome Cap */}
+        <Sphere args={[0.042, 16, 16]} position={[0, 0, 0.055]}>
+          <meshStandardMaterial color="#0f172a" roughness={0.4} metalness={0.8} />
+        </Sphere>
+        {/* Warm Tungsten Corona Halo */}
+        <Cylinder args={[0.055, 0.055, 0.004, 20]} position={[0, 0, 0.035]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#fef08a" emissive="#f59e0b" emissiveIntensity={3.8} />
+        </Cylinder>
+
+        {/* Rear mounting bracket */}
+        <Box args={[0.46, 0.015, 0.04]} position={[0, -0.02, -0.06]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        <Box args={[0.015, 0.22, 0.035]} position={[-0.23, 0, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        <Box args={[0.015, 0.22, 0.035]} position={[0.23, 0, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+
+        {/* Volumetric Warm Golden Light Beam */}
+        {showBeam && (
+          <group position={[0, 0, 0.07]}>
+            <Cylinder args={[0.20, 0.75, 3.2, 24, 1, true]} position={[0, 0, 1.6]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#fbbf24" transparent opacity={0.16} depthWrite={false} side={2} />
+            </Cylinder>
+            <Cylinder args={[0.08, 0.40, 3.2, 24, 1, true]} position={[0, 0, 1.6]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#fef08a" transparent opacity={0.22} depthWrite={false} side={2} />
+            </Cylinder>
+          </group>
+        )}
+      </group>
+    </group>
+  );
+};
+
+// 3. Projecteur Halogène Vintage Rond Ø50cm avec Grille Croix (Style Portman P2) - Image 4
+const VintageHalogenRoundFixture = ({ position, rotation = [0, 0, 0], showBeam = true, tilt = 0.15 }) => {
+  return (
+    <group position={position} rotation={rotation}>
+      <group rotation={[tilt, 0, 0]}>
+        {/* Silver Aluminum Drum body */}
+        <Cylinder args={[0.20, 0.20, 0.13, 32]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#94a3b8" metalness={0.88} roughness={0.25} />
+        </Cylinder>
+        {/* Silver Front Bezel with bolts */}
+        <Cylinder args={[0.21, 0.21, 0.015, 32]} position={[0, 0, 0.065]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#cbd5e1" metalness={0.92} roughness={0.2} />
+        </Cylinder>
+
+        {/* Amber / Warm Halogen Reflector dish inside */}
+        <Cylinder args={[0.19, 0.08, 0.10, 32]} position={[0, 0, 0.01]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial
+            color="#ea580c"
+            emissive="#9a3412"
+            emissiveIntensity={1.2}
+            metalness={0.85}
+            roughness={0.3}
+          />
+        </Cylinder>
+
+        {/* Central Halogen tungsten bulb */}
+        <Sphere args={[0.024, 12, 12]} position={[0, 0, 0.03]}>
+          <meshStandardMaterial color="#ffedd5" emissive="#ea580c" emissiveIntensity={3.5} />
+        </Sphere>
+
+        {/* Distinctive Cross (+) Front Grille */}
+        <Cylinder args={[0.03, 0.03, 0.008, 16]} position={[0, 0, 0.07]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#cbd5e1" metalness={0.95} />
+        </Cylinder>
+        <Box args={[0.39, 0.014, 0.008]} position={[0, 0, 0.07]}>
+          <meshStandardMaterial color="#cbd5e1" metalness={0.95} />
+        </Box>
+        <Box args={[0.014, 0.39, 0.008]} position={[0, 0, 0.07]}>
+          <meshStandardMaterial color="#cbd5e1" metalness={0.95} />
+        </Box>
+        <Cylinder args={[0.19, 0.19, 0.002, 32]} position={[0, 0, 0.066]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#d97706" emissive="#b45309" emissiveIntensity={1.0} wireframe />
+        </Cylinder>
+
+        {/* Tubular Silver Yoke */}
+        <Box args={[0.44, 0.02, 0.04]} position={[0, -0.04, -0.06]}>
+          <meshStandardMaterial color="#94a3b8" metalness={0.88} />
+        </Box>
+        <Box args={[0.02, 0.22, 0.035]} position={[-0.22, 0, 0]}>
+          <meshStandardMaterial color="#94a3b8" metalness={0.88} />
+        </Box>
+        <Box args={[0.02, 0.22, 0.035]} position={[0.22, 0, 0]}>
+          <meshStandardMaterial color="#94a3b8" metalness={0.88} />
+        </Box>
+
+        {/* Volumetric Amber Light Beam */}
+        {showBeam && (
+          <group position={[0, 0, 0.07]}>
+            <Cylinder args={[0.19, 0.65, 3.2, 24, 1, true]} position={[0, 0, 1.6]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#f97316" transparent opacity={0.17} depthWrite={false} side={2} />
+            </Cylinder>
+            <Cylinder args={[0.06, 0.35, 3.2, 24, 1, true]} position={[0, 0, 1.6]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#fed7aa" transparent opacity={0.24} depthWrite={false} side={2} />
+            </Cylinder>
+          </group>
+        )}
+      </group>
+    </group>
+  );
+};
+
+// 4. Projecteur PAR LED 18×12W RGBW Multi-Lentilles - Image 1
+const ParLed18Fixture = ({ position, rotation = [0, 0, 0], showBeam = true, tilt = 0.15, beamColor = '#38bdf8' }) => {
+  const lenses = useMemo(() => {
+    const list = [];
+    list.push({ x: 0, y: 0 });
+    for (let i = 0; i < 5; i++) {
+      const a = (i * 2 * Math.PI) / 5;
+      list.push({ x: Math.cos(a) * 0.044, y: Math.sin(a) * 0.044 });
+    }
+    for (let i = 0; i < 12; i++) {
+      const a = (i * 2 * Math.PI) / 12 + 0.15;
+      list.push({ x: Math.cos(a) * 0.084, y: Math.sin(a) * 0.084 });
+    }
+    return list;
+  }, []);
+
+  return (
+    <group position={position} rotation={rotation}>
+      <group rotation={[tilt, 0, 0]}>
+        {/* PAR Can Front Barrel */}
+        <Cylinder args={[0.125, 0.105, 0.14, 24]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#0f172a" roughness={0.4} metalness={0.8} />
+        </Cylinder>
+        {/* PAR Can Rear Cone */}
+        <Cylinder args={[0.105, 0.065, 0.09, 24]} position={[0, 0, -0.11]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#1e293b" roughness={0.4} metalness={0.8} />
+        </Cylinder>
+        {/* Front Bezel Collar */}
+        <Cylinder args={[0.13, 0.13, 0.015, 24]} position={[0, 0, 0.07]} rotation={[Math.PI / 2, 0, 0]}>
+          <meshStandardMaterial color="#020617" metalness={0.85} />
+        </Cylinder>
+
+        {/* 18 Lenses cluster on front face */}
+        {lenses.map((l, idx) => (
+          <group key={`par-lens-${idx}`} position={[l.x, l.y, 0.072]}>
+            <Cylinder args={[0.016, 0.016, 0.005, 12]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshStandardMaterial color="#475569" metalness={0.9} />
+            </Cylinder>
+            <Sphere args={[0.013, 10, 10]} position={[0, 0, 0.003]}>
+              <meshStandardMaterial color={beamColor} emissive={beamColor} emissiveIntensity={2.8} />
+            </Sphere>
+          </group>
+        ))}
+
+        {/* Dual Mounting Yoke with Side Knobs */}
+        <Box args={[0.28, 0.012, 0.035]} position={[0, -0.06, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        <Box args={[0.012, 0.16, 0.03]} position={[-0.14, 0, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        <Box args={[0.012, 0.16, 0.03]} position={[0.14, 0, 0]}>
+          <meshStandardMaterial color="#334155" metalness={0.8} />
+        </Box>
+        <Cylinder args={[0.016, 0.016, 0.02, 10]} position={[-0.15, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <meshStandardMaterial color="#0f172a" metalness={0.9} />
+        </Cylinder>
+        <Cylinder args={[0.016, 0.016, 0.02, 10]} position={[0.15, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <meshStandardMaterial color="#0f172a" metalness={0.9} />
+        </Cylinder>
+
+        {/* Volumetric PAR Wash/Beam Cone */}
+        {showBeam && (
+          <group position={[0, 0, 0.08]}>
+            <Cylinder args={[0.12, 0.50, 3.0, 16, 1, true]} position={[0, 0, 1.5]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color={beamColor} transparent opacity={0.20} depthWrite={false} side={2} />
+            </Cylinder>
+            <Cylinder args={[0.04, 0.25, 3.0, 16, 1, true]} position={[0, 0, 1.5]} rotation={[Math.PI / 2, 0, 0]}>
+              <meshBasicMaterial color="#ffffff" transparent opacity={0.28} depthWrite={false} side={2} />
+            </Cylinder>
+          </group>
+        )}
+      </group>
+    </group>
+  );
+};
+
+// Dispatcher Component for Side / Flank Scenic Fixtures
+const SideScenicFixture = ({
+  fixtureType = 'cob_blinder_2eye',
+  position,
+  rotation = [0, 0, 0],
+  showBeam = true,
+  tilt = 0.15,
+  beamColor = '#38bdf8'
+}) => {
+  switch (fixtureType) {
+    case 'cob_blinder_2eye':
+      return <BlinderCob2EyeFixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} />;
+    case 'retro_bowl':
+      return <RetroVintageBowlFixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} />;
+    case 'vintage_round':
+      return <VintageHalogenRoundFixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} />;
+    case 'par_led_18':
+      return <ParLed18Fixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} beamColor={beamColor} />;
+    case 'strobe_beam_36':
+    default:
+      return <StrobeBeam36Fixture position={position} rotation={rotation} showBeam={showBeam} tilt={tilt} />;
+  }
+};
+
 // Upstage Vertical Truss Totem with Moving Head Beam 280W on top
 const UpstageTotem = ({
   position = [0, 0, 0],
@@ -683,7 +1018,7 @@ export default function FullStage3D({
     return items;
   }, [isStructureEnabled, isLightingEnabled, structure.totems, stageL, screenW, screenZ, beamColor, showBeams]);
 
-  // Lateral / Horizontal LED Matrices 36LED Strobe Beam 220W (Orientation verticale ou horizontale, multiples flancs)
+  // Lateral / Horizontal LED Fixtures (Orientation verticale ou horizontale, multiples flancs, 4 modèles au choix)
   const sideScreenMatrices = useMemo(() => {
     if (!isScreenEnabled || !isLightingEnabled) return [];
     const countPerFlanc = lighting.sideMatricesCount || 0;
@@ -692,6 +1027,7 @@ export default function FullStage3D({
     const flancsCount = Math.max(1, parseInt(lighting.sideMatricesFlancs) || 1);
     const orientation = lighting.sideMatricesOrientation || 'horizontal'; // 'horizontal' | 'vertical'
     const positionMode = lighting.sideMatricesPosition || 'lateral'; // 'lateral' | 'horizontal_floor'
+    const fixtureType = lighting.sideFixtureType || 'cob_blinder_2eye';
     const rotZ = orientation === 'vertical' ? Math.PI / 2 : 0;
     const items = [];
 
@@ -706,12 +1042,14 @@ export default function FullStage3D({
       for (let i = 0; i < totalCount; i++) {
         const x = totalCount > 1 ? startX + i * spacing : 0;
         items.push(
-          <StrobeBeam36Fixture
+          <SideScenicFixture
+            fixtureType={fixtureType}
             key={`sb-floor-${i}`}
             position={[x, y, z]}
             rotation={[0, 0, rotZ]}
             showBeam={showBeams}
             tilt={0.22}
+            beamColor={lighting.beamColor || '#38bdf8'}
           />
         );
       }
@@ -753,24 +1091,28 @@ export default function FullStage3D({
         for (let i = 0; i < countPerFlanc; i++) {
           const y = countPerFlanc > 1 ? (botY + i * stepY) : screenY;
           const tiltAngle = countPerFlanc > 1 ? ((i - (countPerFlanc - 1) / 2) * -0.05) : 0;
-          // Left flank matrix
+          // Left flank fixture
           items.push(
-            <StrobeBeam36Fixture
+            <SideScenicFixture
+              fixtureType={fixtureType}
               key={`mat-left-${f}-${i}`}
               position={[xLeft, y, zFlanc]}
               rotation={[0, wingAngle, rotZ]}
               showBeam={showBeams}
               tilt={tiltAngle}
+              beamColor={lighting.beamColor || '#38bdf8'}
             />
           );
-          // Right flank matrix
+          // Right flank fixture
           items.push(
-            <StrobeBeam36Fixture
+            <SideScenicFixture
+              fixtureType={fixtureType}
               key={`mat-right-${f}-${i}`}
               position={[xRight, y, zFlanc]}
               rotation={[0, -wingAngle, rotZ]}
               showBeam={showBeams}
               tilt={tiltAngle}
+              beamColor={lighting.beamColor || '#38bdf8'}
             />
           );
         }
@@ -786,6 +1128,8 @@ export default function FullStage3D({
     lighting.sideMatricesFlancSpacing,
     lighting.sideMatricesOrientation,
     lighting.sideMatricesPosition,
+    lighting.sideFixtureType,
+    lighting.beamColor,
     screenW,
     screenH,
     screenY,
@@ -1029,7 +1373,7 @@ export default function FullStage3D({
           {isScreenEnabled && isLightingEnabled && lighting.sideMatricesCount > 0 && (
             <DimensionLabel
               position={[screenW / 2 + 0.9, screenY, screenZ]}
-              label={`${lighting.totalSideMatrices}x 36LED Strobe Beam 220W (5G + 5D)`}
+              label={`${lighting.totalSideMatrices}x ${lighting.sideFixtureSpec?.name || 'Projecteurs Flancs'} (${(lighting.sideMatricesCount || 0) * (lighting.sideMatricesFlancs || 1)}G + ${(lighting.sideMatricesCount || 0) * (lighting.sideMatricesFlancs || 1)}D)`}
             />
           )}
         </>

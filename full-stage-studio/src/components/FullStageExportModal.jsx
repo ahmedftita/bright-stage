@@ -567,8 +567,10 @@ export default function FullStageExportModal({
               )}
               {screen.enabled !== false && lighting.enabled !== false && lighting.sideMatricesCount > 0 && (
                 <div className="strip-item">
-                  <span className="strip-label">MATRICES LATÉRALES</span>
-                  <span className="strip-value" style={{ color: '#9333ea' }}>{lighting.totalSideMatrices}x 36LED Strobe Beam 220W ({lighting.sideMatricesOrientation === 'vertical' ? 'Vert.' : 'Horiz.'})</span>
+                  <span className="strip-label">PROJECTEURS FLANCS</span>
+                  <span className="strip-value" style={{ color: lighting.sideFixtureSpec?.color || '#fbbf24' }}>
+                    {lighting.totalSideMatrices}x {lighting.sideFixtureSpec?.name || 'Projecteurs'} ({lighting.sideMatricesOrientation === 'vertical' ? 'Vert.' : 'Horiz.'})
+                  </span>
                 </div>
               )}
             </div>
@@ -639,15 +641,19 @@ export default function FullStageExportModal({
                           </>
                         )}
 
-                        {/* Matrices Strobe flanquant l'écran */}
-                        {screen.enabled !== false && lighting.enabled !== false && lighting.sideMatricesCount > 0 && (
-                          <>
-                            <rect x="62" y="47" width="8" height="12" fill="#9333ea" stroke="#581c87" strokeWidth="1" rx="1" />
-                            <rect x="190" y="47" width="8" height="12" fill="#9333ea" stroke="#581c87" strokeWidth="1" rx="1" />
-                            <text x="50" y="56" fill="#9333ea" fontSize="6" fontWeight="bold" textAnchor="end">5× MATRICES</text>
-                            <text x="202" y="56" fill="#9333ea" fontSize="6" fontWeight="bold" textAnchor="start">5× MATRICES</text>
-                          </>
-                        )}
+                        {/* Projecteurs Flancs flanquant l'écran */}
+                        {screen.enabled !== false && lighting.enabled !== false && lighting.sideMatricesCount > 0 && (() => {
+                          const fColor = lighting.sideFixtureSpec?.color || '#fbbf24';
+                          const count = lighting.sideMatricesCount;
+                          return (
+                            <>
+                              <rect x="58" y="46" width="10" height="14" fill={fColor} stroke="#0f172a" strokeWidth="0.8" rx="2" />
+                              <rect x="192" y="46" width="10" height="14" fill={fColor} stroke="#0f172a" strokeWidth="0.8" rx="2" />
+                              <text x="48" y="55" fill={fColor} fontSize="5.5" fontWeight="bold" textAnchor="end">{count}× FLANCS</text>
+                              <text x="204" y="55" fill={fColor} fontSize="5.5" fontWeight="bold" textAnchor="start">{count}× FLANCS</text>
+                            </>
+                          );
+                        })()}
 
                         {/* Stairs on right */}
                         {stage.enabled !== false && stage.hasStairs && (
@@ -780,46 +786,109 @@ export default function FullStageExportModal({
                           );
                         })()}
 
-                        {/* 36LED Strobe Beam (Position Latérale ou Horizontale au sol, Orientation Horiz ou Vert) */}
+                        {/* Projecteurs Flancs (Blinder COB 2 Yeux, Retro Bowl, Halogène Rond, PAR LED ou Strobe) */}
                         {screen.enabled !== false && lighting.enabled !== false && lighting.sideMatricesCount > 0 && (() => {
                           const sy = stage.enabled !== false ? (145 - 55) : 100;
                           const isFloor = lighting.sideMatricesPosition === 'horizontal_floor';
                           const isVert = lighting.sideMatricesOrientation === 'vertical';
                           const count = lighting.sideMatricesCount;
+                          const fType = lighting.sideFixtureType || 'cob_blinder_2eye';
+                          const fColor = lighting.sideFixtureSpec?.color || '#fbbf24';
+
+                          // Helper function to render fixture SVG symbol
+                          const renderFixtureSymbol = (key, px, py) => {
+                            if (fType === 'cob_blinder_2eye') {
+                              const w = isVert ? 5 : 8;
+                              const h = isVert ? 8 : 4;
+                              return (
+                                <g key={key}>
+                                  <rect x={px} y={py} width={w} height={h} fill="#0f172a" stroke="#cbd5e1" strokeWidth="0.5" rx="1" />
+                                  {isVert ? (
+                                    <>
+                                      <circle cx={px + 2.5} cy={py + 2} r="1.3" fill="#fef08a" />
+                                      <circle cx={px + 2.5} cy={py + 6} r="1.3" fill="#fef08a" />
+                                    </>
+                                  ) : (
+                                    <>
+                                      <circle cx={px + 2} cy={py + 2} r="1.3" fill="#fef08a" />
+                                      <circle cx={px + 6} cy={py + 2} r="1.3" fill="#fef08a" />
+                                    </>
+                                  )}
+                                </g>
+                              );
+                            }
+                            if (fType === 'retro_bowl') {
+                              const r = 3.8;
+                              return (
+                                <g key={key}>
+                                  <circle cx={px + r} cy={py + r} r={r} fill="#eab308" stroke="#78350f" strokeWidth="0.6" />
+                                  <circle cx={px + r} cy={py + r} r={r * 0.6} fill="none" stroke="#334155" strokeWidth="0.4" />
+                                  <circle cx={px + r} cy={py + r} r="1.2" fill="#0f172a" />
+                                </g>
+                              );
+                            }
+                            if (fType === 'vintage_round') {
+                              const r = 3.6;
+                              return (
+                                <g key={key}>
+                                  <circle cx={px + r} cy={py + r} r={r} fill="#cbd5e1" stroke="#475569" strokeWidth="0.6" />
+                                  <circle cx={px + r} cy={py + r} r={r - 0.8} fill="#ea580c" />
+                                  <line x1={px} y1={py + r} x2={px + 2 * r} y2={py + r} stroke="#f8fafc" strokeWidth="0.4" />
+                                  <line x1={px + r} y1={py} x2={px + r} y2={py + 2 * r} stroke="#f8fafc" strokeWidth="0.4" />
+                                </g>
+                              );
+                            }
+                            if (fType === 'par_led_18') {
+                              const r = 3.5;
+                              return (
+                                <g key={key}>
+                                  <circle cx={px + r} cy={py + r} r={r} fill="#1e293b" stroke="#0f172a" strokeWidth="0.6" />
+                                  <circle cx={px + r} cy={py + r} r="1" fill="#38bdf8" />
+                                  <circle cx={px + r - 1.5} cy={py + r - 1.5} r="0.6" fill="#38bdf8" />
+                                  <circle cx={px + r + 1.5} cy={py + r - 1.5} r="0.6" fill="#38bdf8" />
+                                  <circle cx={px + r - 1.5} cy={py + r + 1.5} r="0.6" fill="#38bdf8" />
+                                  <circle cx={px + r + 1.5} cy={py + r + 1.5} r="0.6" fill="#38bdf8" />
+                                </g>
+                              );
+                            }
+                            // Default strobe beam bar
+                            const w = isVert ? 5 : 8;
+                            const h = isVert ? 8 : 4;
+                            return (
+                              <rect key={key} x={px} y={py} width={w} height={h} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />
+                            );
+                          };
 
                           if (isFloor) {
                             const total = count * 2;
-                            const bw = isVert ? 5 : 9;
-                            const bh = isVert ? 10 : 5;
+                            const bw = 7;
                             const startX = 78;
                             const stepX = (104 - bw) / Math.max(1, total - 1);
-                            const by = 145 - bh;
-                            const bars = [];
+                            const by = 145 - 6;
+                            const fixtures = [];
                             for (let i = 0; i < total; i++) {
-                              bars.push(
-                                <rect key={`sb-fl-${i}`} x={startX + i * stepX} y={by} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />
-                              );
+                              fixtures.push(renderFixtureSymbol(`fix-fl-${i}`, startX + i * stepX, by));
                             }
-                            return <g>{bars}</g>;
+                            return <g>{fixtures}</g>;
                           }
 
                           const bw = isVert ? 5 : 8;
-                          const bh = isVert ? 8 : 4;
+                          const bh = isVert ? 8 : 6;
                           const stepY = 46 / Math.max(1, count - 1);
                           const flancs = Math.max(1, lighting.sideMatricesFlancs || 1);
                           const marginPx = Math.round((lighting.sideMatricesMargin ?? 0.4) * 12);
                           const flancSpacingPx = Math.round((lighting.sideMatricesFlancSpacing ?? 0.5) * 14);
-                          const bars = [];
+                          const fixtures = [];
                           for (let f = 0; f < flancs; f++) {
                             const xL = 75 - marginPx - bw - (f * flancSpacingPx);
                             const xR = 185 + marginPx + (f * flancSpacingPx);
                             for (let i = 0; i < count; i++) {
-                              const yPos = sy + 4 + i * stepY;
-                              bars.push(<rect key={`sb-l-${f}-${i}`} x={xL} y={yPos} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />);
-                              bars.push(<rect key={`sb-r-${f}-${i}`} x={xR} y={yPos} width={bw} height={bh} fill="#9333ea" stroke="#c084fc" strokeWidth="0.5" rx="1" />);
+                              const yPos = sy + 3 + i * stepY;
+                              fixtures.push(renderFixtureSymbol(`fix-l-${f}-${i}`, xL, yPos));
+                              fixtures.push(renderFixtureSymbol(`fix-r-${f}-${i}`, xR, yPos));
                             }
                           }
-                          return <g>{bars}</g>;
+                          return <g>{fixtures}</g>;
                         })()}
 
                         {/* Light Cones */}
