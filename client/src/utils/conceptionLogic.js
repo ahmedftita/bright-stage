@@ -152,6 +152,48 @@ export const SIDE_FIXTURE_SPECS = {
 };
 
 /**
+ * Helper déterminant quel modèle de projecteur afficher à la position (flanc f, étage i)
+ * Supporte :
+ * - 'single' : Modèle unique sélectionné
+ * - 'mix_all_4' : Panachage cyclique des 4 projecteurs (Blinder COB + Retro Bowl + Halogène Rond + PAR LED)
+ * - 'mix_all_5' : Panachage cyclique des 5 projecteurs (incluant Strobe Beam 220W)
+ * - 'alternate_2' : Duo alterné A ⇋ B (1 sur 2)
+ * - 'by_flanc' : Flanc intérieur vs Flanc extérieur
+ */
+export const getFixtureTypeForPosition = ({
+  mode = 'single',
+  singleType = 'cob_blinder_2eye',
+  fixtureA = 'cob_blinder_2eye',
+  fixtureB = 'retro_bowl',
+  flancIndex = 0,
+  itemIndex = 0,
+  totalFlancs = 1,
+  countPerFlanc = 5
+}) => {
+  if (mode === 'single') return singleType || 'cob_blinder_2eye';
+
+  if (mode === 'mix_all_5') {
+    const sequence = ['cob_blinder_2eye', 'retro_bowl', 'vintage_round', 'par_led_18', 'strobe_beam_36'];
+    return sequence[(itemIndex + flancIndex) % sequence.length];
+  }
+
+  if (mode === 'mix_all_4') {
+    const sequence = ['cob_blinder_2eye', 'retro_bowl', 'vintage_round', 'par_led_18'];
+    return sequence[(itemIndex + flancIndex) % sequence.length];
+  }
+
+  if (mode === 'alternate_2') {
+    return (itemIndex % 2 === 0) ? (fixtureA || 'cob_blinder_2eye') : (fixtureB || 'retro_bowl');
+  }
+
+  if (mode === 'by_flanc') {
+    return (flancIndex % 2 === 0) ? (fixtureA || 'cob_blinder_2eye') : (fixtureB || 'retro_bowl');
+  }
+
+  return singleType || 'cob_blinder_2eye';
+};
+
+/**
  * Modular segment helper for truss spans
  */
 export const calcSegments = (distance) => {
@@ -305,8 +347,39 @@ export const calculateFullConception = (state) => {
   const sideMatricesCount = isLightingEnabled ? Math.max(0, parseInt(lighting.sideMatricesCount ?? 0)) : 0;
   const sideMatricesFlancs = isLightingEnabled ? Math.max(1, parseInt(lighting.sideMatricesFlancs ?? 1)) : 1;
   const totalSideMatrices = sideMatricesCount * sideMatricesFlancs * 2;
+  const sideFixtureMode = lighting.sideFixtureMode || 'single';
   const sideFixtureType = lighting.sideFixtureType || 'cob_blinder_2eye';
+  const sideFixtureA = lighting.sideFixtureA || 'cob_blinder_2eye';
+  const sideFixtureB = lighting.sideFixtureB || 'retro_bowl';
   const sideFixtureSpec = SIDE_FIXTURE_SPECS[sideFixtureType] || SIDE_FIXTURE_SPECS.cob_blinder_2eye;
+
+  // Calcul du décompte exact de chaque modèle dans le mix
+  const fixtureTypeCounts = {};
+  for (let f = 0; f < sideMatricesFlancs; f++) {
+    for (let i = 0; i < sideMatricesCount; i++) {
+      const fType = getFixtureTypeForPosition({
+        mode: sideFixtureMode,
+        singleType: sideFixtureType,
+        fixtureA: sideFixtureA,
+        fixtureB: sideFixtureB,
+        flancIndex: f,
+        itemIndex: i,
+        totalFlancs: sideMatricesFlancs,
+        countPerFlanc: sideMatricesCount
+      });
+      fixtureTypeCounts[fType] = (fixtureTypeCounts[fType] || 0) + 2;
+    }
+  }
+
+  let sideFixturesWeightKg = 0;
+  let sideFixturesWatts = 0;
+  let sideFixturesDmx = 0;
+  for (const [fType, qty] of Object.entries(fixtureTypeCounts)) {
+    const spec = SIDE_FIXTURE_SPECS[fType] || SIDE_FIXTURE_SPECS.cob_blinder_2eye;
+    sideFixturesWeightKg += qty * spec.weightKg;
+    sideFixturesWatts += qty * spec.watts;
+    sideFixturesDmx += qty * spec.dmx;
+  }
 
   // Lyres Beam 280W sur têtes de totem
   const totemBeamsCount = isLightingEnabled ? totemsCount : 0;
@@ -320,7 +393,7 @@ export const calculateFullConception = (state) => {
     (ledBarsCount * LIGHTING_SPECS.ledBar.weightKg) +
     (blindersCount * LIGHTING_SPECS.blinder.weightKg) +
     (hazerCount * LIGHTING_SPECS.hazer.weightKg) +
-    (totalSideMatrices * sideFixtureSpec.weightKg) +
+    sideFixturesWeightKg +
     (totemBeamsCount * LIGHTING_SPECS.beam280.weightKg)
   ) : 0;
   const lightingWeightKg = totalLightingWeightKg;
@@ -332,7 +405,7 @@ export const calculateFullConception = (state) => {
     (ledBarsCount * LIGHTING_SPECS.ledBar.weightKg) +
     (blindersCount * LIGHTING_SPECS.blinder.weightKg) +
     (hazerCount * LIGHTING_SPECS.hazer.weightKg) +
-    (totalSideMatrices * sideFixtureSpec.weightKg)
+    sideFixturesWeightKg
   ) : 0;
 
   const lightingPowerWatts = isLightingEnabled ? (
@@ -342,7 +415,7 @@ export const calculateFullConception = (state) => {
     (ledBarsCount * LIGHTING_SPECS.ledBar.watts) +
     (blindersCount * LIGHTING_SPECS.blinder.watts) +
     (hazerCount * LIGHTING_SPECS.hazer.watts) +
-    (totalSideMatrices * sideFixtureSpec.watts) +
+    sideFixturesWatts +
     (totemBeamsCount * LIGHTING_SPECS.beam280.watts)
   ) : 0;
   const totalLightingPowerKw = parseFloat((lightingPowerWatts / 1000).toFixed(1));
@@ -355,7 +428,7 @@ export const calculateFullConception = (state) => {
     (ledBarsCount * LIGHTING_SPECS.ledBar.dmx) +
     (blindersCount * LIGHTING_SPECS.blinder.dmx) +
     (hazerCount * LIGHTING_SPECS.hazer.dmx) +
-    (totalSideMatrices * sideFixtureSpec.dmx) +
+    sideFixturesDmx +
     (totemBeamsCount * LIGHTING_SPECS.beam280.dmx)
   ) : 0;
   const dmxUniverses = totalDmxChannels > 0 ? (Math.ceil(totalDmxChannels / 512) || 1) : 0;
@@ -631,15 +704,20 @@ export const calculateFullConception = (state) => {
       totalWeightKg: totemBeamsCount * LIGHTING_SPECS.beam280.weightKg
     }] : []),
     ...(totalSideMatrices > 0 ? [
-      {
-        id: `light_side_${sideFixtureSpec.id}`,
-        category: '4. Éclairage & Asservis',
-        name: `${sideFixtureSpec.fullName} (Flancs Scéniques)`,
-        spec: `${sideMatricesCount} par flanc (${sideMatricesFlancs} flanc${sideMatricesFlancs > 1 ? 's' : ''}/côté) • ${sideFixtureSpec.specFull}`,
-        quantity: totalSideMatrices,
-        unitWeightKg: sideFixtureSpec.weightKg,
-        totalWeightKg: Math.round(totalSideMatrices * sideFixtureSpec.weightKg)
-      },
+      ...Object.entries(fixtureTypeCounts).map(([fType, qty]) => {
+        const spec = SIDE_FIXTURE_SPECS[fType] || SIDE_FIXTURE_SPECS.cob_blinder_2eye;
+        return {
+          id: `light_side_${spec.id}`,
+          category: '4. Éclairage & Asservis',
+          name: `${spec.fullName} (Flancs Scéniques)`,
+          spec: sideFixtureMode !== 'single'
+            ? `${qty} unités intégrées en mix scénographique alterné • ${spec.specShort}`
+            : `${sideMatricesCount} par flanc (${sideMatricesFlancs} flanc${sideMatricesFlancs > 1 ? 's' : ''}/côté) • ${spec.specFull}`,
+          quantity: qty,
+          unitWeightKg: spec.weightKg,
+          totalWeightKg: Math.round(qty * spec.weightKg)
+        };
+      }),
       {
         id: 'matrix_clamp',
         category: '4. Éclairage & Asservis',
@@ -738,8 +816,14 @@ export const calculateFullConception = (state) => {
       sideMatricesFlancSpacing: lighting.sideMatricesFlancSpacing ?? 0.5,
       sideMatricesOrientation: lighting.sideMatricesOrientation || 'horizontal',
       sideMatricesPosition: lighting.sideMatricesPosition || 'lateral',
+      sideFixtureMode,
       sideFixtureType,
+      sideFixtureA,
+      sideFixtureB,
       sideFixtureSpec,
+      fixtureTypeCounts,
+      sideFixturesWeightKg,
+      sideFixturesWatts,
       totalSideMatrices,
       totemBeamsCount,
       totalLightingWeightKg,

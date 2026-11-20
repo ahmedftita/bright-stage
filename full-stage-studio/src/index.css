@@ -1557,6 +1557,7 @@ button, input, select, textarea {
   .login-modal-backdrop,
   .login-card-container,
   .modal-header,
+  .structure-app-layout > *:not(.modal-backdrop-overlay),
   .app-root > *:not(.modal-backdrop-overlay) {
     display: none !important;
   }

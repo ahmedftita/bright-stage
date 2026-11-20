@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
 import { Box, Cylinder, Cone, Sphere, Html } from '@react-three/drei';
 import { CanvasTexture } from 'three';
+import { getFixtureTypeForPosition } from '../utils/conceptionLogic';
 
 /**
  * Full Stage 3D Studio Visualizer
@@ -1027,7 +1028,6 @@ export default function FullStage3D({
     const flancsCount = Math.max(1, parseInt(lighting.sideMatricesFlancs) || 1);
     const orientation = lighting.sideMatricesOrientation || 'horizontal'; // 'horizontal' | 'vertical'
     const positionMode = lighting.sideMatricesPosition || 'lateral'; // 'lateral' | 'horizontal_floor'
-    const fixtureType = lighting.sideFixtureType || 'cob_blinder_2eye';
     const rotZ = orientation === 'vertical' ? Math.PI / 2 : 0;
     const items = [];
 
@@ -1041,9 +1041,19 @@ export default function FullStage3D({
 
       for (let i = 0; i < totalCount; i++) {
         const x = totalCount > 1 ? startX + i * spacing : 0;
+        const fType = getFixtureTypeForPosition({
+          mode: lighting.sideFixtureMode || 'single',
+          singleType: lighting.sideFixtureType || 'cob_blinder_2eye',
+          fixtureA: lighting.sideFixtureA || 'cob_blinder_2eye',
+          fixtureB: lighting.sideFixtureB || 'retro_bowl',
+          flancIndex: 0,
+          itemIndex: i,
+          totalFlancs: 1,
+          countPerFlanc: totalCount
+        });
         items.push(
           <SideScenicFixture
-            fixtureType={fixtureType}
+            fixtureType={fType}
             key={`sb-floor-${i}`}
             position={[x, y, z]}
             rotation={[0, 0, rotZ]}
@@ -1091,10 +1101,21 @@ export default function FullStage3D({
         for (let i = 0; i < countPerFlanc; i++) {
           const y = countPerFlanc > 1 ? (botY + i * stepY) : screenY;
           const tiltAngle = countPerFlanc > 1 ? ((i - (countPerFlanc - 1) / 2) * -0.05) : 0;
+          const fType = getFixtureTypeForPosition({
+            mode: lighting.sideFixtureMode || 'single',
+            singleType: lighting.sideFixtureType || 'cob_blinder_2eye',
+            fixtureA: lighting.sideFixtureA || 'cob_blinder_2eye',
+            fixtureB: lighting.sideFixtureB || 'retro_bowl',
+            flancIndex: f,
+            itemIndex: i,
+            totalFlancs: flancsCount,
+            countPerFlanc
+          });
+
           // Left flank fixture
           items.push(
             <SideScenicFixture
-              fixtureType={fixtureType}
+              fixtureType={fType}
               key={`mat-left-${f}-${i}`}
               position={[xLeft, y, zFlanc]}
               rotation={[0, wingAngle, rotZ]}
@@ -1106,7 +1127,7 @@ export default function FullStage3D({
           // Right flank fixture
           items.push(
             <SideScenicFixture
-              fixtureType={fixtureType}
+              fixtureType={fType}
               key={`mat-right-${f}-${i}`}
               position={[xRight, y, zFlanc]}
               rotation={[0, -wingAngle, rotZ]}
@@ -1128,7 +1149,10 @@ export default function FullStage3D({
     lighting.sideMatricesFlancSpacing,
     lighting.sideMatricesOrientation,
     lighting.sideMatricesPosition,
+    lighting.sideFixtureMode,
     lighting.sideFixtureType,
+    lighting.sideFixtureA,
+    lighting.sideFixtureB,
     lighting.beamColor,
     screenW,
     screenH,

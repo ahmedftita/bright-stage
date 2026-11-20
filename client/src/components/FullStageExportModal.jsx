@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Printer, ShieldCheck, AlertTriangle, Layers, Wrench, Monitor, Zap, Sun, CheckCircle } from 'lucide-react';
+import { getFixtureTypeForPosition, SIDE_FIXTURE_SPECS } from '../utils/conceptionLogic';
 
 const getPrintCss = () => `
   @page {
@@ -569,7 +570,10 @@ export default function FullStageExportModal({
                 <div className="strip-item">
                   <span className="strip-label">PROJECTEURS FLANCS</span>
                   <span className="strip-value" style={{ color: lighting.sideFixtureSpec?.color || '#fbbf24' }}>
-                    {lighting.totalSideMatrices}x {lighting.sideFixtureSpec?.name || 'Projecteurs'} ({lighting.sideMatricesOrientation === 'vertical' ? 'Vert.' : 'Horiz.'})
+                    {lighting.sideFixtureMode !== 'single'
+                      ? `${lighting.totalSideMatrices}x Mix Scénographique (${lighting.sideFixtureMode === 'mix_all_4' ? '4 Modèles' : lighting.sideFixtureMode === 'mix_all_5' ? '5 Modèles' : 'Duo Alterné'})`
+                      : `${lighting.totalSideMatrices}x ${lighting.sideFixtureSpec?.name || 'Projecteurs'} (${lighting.sideMatricesOrientation === 'vertical' ? 'Vert.' : 'Horiz.'})`
+                    }
                   </span>
                 </div>
               )}
@@ -792,11 +796,10 @@ export default function FullStageExportModal({
                           const isFloor = lighting.sideMatricesPosition === 'horizontal_floor';
                           const isVert = lighting.sideMatricesOrientation === 'vertical';
                           const count = lighting.sideMatricesCount;
-                          const fType = lighting.sideFixtureType || 'cob_blinder_2eye';
-                          const fColor = lighting.sideFixtureSpec?.color || '#fbbf24';
 
-                          // Helper function to render fixture SVG symbol
-                          const renderFixtureSymbol = (key, px, py) => {
+                          // Helper function to render fixture SVG symbol according to its specific model
+                          const renderFixtureSymbol = (key, px, py, specificType) => {
+                            const fType = specificType || lighting.sideFixtureType || 'cob_blinder_2eye';
                             if (fType === 'cob_blinder_2eye') {
                               const w = isVert ? 5 : 8;
                               const h = isVert ? 8 : 4;
@@ -851,7 +854,7 @@ export default function FullStageExportModal({
                                 </g>
                               );
                             }
-                            // Default strobe beam bar
+                            // Default strobe beam bar (36LED Strobe Beam)
                             const w = isVert ? 5 : 8;
                             const h = isVert ? 8 : 4;
                             return (
@@ -867,7 +870,17 @@ export default function FullStageExportModal({
                             const by = 145 - 6;
                             const fixtures = [];
                             for (let i = 0; i < total; i++) {
-                              fixtures.push(renderFixtureSymbol(`fix-fl-${i}`, startX + i * stepX, by));
+                              const fTypeForPos = getFixtureTypeForPosition({
+                                mode: lighting.sideFixtureMode || 'single',
+                                singleType: lighting.sideFixtureType || 'cob_blinder_2eye',
+                                fixtureA: lighting.sideFixtureA || 'cob_blinder_2eye',
+                                fixtureB: lighting.sideFixtureB || 'retro_bowl',
+                                flancIndex: 0,
+                                itemIndex: i,
+                                totalFlancs: 1,
+                                countPerFlanc: total
+                              });
+                              fixtures.push(renderFixtureSymbol(`fix-fl-${i}`, startX + i * stepX, by, fTypeForPos));
                             }
                             return <g>{fixtures}</g>;
                           }
@@ -884,8 +897,18 @@ export default function FullStageExportModal({
                             const xR = 185 + marginPx + (f * flancSpacingPx);
                             for (let i = 0; i < count; i++) {
                               const yPos = sy + 3 + i * stepY;
-                              fixtures.push(renderFixtureSymbol(`fix-l-${f}-${i}`, xL, yPos));
-                              fixtures.push(renderFixtureSymbol(`fix-r-${f}-${i}`, xR, yPos));
+                              const fTypeForPos = getFixtureTypeForPosition({
+                                mode: lighting.sideFixtureMode || 'single',
+                                singleType: lighting.sideFixtureType || 'cob_blinder_2eye',
+                                fixtureA: lighting.sideFixtureA || 'cob_blinder_2eye',
+                                fixtureB: lighting.sideFixtureB || 'retro_bowl',
+                                flancIndex: f,
+                                itemIndex: i,
+                                totalFlancs: flancs,
+                                countPerFlanc: count
+                              });
+                              fixtures.push(renderFixtureSymbol(`fix-l-${f}-${i}`, xL, yPos, fTypeForPos));
+                              fixtures.push(renderFixtureSymbol(`fix-r-${f}-${i}`, xR, yPos, fTypeForPos));
                             }
                           }
                           return <g>{fixtures}</g>;

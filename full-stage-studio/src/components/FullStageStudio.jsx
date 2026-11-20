@@ -144,7 +144,10 @@ export default function FullStageStudio() {
     sideMatricesFlancSpacing: 0.5, // Distance entre chaque flanc (en mètres)
     sideMatricesOrientation: 'horizontal', // 'horizontal' ou 'vertical'
     sideMatricesPosition: 'lateral', // 'lateral' ou 'horizontal_floor'
-    sideFixtureType: 'cob_blinder_2eye', // Modèle de projecteur par défaut : Blinder COB 2 Yeux
+    sideFixtureMode: 'mix_all_4', // 'single' | 'mix_all_4' | 'mix_all_5' | 'alternate_2' | 'by_flanc'
+    sideFixtureType: 'cob_blinder_2eye', // Modèle de projecteur par défaut
+    sideFixtureA: 'cob_blinder_2eye',
+    sideFixtureB: 'retro_bowl',
     showBeams: true,
     beamColor: '#38bdf8'
   });
@@ -258,7 +261,10 @@ export default function FullStageStudio() {
         sideMatricesFlancSpacing: item.lightingConfig.sideMatricesFlancSpacing ?? 0.5,
         sideMatricesOrientation: item.lightingConfig.sideMatricesOrientation || 'horizontal',
         sideMatricesPosition: item.lightingConfig.sideMatricesPosition || 'lateral',
+        sideFixtureMode: item.lightingConfig.sideFixtureMode || 'mix_all_4',
         sideFixtureType: item.lightingConfig.sideFixtureType || 'cob_blinder_2eye',
+        sideFixtureA: item.lightingConfig.sideFixtureA || 'cob_blinder_2eye',
+        sideFixtureB: item.lightingConfig.sideFixtureB || 'retro_bowl',
         showBeams: item.lightingConfig.showBeams !== false,
         beamColor: item.lightingConfig.beamColor || '#38bdf8'
       });
@@ -1402,47 +1408,252 @@ export default function FullStageStudio() {
                       </div>
                     </div>
 
-                    {/* CHOIX DU MODÈLE DE PROJECTEUR FLANCS / SCÉNIQUE (Images fournies par l'utilisateur) */}
+                    {/* CHOIX DU MODÈLE DE PROJECTEUR FLANCS / SCÉNIQUE & MODE MÉLANGE */}
                     {(lightingState.sideMatricesCount ?? 0) > 0 && (
                       <div style={{ marginTop: '10px', background: 'rgba(56,189,248,0.03)', padding: '10px', borderRadius: '8px', border: '1px solid rgba(56,189,248,0.15)' }}>
                         <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '8px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <span>Type de Projecteur Flancs / Scénique :</span>
-                          <span style={{ fontSize: '9.5px', color: '#38bdf8' }}>4 Modèles Studio</span>
+                          <span>Disposition Projecteurs Scéniques :</span>
+                          <span style={{ fontSize: '9.5px', color: '#38bdf8' }}>5 Modèles & Mix</span>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                          {Object.values(SIDE_FIXTURE_SPECS).map(f => {
-                            const isSelected = (lightingState.sideFixtureType || 'cob_blinder_2eye') === f.id;
-                            return (
+
+                        {/* Commutateur : Modèle Unique vs Mode Mélange */}
+                        <div className="segmented-toggle" style={{ gridTemplateColumns: '1fr 1fr', marginBottom: '8px' }}>
+                          <button
+                            type="button"
+                            className={`segment-btn ${lightingState.sideFixtureMode === 'single' ? 'active' : ''}`}
+                            onClick={() => setLightingState(prev => ({ ...prev, sideFixtureMode: 'single' }))}
+                          >
+                            ✦ Modèle Unique
+                          </button>
+                          <button
+                            type="button"
+                            className={`segment-btn ${lightingState.sideFixtureMode !== 'single' ? 'active' : ''}`}
+                            style={{
+                              borderColor: lightingState.sideFixtureMode !== 'single' ? '#38bdf8' : undefined,
+                              background: lightingState.sideFixtureMode !== 'single' ? 'rgba(56,189,248,0.18)' : undefined,
+                              color: lightingState.sideFixtureMode !== 'single' ? '#38bdf8' : undefined
+                            }}
+                            onClick={() => setLightingState(prev => ({
+                              ...prev,
+                              sideFixtureMode: prev.sideFixtureMode === 'single' ? 'mix_all_4' : prev.sideFixtureMode
+                            }))}
+                          >
+                            🔀 Mode Mélange (Mix)
+                          </button>
+                        </div>
+
+                        {/* Si Mode Unique : Sélection du modèle unique */}
+                        {lightingState.sideFixtureMode === 'single' && (
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                            {Object.values(SIDE_FIXTURE_SPECS).map(f => {
+                              const isSelected = (lightingState.sideFixtureType || 'cob_blinder_2eye') === f.id;
+                              return (
+                                <button
+                                  key={f.id}
+                                  type="button"
+                                  className={`action-btn ${isSelected ? 'btn-primary' : 'btn-secondary'}`}
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'flex-start',
+                                    padding: '7px 9px',
+                                    borderRadius: '6px',
+                                    textAlign: 'left',
+                                    height: 'auto',
+                                    border: isSelected ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.08)',
+                                    background: isSelected ? 'rgba(56,189,248,0.16)' : 'rgba(255,255,255,0.02)'
+                                  }}
+                                  onClick={() => setLightingState(prev => ({ ...prev, sideFixtureType: f.id }))}
+                                >
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '2px' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: 800, color: isSelected ? '#38bdf8' : '#f8fafc' }}>
+                                      {f.badge}
+                                    </span>
+                                    {isSelected && <CheckCircle size={12} color="#38bdf8" />}
+                                  </div>
+                                  <span style={{ fontSize: '9px', color: '#94a3b8', lineHeight: 1.2 }}>
+                                    {f.specShort}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* Si Mode Mélange (Mix) : Styles de Panachage & Sélection Duo */}
+                        {lightingState.sideFixtureMode !== 'single' && (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                               <button
-                                key={f.id}
                                 type="button"
-                                className={`action-btn ${isSelected ? 'btn-primary' : 'btn-secondary'}`}
+                                className={`action-btn ${lightingState.sideFixtureMode === 'mix_all_4' ? 'btn-primary' : 'btn-secondary'}`}
                                 style={{
                                   display: 'flex',
                                   flexDirection: 'column',
                                   alignItems: 'flex-start',
-                                  padding: '7px 9px',
+                                  padding: '7px 8px',
                                   borderRadius: '6px',
                                   textAlign: 'left',
-                                  height: 'auto',
-                                  border: isSelected ? '1.5px solid #38bdf8' : '1px solid rgba(255,255,255,0.08)',
-                                  background: isSelected ? 'rgba(56,189,248,0.16)' : 'rgba(255,255,255,0.02)'
+                                  height: 'auto'
                                 }}
-                                onClick={() => setLightingState(prev => ({ ...prev, sideFixtureType: f.id }))}
+                                onClick={() => setLightingState(prev => ({ ...prev, sideFixtureMode: 'mix_all_4' }))}
                               >
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '2px' }}>
-                                  <span style={{ fontSize: '11px', fontWeight: 800, color: isSelected ? '#38bdf8' : '#f8fafc' }}>
-                                    {f.badge}
-                                  </span>
-                                  {isSelected && <CheckCircle size={12} color="#38bdf8" />}
-                                </div>
-                                <span style={{ fontSize: '9px', color: '#94a3b8', lineHeight: 1.2 }}>
-                                  {f.specShort}
+                                <span style={{ fontSize: '11px', fontWeight: 800, color: lightingState.sideFixtureMode === 'mix_all_4' ? '#38bdf8' : '#f8fafc' }}>
+                                  🌈 Panachage 4 Modèles
+                                </span>
+                                <span style={{ fontSize: '8.5px', color: '#94a3b8', marginTop: '2px' }}>
+                                  Blinder + Retro Bowl + Halogène + PAR
                                 </span>
                               </button>
-                            );
-                          })}
-                        </div>
+
+                              <button
+                                type="button"
+                                className={`action-btn ${lightingState.sideFixtureMode === 'mix_all_5' ? 'btn-primary' : 'btn-secondary'}`}
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'flex-start',
+                                  padding: '7px 8px',
+                                  borderRadius: '6px',
+                                  textAlign: 'left',
+                                  height: 'auto'
+                                }}
+                                onClick={() => setLightingState(prev => ({ ...prev, sideFixtureMode: 'mix_all_5' }))}
+                              >
+                                <span style={{ fontSize: '11px', fontWeight: 800, color: lightingState.sideFixtureMode === 'mix_all_5' ? '#38bdf8' : '#f8fafc' }}>
+                                  ✨ Panachage 5 Modèles
+                                </span>
+                                <span style={{ fontSize: '8.5px', color: '#94a3b8', marginTop: '2px' }}>
+                                  4 Modèles + ⚡ Strobe Beam 220W
+                                </span>
+                              </button>
+
+                              <button
+                                type="button"
+                                className={`action-btn ${lightingState.sideFixtureMode === 'alternate_2' ? 'btn-primary' : 'btn-secondary'}`}
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'flex-start',
+                                  padding: '7px 8px',
+                                  borderRadius: '6px',
+                                  textAlign: 'left',
+                                  height: 'auto'
+                                }}
+                                onClick={() => setLightingState(prev => ({ ...prev, sideFixtureMode: 'alternate_2' }))}
+                              >
+                                <span style={{ fontSize: '11px', fontWeight: 800, color: lightingState.sideFixtureMode === 'alternate_2' ? '#38bdf8' : '#f8fafc' }}>
+                                  ⭐ Duo Alterné A ⇋ B
+                                </span>
+                                <span style={{ fontSize: '8.5px', color: '#94a3b8', marginTop: '2px' }}>
+                                  1 sur 2 : Alternance directe
+                                </span>
+                              </button>
+
+                              <button
+                                type="button"
+                                className={`action-btn ${lightingState.sideFixtureMode === 'by_flanc' ? 'btn-primary' : 'btn-secondary'}`}
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  alignItems: 'flex-start',
+                                  padding: '7px 8px',
+                                  borderRadius: '6px',
+                                  textAlign: 'left',
+                                  height: 'auto'
+                                }}
+                                onClick={() => setLightingState(prev => ({ ...prev, sideFixtureMode: 'by_flanc' }))}
+                              >
+                                <span style={{ fontSize: '11px', fontWeight: 800, color: lightingState.sideFixtureMode === 'by_flanc' ? '#38bdf8' : '#f8fafc' }}>
+                                  🏢 Par Colonnes (Flancs)
+                                </span>
+                                <span style={{ fontSize: '8.5px', color: '#94a3b8', marginTop: '2px' }}>
+                                  Flanc Intérieur ≠ Flanc Extérieur
+                                </span>
+                              </button>
+                            </div>
+
+                            {/* Choix des Projecteurs A et B pour les modes alternés */}
+                            {(lightingState.sideFixtureMode === 'alternate_2' || lightingState.sideFixtureMode === 'by_flanc') && (
+                              <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '8px',
+                                background: 'rgba(0,0,0,0.25)',
+                                padding: '8px',
+                                borderRadius: '6px',
+                                border: '1px solid rgba(255,255,255,0.06)'
+                              }}>
+                                <div>
+                                  <label style={{ fontSize: '9.5px', fontWeight: 700, color: '#38bdf8', display: 'block', marginBottom: '3px' }}>
+                                    Projecteur A (Pair) :
+                                  </label>
+                                  <select
+                                    className="form-input"
+                                    style={{ fontSize: '10.5px', padding: '4px 6px', height: '32px' }}
+                                    value={lightingState.sideFixtureA || 'cob_blinder_2eye'}
+                                    onChange={(e) => setLightingState(prev => ({ ...prev, sideFixtureA: e.target.value }))}
+                                  >
+                                    {Object.values(SIDE_FIXTURE_SPECS).map(f => (
+                                      <option key={`a-${f.id}`} value={f.id}>{f.badge}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                                <div>
+                                  <label style={{ fontSize: '9.5px', fontWeight: 700, color: '#fbbf24', display: 'block', marginBottom: '3px' }}>
+                                    Projecteur B (Impair) :
+                                  </label>
+                                  <select
+                                    className="form-input"
+                                    style={{ fontSize: '10.5px', padding: '4px 6px', height: '32px' }}
+                                    value={lightingState.sideFixtureB || 'retro_bowl'}
+                                    onChange={(e) => setLightingState(prev => ({ ...prev, sideFixtureB: e.target.value }))}
+                                  >
+                                    {Object.values(SIDE_FIXTURE_SPECS).map(f => (
+                                      <option key={`b-${f.id}`} value={f.id}>{f.badge}</option>
+                                    ))}
+                                  </select>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Décompte exact des projecteurs du mix dans le panier */}
+                            {conception.lighting?.fixtureTypeCounts && (
+                              <div style={{
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: '4px',
+                                padding: '6px 8px',
+                                background: 'rgba(56,189,248,0.06)',
+                                borderRadius: '5px',
+                                border: '1px solid rgba(56,189,248,0.2)'
+                              }}>
+                                <span style={{ fontSize: '9px', fontWeight: 800, color: '#38bdf8', width: '100%', marginBottom: '2px' }}>
+                                  Inventaire du Mix Scénique :
+                                </span>
+                                {Object.entries(conception.lighting.fixtureTypeCounts).map(([typeId, qty]) => {
+                                  const spec = SIDE_FIXTURE_SPECS[typeId] || SIDE_FIXTURE_SPECS.cob_blinder_2eye;
+                                  return (
+                                    <span
+                                      key={`mix-pill-${typeId}`}
+                                      style={{
+                                        fontSize: '9px',
+                                        padding: '2px 6px',
+                                        borderRadius: '3px',
+                                        background: 'rgba(15,23,42,0.8)',
+                                        border: `1px solid ${spec.color || '#38bdf8'}`,
+                                        color: '#f8fafc',
+                                        fontWeight: 700
+                                      }}
+                                    >
+                                      {qty}× {spec.badge}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -1592,8 +1803,33 @@ export default function FullStageStudio() {
                           </div>
                         </div>
 
-                        {/* Fiche Technique dynamique du projecteur actif */}
+                        {/* Fiche Technique dynamique du projecteur actif ou du Mix */}
                         {(() => {
+                          if (lightingState.sideFixtureMode !== 'single') {
+                            const totalQty = conception.lighting?.totalSideMatrices || 0;
+                            const totalPowerW = conception.lighting?.sideFixturesWatts || 0;
+                            const totalWt = conception.lighting?.sideFixturesWeightKg || 0;
+                            return (
+                              <div style={{
+                                fontSize: '11px',
+                                color: '#cbd5e1',
+                                background: 'rgba(56,189,248,0.08)',
+                                padding: '8px 10px',
+                                borderRadius: '6px',
+                                border: '1px solid rgba(56,189,248,0.25)',
+                                marginTop: '4px'
+                              }}>
+                                <div style={{ fontWeight: 800, color: '#38bdf8', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                  <span>🔀 Mix Scénographique Actif :</span>
+                                </div>
+                                <div style={{ fontSize: '10px', color: '#94a3b8', lineHeight: 1.35 }}>
+                                  Panachage harmonieux de <strong>{totalQty} projecteurs</strong> répartis sur la scénographie.
+                                  <br />
+                                  ⚡ <strong>Puissance cumulée :</strong> {totalPowerW} W • <strong>Poids suspendu :</strong> {totalWt} kg.
+                                </div>
+                              </div>
+                            );
+                          }
                           const currentSpec = SIDE_FIXTURE_SPECS[lightingState.sideFixtureType || 'cob_blinder_2eye'] || SIDE_FIXTURE_SPECS.cob_blinder_2eye;
                           return (
                             <div style={{

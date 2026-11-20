@@ -34,8 +34,8 @@ export default function LoginModal({ isOpen, onLoginSuccess }) {
   };
 
   return (
-    <div className="login-modal-backdrop">
-      <div className="login-card-container">
+    <div className="login-modal-backdrop no-print">
+      <div className="login-card-container no-print">
         <div className="login-header">
           <div className="login-logo-badge">
             <span className="logo-b">B</span>
