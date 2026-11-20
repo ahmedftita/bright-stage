@@ -1193,7 +1193,7 @@ export default function FullStage3D({
           </Cylinder>
         );
         items.push(
-          <Box key={`boom-base-left-${f}`} args={[0.38, 0.015, 0.38]} position={[xLeft, (isStageEnabled ? stageHeight : 0) + 0.008, zFlanc - 0.05]}>
+          <Box key={`boom-base-left-${f}`} args={[0.38, 0.015, 0.38]} position={[xLeft, screenBottomY + 0.008, zFlanc - 0.05]}>
             <meshStandardMaterial color="#090d16" metalness={0.85} roughness={0.2} />
           </Box>
         );
@@ -1204,7 +1204,7 @@ export default function FullStage3D({
           </Cylinder>
         );
         items.push(
-          <Box key={`boom-base-right-${f}`} args={[0.38, 0.015, 0.38]} position={[xRight, (isStageEnabled ? stageHeight : 0) + 0.008, zFlanc - 0.05]}>
+          <Box key={`boom-base-right-${f}`} args={[0.38, 0.015, 0.38]} position={[xRight, screenBottomY + 0.008, zFlanc - 0.05]}>
             <meshStandardMaterial color="#090d16" metalness={0.85} roughness={0.2} />
           </Box>
         );
